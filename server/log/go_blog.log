@@ -1,0 +1,14 @@
+2025-05-29T23:01:53.834+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-05-30T23:33:07.123+0800	ERROR	initialize/gorm.go:20	Failed to connect to MySQL:	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
+2025-05-30T23:35:01.738+0800	ERROR	initialize/gorm.go:20	Failed to connect to MySQL:	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
+2025-05-30T23:36:56.604+0800	ERROR	initialize/gorm.go:20	Failed to connect to MySQL:	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
+2025-05-30T23:37:38.653+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-06-10T19:09:02.203+0800	ERROR	initialize/redis.go:23	Failed to connect to Redis:	{"error": "dial tcp 127.0.0.1:6379: connectex: No connection could be made because the target machine actively refused it."}
+2025-06-10T19:11:23.813+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-06-10T19:11:57.867+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-06-10T19:24:08.028+0800	INFO	flag/enter.go:24	Initialize the database table successfully
+2025-06-10T20:31:01.977+0800	ERROR	flag/enter.go:82	Filed to run the flag	{"error": "flag provided but not defined: -gql-export"}
+2025-06-10T20:31:17.675+0800	ERROR	flag/enter.go:44	Failed to export SQL data:	{"error": "exit status 1"}
+2025-06-10T20:32:57.412+0800	INFO	flag/enter.go:46	Successfully exported SQL data
+2025-07-28T10:13:46.859+0800	INFO	flag/enter.go:40	Initialize the database table successfully
+2025-07-28T10:20:42.195+0800	INFO	flag/enter.go:46	Successfully exported SQL data
