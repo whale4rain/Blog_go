@@ -12,3 +12,6 @@
 2025-06-10T20:32:57.412+0800	INFO	flag/enter.go:46	Successfully exported SQL data
 2025-07-28T10:13:46.859+0800	INFO	flag/enter.go:40	Initialize the database table successfully
 2025-07-28T10:20:42.195+0800	INFO	flag/enter.go:46	Successfully exported SQL data
+2025-07-28T16:23:49.152+0800	INFO	flag/enter.go:66	Successfully created ES indices
+2025-07-28T16:59:26.860+0800	ERROR	flag/enter.go:100	Failed to create an administrator:	{"error": "password length should be between 8 and 20 characters"}
+2025-07-28T16:59:51.400+0800	INFO	flag/enter.go:102	Successfully created an administrator
