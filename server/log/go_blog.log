@@ -15,3 +15,7 @@
 2025-07-28T16:23:49.152+0800	INFO	flag/enter.go:66	Successfully created ES indices
 2025-07-28T16:59:26.860+0800	ERROR	flag/enter.go:100	Failed to create an administrator:	{"error": "password length should be between 8 and 20 characters"}
 2025-07-28T16:59:51.400+0800	INFO	flag/enter.go:102	Successfully created an administrator
+2025-07-30T10:04:11.894+0800	ERROR	initialize/redis.go:23	Failed to connect to Redis:	{"error": "dial tcp 127.0.0.1:6379: connectex: No connection could be made because the target machine actively refused it."}
+2025-07-30T10:04:42.177+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-07-30T10:46:54.563+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-07-30T11:01:56.950+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
