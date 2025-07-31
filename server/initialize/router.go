@@ -6,11 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"server/global"
 	"server/router"
+	"server/middleware"
 )
 
 func InitRouter() *gin.Engine {
 	gin.SetMode(global.Config.System.Env)
 	Router := gin.Default()
+
+	Router.Use(middleware.GinLogger(), middleware.GinRecovery(true))
 
 	var store = cookie.NewStore([]byte(global.Config.System.SessionsSecret))
 	Router.Use(sessions.Sessions("session", store))
