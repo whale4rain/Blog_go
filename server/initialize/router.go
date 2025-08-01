@@ -1,12 +1,13 @@
 package initialize
 
 import (
+	"server/global"
+	"server/middleware"
+	"server/router"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	"server/global"
-	"server/router"
-	"server/middleware"
 )
 
 func InitRouter() *gin.Engine {
@@ -21,8 +22,15 @@ func InitRouter() *gin.Engine {
 	routerGroup := router.RouterGroupApp
 
 	publicGroup := Router.Group(global.Config.System.RouterPrefix)
+	privateGroup := Router.Group(global.Config.System.RouterPrefix)
+	privateGroup.Use(middleware.JWTAuth())
+	adminGroup := Router.Group(global.Config.System.RouterPrefix)
+	adminGroup.Use(middleware.JWTAuth(), middleware.AdminAuth())
 	{
 		routerGroup.InitBaseRouter(publicGroup)
+	}
+	{
+		routerGroup.InitUserRouter(privateGroup, publicGroup, adminGroup)
 	}
 	return Router
 }

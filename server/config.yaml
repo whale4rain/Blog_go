@@ -47,7 +47,7 @@ qq:
   enable: false
   app_id: "000000000"
   app_key: xxxxxxxxxxxxxxxx
-  redirect_uri: http://xxx.xxx/xxx
+  redirect_uri: http://xxx.xxx/login?flag=qq
 redis:
   address: 127.0.0.1:6379
   password: ""

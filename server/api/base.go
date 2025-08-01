@@ -1,12 +1,13 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/mojocn/base64Captcha"
-	"go.uber.org/zap"
 	"server/global"
 	"server/model/request"
 	"server/model/response"
+
+	"github.com/gin-gonic/gin"
+	"github.com/mojocn/base64Captcha"
+	"go.uber.org/zap"
 )
 
 type BaseApi struct {
@@ -35,7 +36,7 @@ func (baseApi *BaseApi) Captcha(c *gin.Context) {
 	}, c)
 }
 
-func (baseApi *BaseApi) SendEmailVertificationCode(c *gin.Context) {
+func (baseApi *BaseApi) SendEmailVerificationCode(c *gin.Context) {
 	var req request.SendEmailVerificationCode
 	err := c.ShouldBindJSON(&req)
 	if err != nil {

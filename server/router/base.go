@@ -13,7 +13,7 @@ func (b *BaseRouter) InitBaseRouter(Router *gin.RouterGroup) {
 	baseApi := api.ApiGroupApp.BaseApi
 	{
 		baseRouter.POST("captcha", baseApi.Captcha)
-		baseRouter.POST("sendEmailVertificationCode", baseApi.SendEmailVertificationCode)
+		baseRouter.POST("sendEmailVerificationCode", baseApi.SendEmailVerificationCode)
 		baseRouter.GET("qqLoginURL", baseApi.QQLoginURL)
 	}
 }
