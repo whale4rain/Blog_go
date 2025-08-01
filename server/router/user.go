@@ -10,7 +10,7 @@ import (
 type UserRouter struct {
 }
 
-func (u *UserRouter) InitUserRouter(Router, PublicRouter, AdminRouter *gin.RouterGroup) {
+func (u *UserRouter) InitUserRouter(Router *gin.RouterGroup, PublicRouter *gin.RouterGroup, AdminRouter *gin.RouterGroup) {
 	userRouter := Router.Group("user")
 	userPublicRouter := PublicRouter.Group("user")
 	userLoginRouter := PublicRouter.Group("user").Use(middleware.LoginRecord())
