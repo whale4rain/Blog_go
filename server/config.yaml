@@ -36,11 +36,11 @@ mysql:
   max_open_conns: 100
   log_mode: info
 qiniu:
-  zone: z0
-  bucket: xxx
-  img_path: https://xxx.xxx/
-  access_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  secret_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  zone: z1
+  bucket: whale4blog
+  img_path: https://image.whale4blog.cn/
+  access_key: ced7Nd85Ti8U5cEZ8MA4G9_UU0x9nYlnMGDha_uO
+  secret_key: muAcxMUa9HG67N_Wnh2UxwuNv5AcMoebjekKezK5
   use_https: true
   use_cdn_domains: true
 qq:
