@@ -82,3 +82,12 @@
 2025-08-02T10:34:35.669+0800	INFO	middleware/logger.go:35	/api/image/list	{"status": 200, "method": "GET", "path": "/api/image/list", "query": "page=1&page_size=10", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "0s"}
 2025-08-02T10:37:32.261+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
 2025-08-02T10:37:41.049+0800	INFO	middleware/logger.go:35	/api/image/list	{"status": 403, "method": "GET", "path": "/api/image/list", "query": "page=1&page_size=10", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "7.9392ms"}
+2025-08-02T23:36:44.127+0800	INFO	flag/enter.go:61	Successfully created table structure
+2025-08-02T23:39:04.846+0800	INFO	flag/enter.go:102	Successfully created an administrator
+2025-08-02T23:41:46.826+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-08-02T23:41:56.206+0800	INFO	middleware/logger.go:35	/api/base/captcha	{"status": 200, "method": "POST", "path": "/api/base/captcha", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "18.7089ms"}
+2025-08-02T23:42:27.949+0800	INFO	middleware/logger.go:35	/api/user/login	{"status": 200, "method": "POST", "path": "/api/user/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "188.4136ms"}
+2025-08-02T23:42:42.874+0800	INFO	middleware/logger.go:35	/api/image/upload	{"status": 200, "method": "POST", "path": "/api/image/upload", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "28.2215ms"}
+2025-08-02T23:42:48.143+0800	INFO	middleware/logger.go:35	/api/image/list	{"status": 200, "method": "GET", "path": "/api/image/list", "query": "page=1&page_size=10", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "22.175ms"}
+2025-08-02T23:44:42.520+0800	INFO	middleware/logger.go:35	/api/article/create	{"status": 404, "method": "POST", "path": "/api/article/create", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "0s"}
+2025-08-02T23:45:17.509+0800	INFO	middleware/logger.go:35	/api/article/create	{"status": 404, "method": "POST", "path": "/api/article/create", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "0s"}
