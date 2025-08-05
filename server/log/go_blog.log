@@ -167,3 +167,7 @@
 2025-08-05T16:56:07.819+0800	INFO	middleware/logger.go:35	/api/website/logo	{"status": 301, "method": "GET", "path": "/api/website/logo", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "599.7µs"}
 2025-08-05T16:56:07.821+0800	INFO	middleware/logger.go:35	/image/logo.png	{"status": 404, "method": "GET", "path": "/image/logo.png", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.45.0", "errors": "", "cost": "0s"}
 2025-08-05T21:16:49.542+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-08-05T22:43:35.094+0800	INFO	core/server.go:24	server run success on 	{"address": "0.0.0.0:8080"}
+2025-08-05T22:43:52.667+0800	INFO	middleware/logger.go:35	/api/website/logo	{"status": 301, "method": "GET", "path": "/api/website/logo", "query": "", "ip": "127.0.0.1", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0", "errors": "", "cost": "1.5694ms"}
+2025-08-05T22:43:52.671+0800	INFO	middleware/logger.go:35	/image/logo.png	{"status": 404, "method": "GET", "path": "/image/logo.png", "query": "", "ip": "127.0.0.1", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0", "errors": "", "cost": "0s"}
+2025-08-05T22:44:38.550+0800	INFO	middleware/logger.go:35	/image/logo.png	{"status": 404, "method": "GET", "path": "/image/logo.png", "query": "", "ip": "127.0.0.1", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0", "errors": "", "cost": "0s"}
