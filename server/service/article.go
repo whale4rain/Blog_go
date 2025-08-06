@@ -244,20 +244,22 @@ func (articleService *ArticleService) ArticleDelete(req request.ArticleDelete) e
 		return nil
 	}
 	return global.DB.Transaction(func(tx *gorm.DB) error {
-		commentService := new(CommentService)
 		for _, id := range req.IDs {
 			articleToDelete, err := articleService.Get(id)
 			if err != nil {
 				return err
 			}
+
 			// 同时更新文章类别表中的数据
 			if err := articleService.UpdateCategoryCount(tx, articleToDelete.Category, ""); err != nil {
 				return err
 			}
+
 			// 同时更新文章标签表中的数据
 			if err := articleService.UpdateTagsCount(tx, articleToDelete.Tags, []string{}); err != nil {
 				return err
 			}
+
 			// 同时更新图片表中的图片类别
 			if err := utils.InitImagesCategory(tx, []string{articleToDelete.Cover}); err != nil {
 				return err
@@ -267,11 +269,6 @@ func (articleService *ArticleService) ArticleDelete(req request.ArticleDelete) e
 				return err
 			}
 			if err := utils.InitImagesCategory(tx, illustrations); err != nil {
-				return err
-			}
-			// 同时删除该文章下的所有评论
-			_, err = commentService.CommentInfoByArticleID(request.CommentInfoByArticleID{ArticleID: id})
-			if err != nil {
 				return err
 			}
 			// 同时删除该文章下的所有评论
@@ -285,7 +282,6 @@ func (articleService *ArticleService) ArticleDelete(req request.ArticleDelete) e
 				}
 			}
 		}
-
 		return articleService.Delete(req.IDs)
 	})
 }

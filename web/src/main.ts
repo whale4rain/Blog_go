@@ -1,9 +1,9 @@
+import {createApp} from 'vue'
 import '@/assets/base.css'
-import { pinia } from "@/stores"
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import {pinia} from "@/stores";
 
 const app = createApp(App)
 

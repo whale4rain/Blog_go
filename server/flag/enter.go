@@ -3,10 +3,11 @@ package flag
 import (
 	"errors"
 	"fmt"
-	"github.com/urfave/cli"
-	"go.uber.org/zap"
 	"os"
 	"server/global"
+
+	"github.com/urfave/cli"
+	"go.uber.org/zap"
 )
 
 // 定义 CLI 标志，用于不同操作的命令行选项

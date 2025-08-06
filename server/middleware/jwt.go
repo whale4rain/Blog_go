@@ -20,13 +20,15 @@ func JWTAuth() gin.HandlerFunc {
 		accessToken := utils.GetAccessToken(c)
 		refreshToken := utils.GetRefreshToken(c)
 
-		if jwtService.IsInBalcklist(refreshToken) {
+		if jwtService.IsInBlacklist(refreshToken) {
 			utils.ClearRefreshToken(c)
-			response.NoAuth("Account logged in from antoher location or token is invaliid", c)
+			response.NoAuth("Account logged in from another location or token is invalid", c)
 			c.Abort()
 			return
 		}
+
 		j := utils.NewJWT()
+
 		claims, err := j.ParseAccessToken(accessToken)
 		if err != nil {
 			if accessToken == "" || errors.Is(err, utils.TokenExpired) {
@@ -37,6 +39,7 @@ func JWTAuth() gin.HandlerFunc {
 					c.Abort()
 					return
 				}
+
 				var user database.User
 				if err := global.DB.Select("uuid", "role_id").Take(&user, refreshClaims.UserID).Error; err != nil {
 					utils.ClearRefreshToken(c)
@@ -44,11 +47,13 @@ func JWTAuth() gin.HandlerFunc {
 					c.Abort()
 					return
 				}
+
 				newAccessClaims := j.CreateAccessClaims(request.BaseClaims{
 					UserID: refreshClaims.UserID,
 					UUID:   user.UUID,
 					RoleID: user.RoleID,
 				})
+
 				newAccessToken, err := j.CreateAccessToken(newAccessClaims)
 				if err != nil {
 					utils.ClearRefreshToken(c)
@@ -56,16 +61,21 @@ func JWTAuth() gin.HandlerFunc {
 					c.Abort()
 					return
 				}
-				c.Header("new-access-token",newAccessToken)
-				c.Header("new-access-expires-at",strconv.FormatInt(newAccessClaims.ExpiresAt.Unix(),10))
-				c.Set("claims",&newAccessClaims)
+
+				c.Header("new-access-token", newAccessToken)
+				c.Header("new-access-expires-at", strconv.FormatInt(newAccessClaims.ExpiresAt.Unix(), 10))
+
+				c.Set("claims", &newAccessClaims)
 				c.Next()
 				return
 			}
+
 			utils.ClearRefreshToken(c)
-			response.NoAuth("Invalid access token",c)
+			response.NoAuth("Invalid access token", c)
 			c.Abort()
+			return
 		}
+
 		c.Set("claims", claims)
 		c.Next()
 	}

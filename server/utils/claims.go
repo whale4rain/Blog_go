@@ -1,13 +1,14 @@
 package utils
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/gofrs/uuid"
-	"go.uber.org/zap"
 	"net"
 	"server/global"
 	"server/model/appTypes"
 	"server/model/request"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
+	"go.uber.org/zap"
 )
 
 // SetRefreshToken 设置Refresh Token的cookie

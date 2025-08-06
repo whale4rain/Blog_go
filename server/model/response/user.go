@@ -11,12 +11,13 @@ type Login struct {
 	AccessToken          string        `json:"access_token"`
 	AccessTokenExpiresAt int64         `json:"access_token_expires_at"`
 }
+
 type UserCard struct {
 	UUID      uuid.UUID `json:"uuid"`
-	Username  string    `josn:"username"`
+	Username  string    `json:"username"`
 	Avatar    string    `json:"avatar"`
 	Address   string    `json:"address"`
-	Signature string    `json:"sinature"`
+	Signature string    `json:"signature"`
 }
 
 type UserChart struct {

@@ -1,10 +1,11 @@
 package utils
 
 import (
-	"gopkg.in/yaml.v3"
 	"io/fs"
 	"os"
 	"server/global"
+
+	"gopkg.in/yaml.v3"
 )
 
 const configFile = "config.yaml"

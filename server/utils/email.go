@@ -3,10 +3,11 @@ package utils
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/jordan-wright/email"
 	"net/smtp"
 	"server/global"
 	"strings"
+
+	"github.com/jordan-wright/email"
 )
 
 // Email 发送电子邮件
@@ -18,7 +19,7 @@ func Email(To, subject string, body string) error {
 // send 执行邮件发送操作
 func send(to []string, subject string, body string) error {
 	emailCfg := global.Config.Email // 获取全局配置中的邮件设置
-    
+
 	from := emailCfg.From
 	nickname := emailCfg.Nickname
 	secret := emailCfg.Secret
@@ -28,7 +29,7 @@ func send(to []string, subject string, body string) error {
 
 	// 使用 PlainAuth 创建认证信息
 	auth := smtp.PlainAuth("", from, secret, host)
-	
+
 	// 创建新的电子邮件对象
 	e := email.NewEmail()
 	if nickname != "" {
@@ -38,7 +39,7 @@ func send(to []string, subject string, body string) error {
 		// 否则直接使用发件人邮箱
 		e.From = from
 	}
-	
+
 	// 设置收件人、主题和邮件内容
 	e.To = to
 	e.Subject = subject
@@ -57,6 +58,6 @@ func send(to []string, subject string, body string) error {
 		// 使用普通的邮件发送
 		err = e.Send(hostAddr, auth)
 	}
-	
+
 	return err
 }
