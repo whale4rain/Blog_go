@@ -41,9 +41,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue";
-import {type Qiniu, getQiniu, updateQiniu} from "@/api/config";
+import { type Qiniu, getQiniu, updateQiniu } from "@/api/config";
+import { ref, watch } from "vue";
 
+import { ElMessage } from 'element-plus';
 const qiniuInfo = ref<Qiniu>({
   zone: '',
   bucket: '',

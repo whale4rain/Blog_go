@@ -81,20 +81,20 @@
 </template>
 
 <script setup lang="ts">
-import {useRoute} from "vue-router";
-import {type Article, articleInfoByID} from "@/api/article";
-import router from "@/router";
-import {computed, onMounted, ref, watch} from "vue";
-import {MdPreview, MdCatalog} from 'md-editor-v3';
-import 'md-editor-v3/lib/style.css';
-import 'md-editor-v3/lib/preview.css';
-import WebNavbar from "@/components/layout/WebNavbar.vue";
+import { type Article, articleInfoByID, articleIsLike, articleLike, type ArticleLikeRequest } from "@/api/article";
+import { type Comment, commentCreate, type CommentCreateRequest, commentInfoByArticleID } from "@/api/comment";
 import CommentItem from "@/components/common/CommentItem.vue";
-import {articleIsLike, articleLike, type ArticleLikeRequest} from "@/api/article";
-import {type Comment, commentCreate, type CommentCreateRequest, commentInfoByArticleID} from "@/api/comment";
-import {useLayoutStore} from "@/stores/layout";
-import {useUserStore} from "@/stores/user";
+import WebNavbar from "@/components/layout/WebNavbar.vue";
+import router from "@/router";
+import { useLayoutStore } from "@/stores/layout";
+import { useUserStore } from "@/stores/user";
+import { MdCatalog, MdPreview } from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
+import 'md-editor-v3/lib/style.css';
+import { computed, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 
+import { ElMessage } from 'element-plus';
 const mdID = "md-id"
 
 const articleInfo = ref<Article>({

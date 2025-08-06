@@ -341,13 +341,8 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref, watch} from "vue";
-import {getWebsite, updateWebsite, type Website} from "@/api/config";
-import {useUserStore} from "@/stores/user";
-import type {ApiResponse} from "@/utils/request";
-import type {ImageUploadResponse} from "@/api/image";
-import {ElMessage} from "element-plus";
-import {useWebsiteStore} from "@/stores/website";
+import { getWebsite, updateWebsite, type Website } from "@/api/config";
+import type { ImageUploadResponse } from "@/api/image";
 import {
   type FooterLink,
   websiteAddCarousel,
@@ -355,7 +350,13 @@ import {
   websiteCarousel,
   type WebsiteCarouselOperation, websiteCreateFooterLink, websiteDeleteFooterLink, websiteFooterLink
 } from "@/api/website";
+import { useUserStore } from "@/stores/user";
+import { useWebsiteStore } from "@/stores/website";
+import type { ApiResponse } from "@/utils/request";
+import { ElMessage } from "element-plus";
+import { reactive, ref, watch } from "vue";
 
+import { ElMessageBox } from 'element-plus';
 const path = ref(import.meta.env.VITE_BASE_API)
 const userStore = useUserStore()
 

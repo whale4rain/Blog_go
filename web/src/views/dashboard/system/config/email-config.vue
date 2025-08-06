@@ -38,9 +38,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue";
-import {type Email, getEmail, updateEmail} from "@/api/config";
+import { type Email, getEmail, updateEmail } from "@/api/config";
+import { ref, watch } from "vue";
 
+import { ElMessage } from 'element-plus';
 const emailInfo = ref<Email>({
   host: '',
   port: 0,

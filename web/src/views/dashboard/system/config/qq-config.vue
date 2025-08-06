@@ -33,9 +33,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue";
-import {getQQ, type QQ, updateQQ} from "@/api/config";
+import { getQQ, type QQ, updateQQ } from "@/api/config";
+import { ref, watch } from "vue";
 
+import { ElMessage } from 'element-plus';
 const qqInfo = ref<QQ>({
   enable: false,
   app_id: '',

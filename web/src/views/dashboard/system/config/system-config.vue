@@ -40,9 +40,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue";
-import {type System, getSystem, updateSystem} from "@/api/config";
+import { type System, getSystem, updateSystem } from "@/api/config";
+import { ref, watch } from "vue";
 
+import { ElMessage } from 'element-plus';
 const systemInfo = ref<System>({
   use_multipoint: false,
   sessions_secret: '',

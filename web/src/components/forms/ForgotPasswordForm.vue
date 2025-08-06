@@ -69,11 +69,11 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref,} from "vue";
-import {forgotPassword, type ForgotPasswordRequest} from "@/api/user";
-import {captcha, type EmailRequest, sendEmailVerificationCode} from "@/api/base";
-import type {FormInstance, FormRules} from 'element-plus';
-import {useLayoutStore} from "@/stores/layout";
+import { captcha, type EmailRequest, sendEmailVerificationCode } from "@/api/base";
+import { forgotPassword, type ForgotPasswordRequest } from "@/api/user";
+import { useLayoutStore } from "@/stores/layout";
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
+import { reactive, ref, } from "vue";
 
 const forgotPasswordForm = ref<FormInstance>()
 

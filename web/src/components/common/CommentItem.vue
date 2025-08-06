@@ -65,13 +65,13 @@ import {
   commentDelete,
   type CommentDeleteRequest
 } from "@/api/comment";
-import {userCard} from "@/api/user";
+import { userCard } from "@/api/user";
 import UserCard from "@/components/widgets/UserCard.vue";
-import {useUserStore} from "@/stores/user";
-import {MdPreview} from "md-editor-v3";
-import {ref} from "vue";
-import {useLayoutStore} from "@/stores/layout";
-
+import { useLayoutStore } from "@/stores/layout";
+import { useUserStore } from "@/stores/user";
+import { ElMessage } from 'element-plus';
+import { MdPreview } from "md-editor-v3";
+import { ref } from "vue";
 defineProps<{
   comments: Comment[];
 }>();

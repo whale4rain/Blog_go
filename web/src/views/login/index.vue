@@ -4,11 +4,12 @@
 </template>
 
 <script setup lang="ts">
-import {useRoute, useRouter} from "vue-router";
-import service, {type ApiResponse} from "@/utils/request";
-import type {LoginResponse} from "@/api/user";
-import {useUserStore} from "@/stores/user";
+import type { LoginResponse } from "@/api/user";
+import { useUserStore } from "@/stores/user";
+import service, { type ApiResponse } from "@/utils/request";
+import { useRoute, useRouter } from "vue-router";
 
+import { ElMessage } from 'element-plus';
 ElMessage.info('登录中...')
 
 const route = useRoute();

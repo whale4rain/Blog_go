@@ -76,12 +76,12 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref,} from "vue";
-import type {RegisterRequest} from "@/api/user";
-import {useUserStore} from "@/stores/user";
-import {captcha, type EmailRequest, sendEmailVerificationCode} from "@/api/base";
-import type {FormInstance, FormRules} from 'element-plus';
-import {useLayoutStore} from "@/stores/layout";
+import { captcha, type EmailRequest, sendEmailVerificationCode } from "@/api/base";
+import type { RegisterRequest } from "@/api/user";
+import { useLayoutStore } from "@/stores/layout";
+import { useUserStore } from "@/stores/user";
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
+import { reactive, ref, } from "vue";
 
 const registerForm = ref<FormInstance>()
 

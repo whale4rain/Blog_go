@@ -36,9 +36,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue";
-import {type Jwt, getJwt, updateJwt} from "@/api/config";
+import { type Jwt, getJwt, updateJwt } from "@/api/config";
+import { ref, watch } from "vue";
 
+import { ElMessage } from 'element-plus';
 const jwtInfo = ref<Jwt>({
   access_token_secret: '',
   refresh_token_secret: '',
