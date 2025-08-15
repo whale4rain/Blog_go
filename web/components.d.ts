@@ -13,6 +13,7 @@ declare module 'vue' {
     AdvertisementUpdateForm: typeof import('./src/components/forms/AdvertisementUpdateForm.vue')['default']
     ArticleCreateForm: typeof import('./src/components/forms/ArticleCreateForm.vue')['default']
     ArticleList: typeof import('./src/components/pages/ArticleList.vue')['default']
+    ArticleSkeleton: typeof import('./src/components/pages/ArticleSkeleton.vue')['default']
     ArticleUpdateForm: typeof import('./src/components/forms/ArticleUpdateForm.vue')['default']
     AuthPopover: typeof import('./src/components/common/AuthPopover.vue')['default']
     Breadcrumb: typeof import('./src/components/layout/Breadcrumb.vue')['default']

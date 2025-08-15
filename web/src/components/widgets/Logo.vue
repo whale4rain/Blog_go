@@ -1,81 +1,87 @@
 <template>
-  <div class="logo">
-    <el-image
-        :src="websiteStore.state.websiteInfo.logo===''?'/image/logo.png':websiteStore.state.websiteInfo.logo"
-        alt=""/>
-    <div class="brand-info">
-      <div>{{ websiteStore.state.websiteInfo.slogan }}</div>
-      <div>{{ websiteStore.state.websiteInfo.slogan_en }}</div>
+    <div class="logo">
+        <el-image
+            :src="
+                websiteStore.state.websiteInfo.logo === ''
+                    ? '/image/logo.png'
+                    : websiteStore.state.websiteInfo.logo
+            "
+            alt=""
+        />
+        <div class="brand-info">
+            <div>{{ websiteStore.state.websiteInfo.slogan }}</div>
+            <div>{{ websiteStore.state.websiteInfo.slogan_en }}</div>
+        </div>
     </div>
-  </div>
 </template>
 
-
 <script setup lang="ts">
-import {useWebsiteStore} from "@/stores/website";
+import { useWebsiteStore } from "@/stores/website";
 
-const websiteStore = useWebsiteStore()
+const websiteStore = useWebsiteStore();
 </script>
 
 <style scoped lang="scss">
-.dashboard {
-  .logo {
+$logo-size--normal: 60px;
+$logo-size--collapsed: 44px;
+$brand-gap: 20px;
+
+.logo {
     display: flex;
+    align-items: center;
     padding: 10px;
 
+    /* 图片 */
     .el-image {
-      height: 60px;
-      width: 60px;
+        width: $logo-size--normal;
+        height: $logo-size--normal;
+        object-fit: contain; /* 保持比例，防止拉伸 */
+        padding: 5px;
     }
 
+    /* 品牌文案 */
     .brand-info {
-      margin-top: 5px;
-      margin-left: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
-      > div:nth-child(1) {
-        font-size: 24px;
-      }
+        &__cn {
+            font-size: 24px;
+            line-height: 1.2;
+        }
 
-      > div:nth-child(2) {
-        font-size: 13px;
-      }
+        &__en {
+            font-size: 13px;
+            line-height: 1.2;
+        }
     }
-  }
 
+    &--collapsed {
+        .el-image {
+            display: none;
+        }
 
-  .collapsed {
-    .logo {
-      .el-image {
-        height: 44px;
-        width: 44px;
-      }
-
-      .brand-info {
-        display: none;
-      }
+        .brand-info {
+            display: none;
+        }
     }
-  }
 }
 
-
 .web-navbar .logo {
-  display: flex;
-
-  .el-image {
-    padding: 5px;
-  }
-
-  .brand-info {
-    margin-top: 5px;
-
-    > div:nth-child(1) {
-      font-size: 22px;
-
+    /* 导航条下，图片再小一点 */
+    .el-image {
+        border-radius: 20px;
+        display: flex;
     }
 
-    > div:nth-child(2) {
-      font-size: 12px;
+    /* 导航条下，文字再小一点 */
+    .brand-info {
+        &__cn {
+            font-size: 0px;
+        }
+        &__en {
+            font-size: 0px;
+        }
     }
-  }
 }
 </style>

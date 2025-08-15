@@ -4,9 +4,12 @@
     <carousel/>
     <el-container class="main-content">
       <div class="container">
+        <el-aside>
+          <daily-news/>
+        </el-aside>
         <el-main>
           <advertisement/>
-          <daily-news/>
+          
           <article-list/>
         </el-main>
 
@@ -26,13 +29,13 @@
 import Carousel from "@/components/layout/Carousel.vue";
 import WebNavbar from "@/components/layout/WebNavbar.vue";
 import Advertisement from "@/components/pages/Advertisement.vue";
-import DailyNews from "@/components/pages/DailyNews.vue";
 import ArticleList from "@/components/pages/ArticleList.vue";
 import Calendar from "@/components/pages/Calendar.vue";
-import ProfileCard from "@/components/pages/ProfileCard.vue";
-import TagCloud from "@/components/pages/TagCloud.vue";
-import RecentComments from "@/components/pages/RecentComments.vue";
+import DailyNews from "@/components/pages/DailyNews.vue";
 import Feedback from "@/components/pages/Feedback.vue";
+import ProfileCard from "@/components/pages/ProfileCard.vue";
+import RecentComments from "@/components/pages/RecentComments.vue";
+import TagCloud from "@/components/pages/TagCloud.vue";
 </script>
 
 <style scoped lang="scss">
@@ -43,7 +46,7 @@ import Feedback from "@/components/pages/Feedback.vue";
 
     .container {
       display: flex;
-      max-width: 1400px;
+      max-width: 95%;//1400px;
       width: 100%;
 
       .el-main {
@@ -51,7 +54,7 @@ import Feedback from "@/components/pages/Feedback.vue";
       }
 
       .el-aside {
-        width: 30%;
+        width: 20%;
         padding: 20px;
       }
     }

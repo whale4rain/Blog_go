@@ -9,14 +9,13 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
-import {websiteCarousel} from "@/api/website";
+import { websiteCarousel } from "@/api/website";
+import { ref } from "vue";
 
 const imgList = ref<string[]>([
   '/image/carousel_1.jpg',
   '/image/carousel_2.jpg',
   '/image/carousel_3.jpg',
-  '/image/carousel_4.jpg',
 ])
 
 const getWebsiteCarousel = async () => {

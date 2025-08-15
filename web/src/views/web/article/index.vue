@@ -17,7 +17,7 @@
               <el-text>{{ articleInfo.abstract }}</el-text>
             </div>
           </div>
-          <MdPreview :id="mdID" :modelValue="articleInfo.content"/>
+          <MdPreview :id="mdID" :modelValue="articleInfo.content" previewTheme="github"/>
           <div class="comment" id="comment">
             <el-input v-model="content" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea"
                       placeholder="喜欢这篇文章吗？在这里与大家分享您的想法！" maxlength="320"/>

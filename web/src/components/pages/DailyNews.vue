@@ -19,7 +19,7 @@
               </el-text>
             </template>
           </el-table-column>
-          <el-table-column prop="popularity" label="热度" width="120"/>
+          <!-- <el-table-column prop="popularity" label="热度" width="120"/> -->
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
-import {type HotItem, websiteNews, type WebsiteNewsRequest} from "@/api/website";
-import type {TabsPaneContext} from "element-plus";
+import { type HotItem, websiteNews, type WebsiteNewsRequest } from "@/api/website";
+import type { TabsPaneContext } from "element-plus";
+import { ref } from "vue";
 
 const newsTableData = ref<HotItem[]>()
 
