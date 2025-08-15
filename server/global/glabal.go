@@ -13,9 +13,8 @@ import (
 var (
 	Config     *config.Config
 	Log        *zap.Logger
-	ES         *config.ES
-	ESClient   *elasticsearch.TypedClient
 	DB         *gorm.DB
+	ESClient   *elasticsearch.TypedClient
 	Redis      redis.Client
 	BlackCache local_cache.Cache
 )
