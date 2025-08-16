@@ -2,8 +2,10 @@
   <div class="news">
     <web-navbar :noScroll="true"/>
     <el-container class="main-content">
+      
       <div class="container">
         <el-main>
+          <advertisement/>
           <el-tabs model-value="baidu" @tab-click="handleNewsTabClick">
             <el-tab-pane v-for="item in newsTypeList" :name="item.name">
               <template #label>
@@ -40,10 +42,11 @@
 </template>
 
 <script setup lang="ts">
+import { type HotItem, websiteNews, type WebsiteNewsRequest } from "@/api/website";
 import WebNavbar from "@/components/layout/WebNavbar.vue";
-import {ref} from "vue";
-import {type HotItem, websiteNews, type WebsiteNewsRequest} from "@/api/website";
-import type {TabsPaneContext} from "element-plus";
+import Advertisement from "@/components/pages/Advertisement.vue";
+import type { TabsPaneContext } from "element-plus";
+import { ref } from "vue";
 
 const newsTableData = ref<HotItem[]>()
 

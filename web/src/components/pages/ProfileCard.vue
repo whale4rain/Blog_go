@@ -1,6 +1,6 @@
 <template>
   <el-card class="profile-card">
-    <el-row class="title">个人名片</el-row>
+    <el-row class="title">我</el-row>
     <div class="content">
       <el-row>昵称：{{ websiteStore.state.websiteInfo.name }}</el-row>
       <el-row>职业：{{ websiteStore.state.websiteInfo.job }}</el-row>
@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import {useWebsiteStore} from "@/stores/website";
+import { useWebsiteStore } from "@/stores/website";
 
 const websiteStore = useWebsiteStore()
 </script>
