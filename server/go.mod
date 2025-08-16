@@ -16,6 +16,7 @@ require (
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/qiniu/go-sdk/v7 v7.25.4
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/sashabaranov/go-openai v1.41.1
 	github.com/songzhibin97/gkit v1.2.13
 	github.com/tidwall/gjson v1.18.0
 	github.com/ua-parser/uap-go v0.0.0-20250326155420-f7f5a2f9f5bc

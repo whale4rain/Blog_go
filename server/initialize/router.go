@@ -48,5 +48,8 @@ func InitRouter() *gin.Engine {
 		routerGroup.InitWebsiteRouter(adminGroup, publicGroup)
 		routerGroup.InitConfigRouter(adminGroup)
 	}
+	{
+		routerGroup.InitAIRouter(publicGroup)
+	}
 	return Router
 }

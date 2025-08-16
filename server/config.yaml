@@ -90,3 +90,6 @@ zap:
   max_backups: 30
   max_age: 5
   is_console_print: true
+ai:
+  key: sk-36ecfd17617e448bbccf31206ae5ab0c
+  base_url: https://api.deepseek.com

@@ -13,6 +13,7 @@ type ApiGroup struct {
 	FeedbackApi
 	WebsiteApi
 	ConfigApi
+	AIApi
 }
 
 var ApiGroupApp = new(ApiGroup)

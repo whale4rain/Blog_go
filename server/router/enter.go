@@ -11,6 +11,7 @@ type RouterGroup struct {
 	FeedbackRouter
 	WebsiteRouter
 	ConfigRouter
+	AIRouter
 }
 
 var RouterGroupApp = new(RouterGroup)

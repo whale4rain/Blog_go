@@ -14,4 +14,5 @@ type Config struct {
 	Upload  Upload  `json:"upload" yaml:"upload"`
 	Website Website `json:"website" yaml:"website"`
 	Zap     Zap     `json:"zap" yaml:"zap"`
+	AI      Ai      `json:"ai" yaml:"ai"`
 }
