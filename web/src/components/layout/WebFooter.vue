@@ -167,8 +167,18 @@ const socialLinks = computed(() => [
 
 <style scoped lang="scss">
 .web-footer {
-    display: flex;
-    justify-content: center;
+    --text-color: #2c3e50;
+    --bg-gradient: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    --hover-shadow: 0 8px 24px rgba(64, 158, 255, 0.18);
+    --radius: 16px;
+
+    position: relative;
+    padding-bottom: 10px;
+    color: var(--text-color);
+    background: var(--bg-gradient);
+    transition:
+        transform 0.4s,
+        box-shadow 0.4s;
 
     .container {
         display: flex;
@@ -179,6 +189,7 @@ const socialLinks = computed(() => [
 
         .footer-left {
             width: 25%;
+            margin-left: 10%;
             margin-bottom: auto;
             margin-top: auto;
 
@@ -225,18 +236,6 @@ const socialLinks = computed(() => [
                         margin-left: 40px;
                     }
                 }
-            }
-        }
-
-        .footer-right {
-            width: 25%;
-            margin-bottom: auto;
-            margin-top: auto;
-            display: flex;
-
-            .el-image {
-                margin-left: auto;
-                height: 200px;
             }
         }
     }

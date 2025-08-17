@@ -1,22 +1,25 @@
 <template>
-  <div class="about">
-    <web-navbar :noScroll="true"/>
-    <el-container class="main-content">
-      <div class="container">
-        <el-main>
-          <MdPreview :modelValue="text"/>
-        </el-main>
-      </div>
-    </el-container>
-  </div>
+    <div class="about">
+        <web-navbar :noScroll="true" />
+        <el-container class="main-content">
+            <div class="container">
+                <el-main>
+                    <profile-card />
+                    <feedback />
+                    <MdPreview :modelValue="text" />
+                    <recent-comments />
+                </el-main>
+            </div>
+        </el-container>
+    </div>
 </template>
 
 <script setup lang="ts">
 import WebNavbar from "@/components/layout/WebNavbar.vue";
-import {MdPreview} from "md-editor-v3";
-import {ref} from "vue";
+import { MdPreview } from "md-editor-v3";
+import { ref } from "vue";
 
-const text=ref(`# 后端技术栈（Gin）
+const text = ref(`# 后端技术栈（Gin）
 
 ## Web 框架：
 
@@ -129,21 +132,74 @@ TypeScript 与 Vue 配合的类型检查工具，确保在开发过程中发现�
 其他工具包括 TypeScript、Sass 和各种辅助库，增强了开发体验和代码质量。
 这个项目集成了现代的后端和前端技术栈，适用于构建一个高效且易于扩展的博客或管理系统。
 
-`)
+`);
 </script>
 
 <style scoped lang="scss">
 .about {
-  .main-content {
-    margin-top: 70px;
-    display: flex;
-    justify-content: center;
+    --radius: 16px;
+    --hover-shadow: 0 8px 24px rgba(64, 158, 255, 0.18);
+    --text-color: #2c3e50;
+    --bg-gradient: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    --transition: transform 0.4s, box-shadow 0.4s;
 
-    .container {
-      display: flex;
-      max-width: 1400px;
-      width: 100%;
+    color: var(--text-color);
+    background: var(--bg-gradient);
+    min-height: 100vh;
+
+    .main-content {
+        margin-top: 70px;
+        display: flex;
+        justify-content: center;
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 0 16px;
+            display: flex;
+
+            .el-main {
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+
+                /* 统一卡片 */
+                > * {
+                    background: #fff;
+                    border-radius: var(--radius);
+                    padding: 24px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                    transition: var(--transition);
+                    &:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--hover-shadow);
+                    }
+                }
+
+                /* Markdown 美化 */
+                :deep(.md-editor-preview) {
+                    font-size: 15px;
+                    line-height: 1.8;
+                    h1,
+                    h2,
+                    h3 {
+                        color: #409eff;
+                        margin: 24px 0 12px;
+                    }
+                    code {
+                        background: rgba(64, 158, 255, 0.1);
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                        font-size: 14px;
+                    }
+                    pre {
+                        background: #f7f9fc;
+                        border-radius: var(--radius);
+                        padding: 16px;
+                    }
+                }
+            }
+        }
     }
-  }
 }
 </style>

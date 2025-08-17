@@ -140,12 +140,16 @@ export const ArticleSkeleton = defineComponent({
 /* 两列瀑布流 */
 .masonry {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 24px;
 }
 
 .article-card {
-    background: #fff;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    transition:
+        transform 0.4s,
+        box-shadow 0.4s;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);

@@ -2,61 +2,41 @@
     <div class="index">
         <web-navbar />
         <carousel />
+
         <el-container class="main-content">
-            <div class="container">
-                <el-aside>
-                    <profile-card />
-                    <daily-news />
-                </el-aside>
-                <el-main>
+            <el-row :gutter="24" class="container">
+                <!-- 主内容 17 份 -->
+                <el-col :xs="24" :lg="17">
                     <article-list />
-                </el-main>
+                </el-col>
 
-                <el-aside>
+                <!-- 侧边栏 7 份 -->
+                <el-col :xs="24" :lg="7">
                     <calendar />
-
                     <tag-cloud />
-                    <recent-comments />
-                    <feedback />
-                </el-aside>
-            </div>
+
+                    <daily-news />
+                </el-col>
+            </el-row>
         </el-container>
     </div>
 </template>
 
-<script setup lang="ts">
-import Carousel from "@/components/layout/Carousel.vue";
-import WebNavbar from "@/components/layout/WebNavbar.vue";
-
-import ArticleList from "@/components/pages/ArticleList.vue";
-import Calendar from "@/components/pages/Calendar.vue";
-import DailyNews from "@/components/pages/DailyNews.vue";
-import Feedback from "@/components/pages/Feedback.vue";
-import ProfileCard from "@/components/pages/ProfileCard.vue";
-import RecentComments from "@/components/pages/RecentComments.vue";
-import TagCloud from "@/components/pages/TagCloud.vue";
-</script>
-
 <style scoped lang="scss">
 .index {
-    .main-content {
-        display: flex;
-        justify-content: center;
-
-        .container {
-            display: flex;
-            max-width: 95%; //1400px;
-            width: 100%;
-
-            .el-main {
-                width: 70%;
-            }
-
-            .el-aside {
-                width: 20%;
-                padding: 20px;
-            }
-        }
-    }
+    color: #2c3e50;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    transition:
+        transform 0.4s,
+        box-shadow 0.4s;
+}
+.main-content {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+.container {
+    width: 95%;
+    max-width: 1400px;
 }
 </style>

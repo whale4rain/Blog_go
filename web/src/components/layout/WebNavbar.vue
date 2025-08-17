@@ -61,7 +61,7 @@ const menuList: MenuItem[] = [
         name: "/",
     },
     {
-        title: "搜索",
+        title: "归档",
         name: "/search",
     },
     {
@@ -86,7 +86,11 @@ const menuList: MenuItem[] = [
     left: 0;
     right: 0;
     z-index: 6;
-
+    color: #2c3e50;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    transition:
+        transform 0.4s,
+        box-shadow 0.4s;
     /* 默认隐藏（滚动前） */
     transform: translateY(-100%);
     transition:
