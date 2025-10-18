@@ -29,7 +29,7 @@ export interface User {
   username: string;
   email: string;
   avatar?: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   status: number;
   signature?: string;
   address?: string;
@@ -122,8 +122,8 @@ export interface ArticleSearchParams {
   query?: string;
   category?: string;
   tag?: string;
-  sort?: 'created_at' | 'view_count' | 'like_count';
-  order?: 'asc' | 'desc';
+  sort?: "created_at" | "view_count" | "like_count";
+  order?: "asc" | "desc";
   page?: number;
   page_size?: number;
 }
@@ -163,7 +163,7 @@ export interface Image {
   url: string;
   category?: string;
   size: number;
-  oss_type: 'local' | 'qiniu';
+  oss_type: "local" | "qiniu";
   created_at: string;
 }
 
@@ -177,12 +177,12 @@ export interface UploadImageResponse {
 // ----------------------------------------------------------------------------
 
 export interface CategoryStat {
-  category: string;
+  name: string;
   count: number;
 }
 
 export interface TagStat {
-  tag: string;
+  name: string;
   count: number;
 }
 
@@ -303,7 +303,7 @@ export interface SiteConfig {
 // Utility Types
 // ----------------------------------------------------------------------------
 
-export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
+export type LoadingState = "idle" | "loading" | "success" | "error";
 
 export interface PageMeta {
   title: string;

@@ -37,7 +37,7 @@ export const mockUsers: User[] = [
     username: "Bob Wilson",
     email: "bob@example.com",
     avatar: "https://picsum.photos/seed/user3/100/100.jpg",
-    role: "user",
+    role: "admin",
     status: 1,
     signature: "Full-stack developer",
     address: "Austin, TX",
@@ -89,11 +89,15 @@ export const mockUserChartData: UserChartData = {
 export const mockLoginResponse: UserInfo = {
   user: mockUsers[0],
   access_token: "mock-access-token-12345",
-  access_token_expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+  access_token_expires_at: new Date(
+    Date.now() + 24 * 60 * 60 * 1000,
+  ).toISOString(),
 };
 
 export const mockRegisterResponse: UserInfo = {
   user: mockUsers[1],
   access_token: "mock-access-token-67890",
-  access_token_expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+  access_token_expires_at: new Date(
+    Date.now() + 24 * 60 * 60 * 1000,
+  ).toISOString(),
 };

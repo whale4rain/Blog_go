@@ -25,6 +25,9 @@ import type {
 export async function createArticle(
   data: CreateArticleRequest,
 ): Promise<Article> {
+  if (USE_MOCK_API) {
+    return mockApi.createArticle(data);
+  }
   return post<Article>("/article/create", data);
 }
 
@@ -32,15 +35,32 @@ export async function createArticle(
  * Update an existing article
  */
 export async function updateArticle(
+  id: number,
   data: UpdateArticleRequest,
 ): Promise<Article> {
-  return put<Article>("/article/update", data);
+  if (USE_MOCK_API) {
+    return mockApi.updateArticle(id, data);
+  }
+  return put<Article>(`/article/${id}`, data);
+}
+
+/**
+ * Delete article by ID
+ */
+export async function deleteArticle(id: number): Promise<void> {
+  if (USE_MOCK_API) {
+    return mockApi.deleteArticle(id);
+  }
+  return del<void>(`/article/${id}`);
 }
 
 /**
  * Delete articles by IDs
  */
 export async function deleteArticles(ids: number[]): Promise<void> {
+  if (USE_MOCK_API) {
+    return mockApi.deleteArticles(ids);
+  }
   return del<void>("/article/delete", {
     data: { ids },
   });

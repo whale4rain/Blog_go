@@ -174,20 +174,20 @@ Modern CSS provides powerful tools for creating beautiful, responsive layouts.`,
 ];
 
 export const mockCategoryStats: CategoryStat[] = [
-  { category: "Technology", count: 15 },
-  { category: "Programming", count: 23 },
-  { category: "Design", count: 8 },
-  { category: "Tutorial", count: 12 },
-  { category: "News", count: 5 },
+  { name: "Technology", count: 15 },
+  { name: "Programming", count: 23 },
+  { name: "Design", count: 8 },
+  { name: "Tutorial", count: 12 },
+  { name: "News", count: 5 },
 ];
 
 export const mockTagStats: TagStat[] = [
-  { tag: "Next.js", count: 8 },
-  { tag: "React", count: 12 },
-  { tag: "TypeScript", count: 10 },
-  { tag: "JavaScript", count: 15 },
-  { tag: "CSS", count: 7 },
-  { tag: "Web Development", count: 20 },
-  { tag: "Frontend", count: 18 },
-  { tag: "Backend", count: 6 },
+  { name: "Next.js", count: 8 },
+  { name: "React", count: 12 },
+  { name: "TypeScript", count: 10 },
+  { name: "JavaScript", count: 15 },
+  { name: "CSS", count: 7 },
+  { name: "Web Development", count: 20 },
+  { name: "Frontend", count: 18 },
+  { name: "Backend", count: 6 },
 ];
