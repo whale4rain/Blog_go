@@ -14,6 +14,7 @@ import type {
   UpdateArticleRequest,
   CreateArticleRequest,
 } from "@/types";
+import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 
 export default function EditArticlePage() {
   const router = useRouter();
@@ -327,10 +328,10 @@ export default function EditArticlePage() {
                   className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue font-mono"
                 />
               ) : (
-                <div className="min-h-[500px] p-6 border border-border rounded-lg prose prose-lg max-w-none">
+                <div className="min-h-[500px] p-6 border border-border rounded-lg">
                   <h1>{formData.title}</h1>
                   <p>{formData.abstract}</p>
-                  <div className="whitespace-pre-wrap">{formData.content}</div>
+                  <MarkdownRenderer content={formData.content} />
                 </div>
               )}
             </div>

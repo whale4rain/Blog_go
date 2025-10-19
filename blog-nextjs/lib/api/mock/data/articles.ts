@@ -17,16 +17,68 @@ export const mockArticles: Article[] = [
 
 Next.js 14 brings exciting new features and improvements that make web development even more powerful and efficient.
 
+## Architecture Overview
+
+Let's visualize the Next.js 14 architecture:
+
+\`\`\`mermaid
+graph TB
+    A[User Request] --> B[Next.js App Router]
+    B --> C{Server Component?}
+    C -->|Yes| D[Server Component]
+    C -->|No| E[Client Component]
+    D --> F[Database/API Call]
+    E --> G[Client-side Rendering]
+    F --> H[HTML Response]
+    G --> H
+
+    I[Turbopack] --> J[Fast Bundling]
+    K[Middleware] --> L[Request Processing]
+\`\`\`
+
+## Mathematical Foundations
+
+The performance improvements can be expressed using mathematical formulas. For example, the bundle size reduction follows:
+
+$$S_{new} = S_{old} \times (1 - r)$$
+
+Where:
+- $S_{new}$ is the new bundle size
+- $S_{old}$ is the old bundle size
+- $r$ is the reduction rate (typically $r = 0.3$ for 30% reduction)
+
+The loading time improvement can be modeled as:
+
+$$T_{load} = \frac{S_{bundle}}{BW} + T_{network} + T_{processing}$$
+
 ## Key Features
 
 ### App Router
 The new App Router provides better routing capabilities and layout management.
 
 ### Server Components
-Server Components allow you to build more efficient applications by reducing client-side JavaScript.
+Server Components allow you to build more efficient applications by reducing client-side JavaScript. The performance gain can be calculated as:
+
+$$P_{gain} = \frac{T_{traditional} - T_{server}}{T_{traditional}} \times 100\%$$
 
 ### Turbopack
 Turbopack is the new bundler that provides significantly faster builds and development experience.
+
+## Development Workflow
+
+Here's the typical development workflow with Next.js 14:
+
+\`\`\`mermaid
+flowchart LR
+    A[Development] --> B[Hot Reload]
+    B --> C[Turbopack Build]
+    C --> D[Fast Refresh]
+    D --> A
+
+    E[Production Build] --> F[Static Generation]
+    F --> G[Server Rendering]
+    G --> H[CDN Deployment]
+\`\`\`
 
 ## Getting Started
 
@@ -36,9 +88,21 @@ To create a new Next.js 14 project:
 npx create-next-app@latest my-app
 \`\`\`
 
+## Performance Metrics
+
+The performance improvements follow the compound interest formula:
+
+$$P_{final} = P_{initial} \times (1 + r)^t$$
+
+Where:
+- $P_{final}$ is the final performance
+- $P_{initial}$ is the initial performance
+- $r$ is the improvement rate per iteration
+- $t$ is the number of iterations
+
 ## Conclusion
 
-Next.js 14 is a powerful framework for building modern web applications with excellent performance and developer experience.`,
+Next.js 14 is a powerful framework for building modern web applications with excellent performance and developer experience. The combination of mathematical optimization and modern architecture makes it an excellent choice for production applications.`,
     author: {
       id: 1,
       uuid: "user-uuid-1",
@@ -84,6 +148,88 @@ function identity<T>(arg: T): T {
   return arg;
 }
 \`\`\`
+
+## Type System Visualization
+
+The TypeScript type system can be visualized as follows:
+
+\`\`\`mermaid
+graph TD
+    A[Type Script] --> B[Static Type Checking]
+    B --> C{Generic Types}
+    C --> D[Type Parameters]
+    C --> E[Constraints]
+    C --> F[Variance]
+
+    D --> G[T]
+    E --> H[extends Type]
+    F --> I[Invariant/Covariant/Contravariant]
+
+    J[Runtime] --> K[JavaScript]
+    K --> L[No Type Information]
+\`\`\`
+
+## Mathematical Foundation
+
+Generic type constraints can be expressed using set theory:
+
+$$T: U \implies T \subseteq U$$
+
+Where $T$ is the generic type and $U$ is the constraint type.
+
+The type inference algorithm can be represented as:
+
+$$\text{infer}(T) = \begin{cases}
+\text{concrete} & \text{if } T \text{ can be determined} \\
+\text{any} & \text{otherwise}
+\end{cases}$$
+
+## Advanced Generic Patterns
+
+### Generic Constraints
+
+\`\`\`typescript
+interface Lengthwise {
+  length: number;
+}
+
+function logLength<T extends Lengthwise>(arg: T): T {
+  console.log(arg.length);
+  return arg;
+}
+\`\`\`
+
+### Conditional Types
+
+The conditional type logic follows boolean algebra:
+
+$$T \text{ extends } U ? X : Y$$
+
+This can be visualized as:
+
+\`\`\`mermaid
+flowchart TD
+    A[Type T] --> B{Extends U?}
+    B -->|Yes| C[Type X]
+    B -->|No| D[Type Y]
+
+    E[Example: string extends string] --> F[string]
+    G[Example: number extends string] --> H[never]
+\`\`\`
+
+## Performance Considerations
+
+The computational complexity of type checking generics can be expressed as:
+
+$$O(n \times m)$$
+
+Where:
+- $n$ is the number of type parameters
+- $m$ is the complexity of the constraint resolution
+
+## Conclusion
+
+Understanding generics is essential for writing type-safe and reusable TypeScript code. The mathematical foundation ensures type correctness while providing flexibility.
 
 ## Common Use Cases
 

@@ -36,14 +36,14 @@ export default function DashboardPage() {
   });
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     router.push("/login");
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
+    }
 
-  //   fetchStats();
-  // }, [isLoggedIn]);
+    fetchStats();
+  }, [isLoggedIn]);
 
   const fetchStats = async () => {
     try {
@@ -62,9 +62,9 @@ export default function DashboardPage() {
     }
   };
 
-  // if (!isLoggedIn) {
-  //   return null;
-  // }
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background">

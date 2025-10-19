@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Heart, Share2, X, Calendar, Clock, Eye, Tag } from "lucide-react";
 import type { Article, Comment } from "@/types";
+import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 
 interface ArticleClientProps {
   article: Article;
@@ -173,11 +174,8 @@ export default function ArticleClient({
       </header>
 
       {/* Article Content */}
-      <div className="prose prose-lg max-w-none mb-12">
-        <div
-          className="text-foreground leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: article.content }}
-        />
+      <div className="mb-12">
+        <MarkdownRenderer content={article.content} />
       </div>
 
       {/* Article Actions */}

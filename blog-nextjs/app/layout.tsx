@@ -7,6 +7,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import LoginModal from "@/components/auth/LoginModal";
+import UserProvider from "./providers/UserProvider";
 
 // ----------------------------------------------------------------------------
 // Font Configuration
@@ -119,7 +120,9 @@ export default function RootLayout({
         </div>
 
         {/* Main Content */}
-        <main className="relative">{children}</main>
+        <main className="relative">
+          <UserProvider>{children}</UserProvider>
+        </main>
 
         {/* Scroll to Top Button */}
         <ScrollToTopButton />

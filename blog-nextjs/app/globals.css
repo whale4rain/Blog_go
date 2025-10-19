@@ -7,6 +7,13 @@
 @tailwind utilities;
 
 /* ============================================================================
+   Code Highlighting - GitHub Dark Theme
+   ============================================================================ */
+
+@import "highlight.js/styles/github-dark.css";
+@import "katex/dist/katex.min.css";
+
+/* ============================================================================
    CSS Variables
    ============================================================================ */
 
@@ -47,6 +54,252 @@
 html {
     @apply antialiased;
     scroll-behavior: smooth;
+}
+
+/* ============================================================================
+   Mermaid Diagrams - Custom Styling
+   ============================================================================ */
+
+.mermaid-diagram {
+    @apply bg-card border border-border rounded-xl p-6 my-6 overflow-x-auto shadow-sm;
+}
+
+.mermaid-diagram svg {
+    @apply max-w-full h-auto;
+}
+
+/* Flowchart nodes */
+.mermaid-diagram .node rect,
+.mermaid-diagram .node circle,
+.mermaid-diagram .node ellipse,
+.mermaid-diagram .node polygon {
+    @apply fill-card stroke-border;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.mermaid-diagram .node text {
+    @apply fill-foreground text-sm font-medium;
+}
+
+.mermaid-diagram .node .label {
+    @apply fill-foreground;
+}
+
+/* Special node types */
+.mermaid-diagram .node.default .label {
+    @apply text-foreground;
+}
+
+.mermaid-diagram .node.clickable {
+    cursor: pointer;
+}
+
+.mermaid-diagram .node.clickable:hover rect,
+.mermaid-diagram .node.clickable:hover circle,
+.mermaid-diagram .node.clickable:hover ellipse {
+    filter: drop-shadow(0 2px 4px rgba(66, 133, 244, 0.2));
+    stroke: hsl(214, 90%, 52%);
+}
+
+/* Edges and arrows */
+.mermaid-diagram .edgePath .path {
+    @apply stroke-border;
+    stroke-width: 2;
+    fill: none;
+}
+
+.mermaid-diagram .edgePath .arrowhead {
+    @apply fill-border;
+}
+
+.mermaid-diagram .edgeLabel {
+    @apply fill-card text-foreground text-xs px-2 py-1 rounded border border-border;
+    font-weight: 500;
+}
+
+/* Sequence diagram specific */
+.mermaid-diagram .actor {
+    @apply fill-card stroke-border;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.mermaid-diagram .actor text {
+    @apply fill-foreground text-sm font-medium;
+}
+
+.mermaid-diagram .messageLine0,
+.mermaid-diagram .messageLine1 {
+    @apply stroke-border;
+    stroke-width: 2;
+}
+
+.mermaid-diagram .messageText {
+    @apply fill-foreground text-sm;
+}
+
+.mermaid-diagram .activation0,
+.mermaid-diagram .activation1 {
+    @apply fill-google-blue/10 stroke-google-blue;
+}
+
+.mermaid-diagram .note {
+    @apply fill-muted stroke-border;
+}
+
+.mermaid-diagram .noteText {
+    @apply fill-muted-foreground text-sm;
+}
+
+/* Gantt chart specific */
+.mermaid-diagram .grid .tick line {
+    @apply stroke-border/50;
+}
+
+.mermaid-diagram .grid path {
+    @apply stroke-border;
+}
+
+.mermaid-diagram .titleText {
+    @apply fill-foreground text-lg font-semibold;
+}
+
+.mermaid-diagram .sectionTitle {
+    @apply fill-foreground text-base font-medium;
+}
+
+.mermaid-diagram .task {
+    @apply fill-google-blue/80 stroke-google-blue;
+}
+
+.mermaid-diagram .taskText {
+    @apply fill-white text-sm font-medium;
+}
+
+.mermaid-diagram .taskTextOutsideLeft,
+.mermaid-diagram .taskTextOutsideRight {
+    @apply fill-foreground text-sm;
+}
+
+/* Clusters and groups */
+.mermaid-diagram .cluster rect {
+    @apply fill-muted/30 stroke-border;
+    stroke-dasharray: 5 5;
+}
+
+.mermaid-diagram .cluster-label {
+    @apply fill-foreground text-sm font-medium;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .mermaid-diagram {
+        @apply p-4 my-4 rounded-lg;
+    }
+
+    .mermaid-diagram svg {
+        min-width: 300px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .mermaid-diagram .edgeLabel {
+        @apply bg-card border-border text-foreground;
+    }
+}
+
+/* ============================================================================
+   LaTeX/MathJax Styling
+   ============================================================================ */
+
+.katex {
+    @apply text-foreground;
+}
+
+.katex-display {
+    @apply my-4 text-center;
+}
+
+.katex-error {
+    @apply text-google-red;
+}
+
+.katex .base {
+    @apply text-foreground;
+}
+
+.katex .strut {
+    @apply text-foreground;
+}
+
+.katex .textit {
+    @apply italic;
+}
+
+.katex .textbf {
+    @apply font-bold;
+}
+
+.katex .textrm {
+    @apply font-normal;
+}
+
+/* Math block styling */
+.math-display {
+    @apply block my-6 text-center overflow-x-auto;
+}
+
+.math-inline {
+    @apply inline;
+}
+
+/* Code block enhancements for better readability */
+.prose pre {
+    @apply bg-muted border border-border rounded-lg p-4;
+}
+
+.prose code:not(pre code) {
+    @apply bg-google-red/10 text-google-red px-1 py-0.5 rounded text-sm;
+}
+
+.prose pre code {
+    @apply bg-transparent text-foreground p-0;
+}
+
+/* Table styling */
+.prose table {
+    @apply border-collapse border border-border rounded-lg overflow-hidden;
+}
+
+.prose th {
+    @apply bg-muted border border-border px-4 py-2 text-left font-semibold;
+}
+
+.prose td {
+    @apply border border-border px-4 py-2;
+}
+
+/* Blockquote styling */
+.prose blockquote {
+    @apply border-l-4 border-google-blue pl-4 italic text-muted-foreground bg-muted/30 py-2 rounded-r;
+}
+
+/* Link styling in prose */
+.prose a {
+    @apply text-google-blue hover:text-google-blue/80 underline transition-colors;
+}
+
+/* List styling */
+.prose ul {
+    @apply list-disc list-inside space-y-2;
+}
+
+.prose ol {
+    @apply list-decimal list-inside space-y-2;
+}
+
+.prose li {
+    @apply leading-relaxed;
 }
 
 body {

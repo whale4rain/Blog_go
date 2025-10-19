@@ -19,6 +19,7 @@ import {
   Plus,
   Upload,
 } from "lucide-react";
+import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 
 // ============================================================================
 // Page Component
@@ -249,11 +250,7 @@ export default function CreateArticlePage() {
                   <div className="prose max-w-none">
                     <h1>{title}</h1>
                     <p>{abstract}</p>
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: content.replace(/\n/g, "<br>"),
-                      }}
-                    />
+                    <MarkdownRenderer content={content} />
                   </div>
                 </div>
               ) : (
