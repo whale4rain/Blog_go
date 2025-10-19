@@ -233,10 +233,12 @@ export const mockApi = {
       tags: data.tags,
       cover: data.cover,
       author: mockUsers[0], // Mock current user
+      author_id: mockUsers[0].id,
       view_count: 0,
       like_count: 0,
       comment_count: 0,
-      status: data.status || "draft",
+      status: data.status || 0,
+      is_top: false,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -290,9 +292,25 @@ export const mockApi = {
   async getArticleList(params: {
     page?: number;
     page_size?: number;
+    query?: string;
   }): Promise<PaginatedResponse<ArticleListItem>> {
     await delay();
-    const listItems: ArticleListItem[] = mockArticles.map((article) => ({
+    let filteredArticles = mockArticles;
+
+    // Apply search filter if query is provided
+    if (params.query) {
+      const searchTerm = params.query.toLowerCase();
+      filteredArticles = mockArticles.filter(
+        (article) =>
+          article.title.toLowerCase().includes(searchTerm) ||
+          article.abstract.toLowerCase().includes(searchTerm) ||
+          article.content.toLowerCase().includes(searchTerm) ||
+          article.category.toLowerCase().includes(searchTerm) ||
+          article.tags.some((tag) => tag.toLowerCase().includes(searchTerm)),
+      );
+    }
+
+    const listItems: ArticleListItem[] = filteredArticles.map((article) => ({
       id: article.id,
       cover: article.cover,
       title: article.title,

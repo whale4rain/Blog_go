@@ -78,7 +78,7 @@ export default function ArticlesPage() {
 
   const handleBulkDelete = async () => {
     try {
-      await Promise.all(selectedArticles.map(id => deleteArticle(id)));
+      await Promise.all(selectedArticles.map((id) => deleteArticle(id)));
       fetchArticles();
       setSelectedArticles([]);
       setShowDeleteConfirm(false);
@@ -88,10 +88,10 @@ export default function ArticlesPage() {
   };
 
   const toggleArticleSelection = (id: number) => {
-    setSelectedArticles(prev =>
+    setSelectedArticles((prev) =>
       prev.includes(id)
-        ? prev.filter(articleId => articleId !== id)
-        : [...prev, id]
+        ? prev.filter((articleId) => articleId !== id)
+        : [...prev, id],
     );
   };
 
@@ -99,7 +99,7 @@ export default function ArticlesPage() {
     if (selectedArticles.length === articles.length) {
       setSelectedArticles([]);
     } else {
-      setSelectedArticles(articles.map(article => article.id));
+      setSelectedArticles(articles.map((article) => article.id));
     }
   };
 
@@ -121,13 +121,21 @@ export default function ArticlesPage() {
       <header className="bg-white border-b border-border">
         <div className="container-custom py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
-                Articles Management
-              </h1>
-              <p className="text-muted-foreground">
-                Manage and organize your blog articles
-              </p>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/dashboard"
+                className="text-muted-foreground hover:text-foreground flex items-center gap-2"
+              >
+                ← Back to Dashboard
+              </Link>
+              <div>
+                <h1 className="text-3xl font-bold text-foreground mb-2">
+                  Articles Management
+                </h1>
+                <p className="text-muted-foreground">
+                  Manage and organize your blog articles
+                </p>
+              </div>
             </div>
             <Link
               href="/dashboard/articles/create"
@@ -166,7 +174,8 @@ export default function ArticlesPage() {
           <div className="card p-4 mb-6 bg-google-blue/10 border border-google-blue/20">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-foreground">
-                {selectedArticles.length} article{selectedArticles.length > 1 ? "s" : ""} selected
+                {selectedArticles.length} article
+                {selectedArticles.length > 1 ? "s" : ""} selected
               </span>
               <div className="flex gap-2">
                 <button
@@ -195,7 +204,10 @@ export default function ArticlesPage() {
                   <th className="px-6 py-3 text-left">
                     <input
                       type="checkbox"
-                      checked={selectedArticles.length === articles.length && articles.length > 0}
+                      checked={
+                        selectedArticles.length === articles.length &&
+                        articles.length > 0
+                      }
                       onChange={toggleAllSelection}
                       className="rounded border-border"
                     />
@@ -244,7 +256,10 @@ export default function ArticlesPage() {
                   ))
                 ) : articles.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
+                    <td
+                      colSpan={6}
+                      className="px-6 py-12 text-center text-muted-foreground"
+                    >
                       <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>No articles found</p>
                       <Link
@@ -257,7 +272,10 @@ export default function ArticlesPage() {
                   </tr>
                 ) : (
                   articles.map((article) => (
-                    <tr key={article.id} className="hover:bg-muted transition-colors">
+                    <tr
+                      key={article.id}
+                      className="hover:bg-muted transition-colors"
+                    >
                       <td className="px-6 py-4">
                         <input
                           type="checkbox"
@@ -354,7 +372,9 @@ export default function ArticlesPage() {
                 </p>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                    }
                     disabled={currentPage === 1}
                     className="btn-secondary text-sm disabled:opacity-50"
                   >
@@ -364,7 +384,9 @@ export default function ArticlesPage() {
                     Page {currentPage} of {totalPages}
                   </span>
                   <button
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                    }
                     disabled={currentPage === totalPages}
                     className="btn-secondary text-sm disabled:opacity-50"
                   >
@@ -385,7 +407,9 @@ export default function ArticlesPage() {
               Confirm Deletion
             </h2>
             <p className="text-muted-foreground mb-6">
-              Are you sure you want to delete {selectedArticles.length} article{selectedArticles.length > 1 ? "s" : ""}? This action cannot be undone.
+              Are you sure you want to delete {selectedArticles.length} article
+              {selectedArticles.length > 1 ? "s" : ""}? This action cannot be
+              undone.
             </p>
             <div className="flex gap-3 justify-end">
               <button
@@ -394,10 +418,7 @@ export default function ArticlesPage() {
               >
                 Cancel
               </button>
-              <button
-                onClick={handleBulkDelete}
-                className="btn-danger"
-              >
+              <button onClick={handleBulkDelete} className="btn-danger">
                 Delete
               </button>
             </div>

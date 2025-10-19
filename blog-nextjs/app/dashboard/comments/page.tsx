@@ -189,7 +189,7 @@ export default function CommentsPage() {
 
   const handleDelete = async (commentId: number) => {
     try {
-      await deleteComment(commentId);
+      await deleteComments([commentId]);
       setComments((prev) => prev.filter((comment) => comment.id !== commentId));
       setSelectedComments([]);
       setShowDeleteConfirm(false);
@@ -201,7 +201,7 @@ export default function CommentsPage() {
 
   const handleBulkDelete = async () => {
     try {
-      await Promise.all(selectedComments.map((id) => deleteComment(id)));
+      await deleteComments(selectedComments);
       setComments((prev) =>
         prev.filter((comment) => !selectedComments.includes(comment.id)),
       );

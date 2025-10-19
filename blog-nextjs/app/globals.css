@@ -11,29 +11,29 @@
    ============================================================================ */
 
 :root {
-  /* Google-inspired colors */
-  --google-blue: 214 90% 52%;
-  --google-green: 142 71% 45%;
-  --google-yellow: 45 100% 51%;
-  --google-red: 4 90% 58%;
+    /* Google-inspired colors */
+    --google-blue: 214 90% 52%;
+    --google-green: 142 71% 45%;
+    --google-yellow: 45 100% 51%;
+    --google-red: 4 90% 58%;
 
-  /* Base colors */
-  --background: 0 0% 100%;
-  --foreground: 215 25% 27%;
+    /* Base colors */
+    --background: 0 0% 100%;
+    --foreground: 215 25% 27%;
 
-  /* Muted colors */
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 10% 46%;
+    /* Muted colors */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 10% 46%;
 
-  /* Border */
-  --border: 210 40% 87%;
+    /* Border */
+    --border: 210 40% 87%;
 
-  /* Card */
-  --card: 0 0% 100%;
-  --card-foreground: 215 25% 27%;
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
 
-  /* Spacing */
-  --radius: 0.5rem;
+    /* Spacing */
+    --radius: 0.5rem;
 }
 
 /* ============================================================================
@@ -41,19 +41,26 @@
    ============================================================================ */
 
 * {
-  @apply border-border;
+    @apply border-border;
 }
 
 html {
-  @apply antialiased;
-  scroll-behavior: smooth;
+    @apply antialiased;
+    scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-background text-foreground;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-    sans-serif;
-  font-feature-settings: 'rlig' 1, 'calt' 1;
+    @apply bg-background text-foreground;
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Roboto",
+        sans-serif;
+    font-feature-settings:
+        "rlig" 1,
+        "calt" 1;
 }
 
 /* ============================================================================
@@ -66,41 +73,41 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-semibold text-foreground;
-  line-height: 1.2;
+    @apply font-semibold text-foreground;
+    line-height: 1.2;
 }
 
 h1 {
-  @apply text-4xl;
+    @apply text-4xl;
 }
 
 h2 {
-  @apply text-3xl;
+    @apply text-3xl;
 }
 
 h3 {
-  @apply text-2xl;
+    @apply text-2xl;
 }
 
 h4 {
-  @apply text-xl;
+    @apply text-xl;
 }
 
 h5 {
-  @apply text-lg;
+    @apply text-lg;
 }
 
 h6 {
-  @apply text-base;
+    @apply text-base;
 }
 
 p {
-  @apply text-base text-foreground;
-  line-height: 1.6;
+    @apply text-base text-foreground;
+    line-height: 1.6;
 }
 
 a {
-  @apply text-google-blue hover:underline transition-colors;
+    @apply text-google-blue hover:underline transition-colors;
 }
 
 /* ============================================================================
@@ -108,83 +115,83 @@ a {
    ============================================================================ */
 
 @layer utilities {
-  /* Hide scrollbar but keep functionality */
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
 
-  /* Custom scrollbar */
-  .scrollbar-custom {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--border)) transparent;
-  }
+    /* Custom scrollbar */
+    .scrollbar-custom {
+        scrollbar-width: thin;
+        scrollbar-color: hsl(var(--border)) transparent;
+    }
 
-  .scrollbar-custom::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+    .scrollbar-custom::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-  .scrollbar-custom::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    .scrollbar-custom::-webkit-scrollbar-track {
+        background: transparent;
+    }
 
-  .scrollbar-custom::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 4px;
-  }
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+        background: hsl(var(--border));
+        border-radius: 4px;
+    }
 
-  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground));
-  }
+    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+        background: hsl(var(--muted-foreground));
+    }
 
-  /* Text gradient */
-  .text-gradient {
-    @apply bg-gradient-to-r from-google-blue to-google-green bg-clip-text text-transparent;
-  }
+    /* Text gradient */
+    .text-gradient {
+        @apply bg-gradient-to-r from-google-blue to-google-green bg-clip-text text-transparent;
+    }
 
-  /* Container with max width */
-  .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
+    /* Container with max width */
+    .container-custom {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
 
-  /* Card with Google shadow */
-  .card {
-    @apply bg-card rounded-lg border border-border shadow-md transition-shadow;
-  }
+    /* Card with Google shadow */
+    .card {
+        @apply bg-card rounded-lg border border-border shadow-md transition-shadow;
+    }
 
-  .card-hover {
-    @apply card hover:shadow-lg;
-  }
+    .card-hover {
+        @apply card hover:shadow-lg;
+    }
 
-  /* Focus visible styles */
-  .focus-visible {
-    @apply focus:outline-none focus:ring-2 focus:ring-google-blue focus:ring-offset-2;
-  }
+    /* Focus visible styles */
+    .focus-visible {
+        @apply focus:outline-none focus:ring-2 focus:ring-google-blue focus:ring-offset-2;
+    }
 
-  /* Skeleton loading animation */
-  .skeleton {
-    @apply animate-pulse bg-muted rounded;
-  }
+    /* Skeleton loading animation */
+    .skeleton {
+        @apply animate-pulse bg-muted rounded;
+    }
 
-  /* Text truncate multiline */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+    /* Text truncate multiline */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 }
 
 /* ============================================================================
@@ -192,46 +199,46 @@ a {
    ============================================================================ */
 
 @layer components {
-  /* Link with hover effect */
-  .link {
-    @apply text-google-blue hover:text-[hsl(214,90%,48%)] transition-colors duration-normal cursor-pointer;
-  }
+    /* Link with hover effect */
+    .link {
+        @apply text-google-blue hover:text-[hsl(214,90%,48%)] transition-colors duration-normal cursor-pointer;
+    }
 
-  /* Badge */
-  .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
+    /* Badge */
+    .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
 
-  .badge-blue {
-    @apply badge bg-google-blue/10 text-google-blue;
-  }
+    .badge-blue {
+        @apply badge bg-google-blue/10 text-google-blue;
+    }
 
-  .badge-green {
-    @apply badge bg-google-green/10 text-google-green;
-  }
+    .badge-green {
+        @apply badge bg-google-green/10 text-google-green;
+    }
 
-  .badge-yellow {
-    @apply badge bg-google-yellow/10 text-[hsl(45,100%,35%)];
-  }
+    .badge-yellow {
+        @apply badge bg-google-yellow/10 text-[hsl(45,100%,35%)];
+    }
 
-  .badge-red {
-    @apply badge bg-google-red/10 text-google-red;
-  }
+    .badge-red {
+        @apply badge bg-google-red/10 text-google-red;
+    }
 
-  /* Divider */
-  .divider {
-    @apply border-t border-border my-4;
-  }
+    /* Divider */
+    .divider {
+        @apply border-t border-border my-4;
+    }
 
-  /* Section padding */
-  .section {
-    @apply py-12 md:py-16 lg:py-20;
-  }
+    /* Section padding */
+    .section {
+        @apply py-12 md:py-16 lg:py-20;
+    }
 
-  /* Responsive grid */
-  .grid-responsive {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
-  }
+    /* Responsive grid */
+    .grid-responsive {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+    }
 }
 
 /* ============================================================================
@@ -239,41 +246,41 @@ a {
    ============================================================================ */
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes slideIn {
-  from {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 @keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
 }
 
 @keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
 }
 
 /* ============================================================================
@@ -281,7 +288,7 @@ a {
    ============================================================================ */
 
 .markdown-content {
-  @apply text-foreground;
+    @apply text-foreground;
 }
 
 .markdown-content h1,
@@ -290,57 +297,57 @@ a {
 .markdown-content h4,
 .markdown-content h5,
 .markdown-content h6 {
-  @apply font-semibold mt-6 mb-3;
+    @apply font-semibold mt-6 mb-3;
 }
 
 .markdown-content p {
-  @apply mb-4;
+    @apply mb-4;
 }
 
 .markdown-content a {
-  @apply text-google-blue hover:underline;
+    @apply text-google-blue hover:underline;
 }
 
 .markdown-content ul,
 .markdown-content ol {
-  @apply mb-4 ml-6;
+    @apply mb-4 ml-6;
 }
 
 .markdown-content li {
-  @apply mb-2;
+    @apply mb-2;
 }
 
 .markdown-content code {
-  @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
 }
 
 .markdown-content pre {
-  @apply bg-muted p-4 rounded-lg overflow-x-auto mb-4;
+    @apply bg-muted p-4 rounded-lg overflow-x-auto mb-4;
 }
 
 .markdown-content pre code {
-  @apply bg-transparent p-0;
+    @apply bg-transparent p-0;
 }
 
 .markdown-content blockquote {
-  @apply border-l-4 border-google-blue pl-4 italic my-4 text-muted-foreground;
+    @apply border-l-4 border-google-blue pl-4 italic my-4 text-muted-foreground;
 }
 
 .markdown-content img {
-  @apply rounded-lg my-4 max-w-full h-auto;
+    @apply rounded-lg my-4 max-w-full h-auto;
 }
 
 .markdown-content table {
-  @apply w-full border-collapse mb-4;
+    @apply w-full border-collapse mb-4;
 }
 
 .markdown-content th,
 .markdown-content td {
-  @apply border border-border px-4 py-2 text-left;
+    @apply border border-border px-4 py-2 text-left;
 }
 
 .markdown-content th {
-  @apply bg-muted font-semibold;
+    @apply bg-muted font-semibold;
 }
 
 /* ============================================================================
@@ -349,27 +356,27 @@ a {
 
 /* Focus visible for keyboard navigation */
 *:focus-visible {
-  @apply outline-none ring-2 ring-google-blue ring-offset-2;
+    @apply outline-none ring-2 ring-google-blue ring-offset-2;
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 /* Print styles */
 @media print {
-  body {
-    @apply bg-white text-black;
-  }
+    body {
+        @apply bg-white text-black;
+    }
 
-  .no-print {
-    display: none !important;
-  }
+    .no-print {
+        display: none !important;
+    }
 }

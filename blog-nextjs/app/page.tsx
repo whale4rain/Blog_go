@@ -133,12 +133,12 @@ export default async function HomePage() {
                 <div className="space-y-2">
                   {categories.slice(0, 10).map((cat) => (
                     <Link
-                      key={cat.category}
-                      href={`/search?category=${encodeURIComponent(cat.category)}`}
+                      key={cat.name}
+                      href={`/search?category=${encodeURIComponent(cat.name)}`}
                       className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors group"
                     >
                       <span className="text-foreground group-hover:text-google-blue transition-colors">
-                        {cat.category}
+                        {cat.name}
                       </span>
                       <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded">
                         {cat.count}
@@ -158,11 +158,11 @@ export default async function HomePage() {
                 <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (
                     <Link
-                      key={tag.tag}
-                      href={`/search?tag=${encodeURIComponent(tag.tag)}`}
+                      key={tag.name}
+                      href={`/search?tag=${encodeURIComponent(tag.name)}`}
                       className="inline-flex items-center gap-1 px-3 py-1.5 bg-muted text-foreground rounded-full hover:bg-google-blue/10 hover:text-google-blue transition-colors text-sm"
                     >
-                      {tag.tag}
+                      {tag.name}
                       <span className="text-xs text-muted-foreground">
                         ({tag.count})
                       </span>

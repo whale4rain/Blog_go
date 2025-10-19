@@ -39,7 +39,7 @@ export default function CreateArticlePage() {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [coverImage, setCoverImage] = useState("");
-  const [status, setStatus] = useState<"draft" | "published">("draft");
+  const [status, setStatus] = useState<number>(0);
 
   // Form validation
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -99,7 +99,7 @@ export default function CreateArticlePage() {
         category: category.toLowerCase(),
         tags,
         cover: coverImage,
-        status: publish ? "published" : "draft",
+        status: publish ? 1 : 0,
       };
 
       await createArticle(articleData);
@@ -121,7 +121,7 @@ export default function CreateArticlePage() {
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,7 +233,9 @@ export default function CreateArticlePage() {
                 }`}
               />
               {errors.abstract && (
-                <p className="mt-1 text-sm text-google-red">{errors.abstract}</p>
+                <p className="mt-1 text-sm text-google-red">
+                  {errors.abstract}
+                </p>
               )}
             </div>
 
@@ -247,7 +249,11 @@ export default function CreateArticlePage() {
                   <div className="prose max-w-none">
                     <h1>{title}</h1>
                     <p>{abstract}</p>
-                    <div dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, "<br>") }} />
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: content.replace(/\n/g, "<br>"),
+                      }}
+                    />
                   </div>
                 </div>
               ) : (
@@ -332,7 +338,9 @@ export default function CreateArticlePage() {
                 ))}
               </select>
               {errors.category && (
-                <p className="mt-1 text-sm text-google-red">{errors.category}</p>
+                <p className="mt-1 text-sm text-google-red">
+                  {errors.category}
+                </p>
               )}
             </div>
 
@@ -386,15 +394,17 @@ export default function CreateArticlePage() {
 
             {/* Publishing Options */}
             <div className="card p-6">
-              <h3 className="font-medium text-foreground mb-4">Publishing Options</h3>
+              <h3 className="font-medium text-foreground mb-4">
+                Publishing Options
+              </h3>
               <div className="space-y-3">
                 <label className="flex items-center gap-3">
                   <input
                     type="radio"
                     name="status"
-                    value="draft"
-                    checked={status === "draft"}
-                    onChange={(e) => setStatus(e.target.value as "draft")}
+                    value="0"
+                    checked={status === 0}
+                    onChange={(e) => setStatus(parseInt(e.target.value))}
                     className="text-google-blue"
                   />
                   <div>
@@ -408,9 +418,9 @@ export default function CreateArticlePage() {
                   <input
                     type="radio"
                     name="status"
-                    value="published"
-                    checked={status === "published"}
-                    onChange={(e) => setStatus(e.target.value as "published")}
+                    value="1"
+                    checked={status === 1}
+                    onChange={(e) => setStatus(parseInt(e.target.value))}
                     className="text-google-blue"
                   />
                   <div>

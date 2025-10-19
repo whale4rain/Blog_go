@@ -157,6 +157,7 @@ export async function checkIsLiked(articleId: number): Promise<boolean> {
 export async function getArticleList(params: {
   page?: number;
   page_size?: number;
+  query?: string;
 }): Promise<PaginatedResponse<ArticleListItem>> {
   if (USE_MOCK_API) {
     return mockApi.getArticleList(params);

@@ -2,15 +2,15 @@
 // Login Page - User Authentication
 // ============================================================================
 
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { login, register } from '@/lib/api/user';
-import { getCaptcha, sendEmailVerificationCode } from '@/lib/api/comment';
-import { useUserStore } from '@/lib/store/userStore';
-import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { login, register } from "@/lib/api/user";
+import { getCaptcha, sendEmailVerificationCode } from "@/lib/api/comment";
+import { useUserStore } from "@/lib/store/userStore";
+import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 // ----------------------------------------------------------------------------
 // Page Component
@@ -19,25 +19,25 @@ import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 export default function LoginPage() {
   const router = useRouter();
   const { login: setUserLogin } = useUserStore();
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<"login" | "register">("login");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Login form
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   // Register form
-  const [registerUsername, setRegisterUsername] = useState('');
-  const [registerEmail, setRegisterEmail] = useState('');
-  const [registerPassword, setRegisterPassword] = useState('');
-  const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
+  const [registerUsername, setRegisterUsername] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [registerConfirmPassword, setRegisterConfirmPassword] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-  const [captchaId, setCaptchaId] = useState('');
-  const [captchaImage, setCaptchaImage] = useState('');
-  const [captchaInput, setCaptchaInput] = useState('');
+  const [captchaId, setCaptchaId] = useState("");
+  const [captchaImage, setCaptchaImage] = useState("");
+  const [captchaInput, setCaptchaInput] = useState("");
   const [codeSent, setCodeSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
@@ -60,13 +60,13 @@ export default function LoginPage() {
       setCaptchaId(captchaData.captcha_id);
       setCaptchaImage(captchaData.pic_path);
     } catch (error) {
-      console.error('Failed to load captcha:', error);
+      console.error("Failed to load captcha:", error);
     }
   };
 
   const handleSendCode = async () => {
     if (!registerEmail || !captchaInput) {
-      setError('Please enter email and captcha');
+      setError("Please enter email and captcha");
       return;
     }
 
@@ -74,7 +74,7 @@ export default function LoginPage() {
 
     try {
       setLoading(true);
-      setError('');
+      setError("");
       await sendEmailVerificationCode({
         email: registerEmail,
         captcha: captchaInput,
@@ -82,9 +82,9 @@ export default function LoginPage() {
       });
       setCodeSent(true);
       setCountdown(60);
-      alert('Verification code sent to your email!');
+      alert("Verification code sent to your email!");
     } catch (error: any) {
-      setError(error.message || 'Failed to send verification code');
+      setError(error.message || "Failed to send verification code");
       loadCaptcha(); // Reload captcha on error
     } finally {
       setLoading(false);
@@ -93,10 +93,10 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!loginEmail || !loginPassword) {
-      setError('Please enter email and password');
+      setError("Please enter email and password");
       return;
     }
 
@@ -108,9 +108,9 @@ export default function LoginPage() {
       });
 
       setUserLogin(userInfo);
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (error: any) {
-      setError(error.message || 'Login failed. Please check your credentials.');
+      setError(error.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -118,20 +118,25 @@ export default function LoginPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    if (!registerUsername || !registerEmail || !registerPassword || !verificationCode) {
-      setError('Please fill in all fields');
+    if (
+      !registerUsername ||
+      !registerEmail ||
+      !registerPassword ||
+      !verificationCode
+    ) {
+      setError("Please fill in all fields");
       return;
     }
 
     if (registerPassword !== registerConfirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     if (registerPassword.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return;
     }
 
@@ -145,9 +150,9 @@ export default function LoginPage() {
       });
 
       setUserLogin(userInfo);
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (error: any) {
-      setError(error.message || 'Registration failed. Please try again.');
+      setError(error.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -169,16 +174,16 @@ export default function LoginPage() {
         <div className="card p-8 shadow-xl">
           {/* Logo and Title */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-google-blue to-google-green rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-google-blue to-purple-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
               IB
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              {mode === 'login' ? 'Welcome Back' : 'Create Account'}
+              {mode === "login" ? "Welcome Back" : "Create Account"}
             </h1>
             <p className="text-muted-foreground">
-              {mode === 'login'
-                ? 'Sign in to access your dashboard'
-                : 'Join Inspiration Blog today'}
+              {mode === "login"
+                ? "Sign in to access your dashboard"
+                : "Join Inspiration Blog today"}
             </p>
           </div>
 
@@ -190,7 +195,7 @@ export default function LoginPage() {
           )}
 
           {/* Login Form */}
-          {mode === 'login' && (
+          {mode === "login" && (
             <form onSubmit={handleLogin} className="space-y-5">
               {/* Email */}
               <div>
@@ -218,7 +223,7 @@ export default function LoginPage() {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
-                    type={showLoginPassword ? 'text' : 'password'}
+                    type={showLoginPassword ? "text" : "password"}
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     placeholder="Enter your password"
@@ -245,13 +250,13 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full h-12 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? "Signing in..." : "Sign In"}
               </button>
             </form>
           )}
 
           {/* Register Form */}
-          {mode === 'register' && (
+          {mode === "register" && (
             <form onSubmit={handleRegister} className="space-y-5">
               {/* Username */}
               <div>
@@ -297,7 +302,7 @@ export default function LoginPage() {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
-                    type={showRegisterPassword ? 'text' : 'password'}
+                    type={showRegisterPassword ? "text" : "password"}
                     value={registerPassword}
                     onChange={(e) => setRegisterPassword(e.target.value)}
                     placeholder="At least 6 characters"
@@ -306,7 +311,9 @@ export default function LoginPage() {
                   />
                   <button
                     type="button"
-                    onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                    onClick={() =>
+                      setShowRegisterPassword(!showRegisterPassword)
+                    }
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
                     {showRegisterPassword ? (
@@ -326,7 +333,7 @@ export default function LoginPage() {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
-                    type={showRegisterPassword ? 'text' : 'password'}
+                    type={showRegisterPassword ? "text" : "password"}
                     value={registerConfirmPassword}
                     onChange={(e) => setRegisterConfirmPassword(e.target.value)}
                     placeholder="Re-enter your password"
@@ -378,10 +385,19 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={handleSendCode}
-                    disabled={loading || countdown > 0 || !registerEmail || !captchaInput}
+                    disabled={
+                      loading ||
+                      countdown > 0 ||
+                      !registerEmail ||
+                      !captchaInput
+                    }
                     className="px-6 h-12 border-2 border-google-blue text-google-blue rounded-lg hover:bg-google-blue/10 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                   >
-                    {countdown > 0 ? `${countdown}s` : codeSent ? 'Resend' : 'Send Code'}
+                    {countdown > 0
+                      ? `${countdown}s`
+                      : codeSent
+                        ? "Resend"
+                        : "Send Code"}
                   </button>
                 </div>
               </div>
@@ -392,7 +408,7 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full h-12 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Creating account...' : 'Create Account'}
+                {loading ? "Creating account..." : "Create Account"}
               </button>
             </form>
           )}
@@ -400,16 +416,18 @@ export default function LoginPage() {
           {/* Switch Mode */}
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
+              {mode === "login"
+                ? "Don't have an account?"
+                : "Already have an account?"}{" "}
               <button
                 type="button"
                 onClick={() => {
-                  setMode(mode === 'login' ? 'register' : 'login');
-                  setError('');
+                  setMode(mode === "login" ? "register" : "login");
+                  setError("");
                 }}
                 className="text-google-blue hover:underline font-medium"
               >
-                {mode === 'login' ? 'Sign up' : 'Sign in'}
+                {mode === "login" ? "Sign up" : "Sign in"}
               </button>
             </p>
           </div>

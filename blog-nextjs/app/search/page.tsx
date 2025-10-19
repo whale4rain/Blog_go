@@ -207,8 +207,8 @@ function SearchPageContent() {
                 >
                   <option value="">All Categories</option>
                   {categories.map((cat) => (
-                    <option key={cat.category} value={cat.category}>
-                      {cat.category} ({cat.count})
+                    <option key={cat.name} value={cat.name}>
+                      {cat.name} ({cat.count})
                     </option>
                   ))}
                 </select>
@@ -229,8 +229,8 @@ function SearchPageContent() {
                 >
                   <option value="">All Tags</option>
                   {tags.map((tag) => (
-                    <option key={tag.tag} value={tag.tag}>
-                      {tag.tag} ({tag.count})
+                    <option key={tag.name} value={tag.name}>
+                      {tag.name} ({tag.count})
                     </option>
                   ))}
                 </select>

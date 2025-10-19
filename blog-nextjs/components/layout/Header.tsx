@@ -2,15 +2,25 @@
 // Header Component - Google-inspired Navigation
 // ============================================================================
 
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { useUserStore } from '@/lib/store/userStore';
-import { useUIStore } from '@/lib/store/uiStore';
-import { Menu, X, Search, User, LogOut, Settings, Home, Archive, Info } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { useUserStore } from "@/lib/store/userStore";
+import { useUIStore } from "@/lib/store/uiStore";
+import {
+  Menu,
+  X,
+  Search,
+  User,
+  LogOut,
+  Settings,
+  Home,
+  Archive,
+  Info,
+} from "lucide-react";
 
 // ----------------------------------------------------------------------------
 // Types
@@ -27,9 +37,9 @@ interface NavLink {
 // ----------------------------------------------------------------------------
 
 const navLinks: NavLink[] = [
-  { name: 'Home', href: '/', icon: <Home className="w-4 h-4" /> },
-  { name: 'Archive', href: '/search', icon: <Archive className="w-4 h-4" /> },
-  { name: 'About', href: '/about', icon: <Info className="w-4 h-4" /> },
+  { name: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
+  { name: "Archive", href: "/search", icon: <Archive className="w-4 h-4" /> },
+  { name: "About", href: "/about", icon: <Info className="w-4 h-4" /> },
 ];
 
 // ----------------------------------------------------------------------------
@@ -49,8 +59,8 @@ export default function Header() {
       setScrolled(window.scrollY > 20);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Handle logout
@@ -58,25 +68,23 @@ export default function Header() {
     try {
       await logout();
       setUserMenuOpen(false);
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
   // Check if link is active
   const isActive = (href: string) => {
-    if (href === '/') return pathname === href;
+    if (href === "/") return pathname === href;
     return pathname.startsWith(href);
   };
 
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 w-full transition-all duration-normal',
-        scrolled
-          ? 'bg-white/95 backdrop-blur-sm shadow-sm'
-          : 'bg-white'
+        "sticky top-0 z-40 w-full transition-all duration-normal",
+        scrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : "bg-white",
       )}
     >
       <nav className="container-custom">
@@ -86,7 +94,7 @@ export default function Header() {
             href="/"
             className="flex items-center gap-2 text-xl font-semibold text-foreground hover:text-google-blue transition-colors"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-google-blue to-google-green rounded-lg flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 bg-gradient-to-br from-google-blue to-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
               IB
             </div>
             <span className="hidden sm:inline">Inspiration Blog</span>
@@ -99,10 +107,10 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
                   isActive(link.href)
-                    ? 'bg-google-blue/10 text-google-blue'
-                    : 'text-foreground hover:bg-muted hover:text-google-blue'
+                    ? "bg-google-blue/10 text-google-blue"
+                    : "text-foreground hover:bg-muted hover:text-google-blue",
                 )}
               >
                 {link.icon}
@@ -155,8 +163,12 @@ export default function Header() {
                     />
                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-border py-2 z-20 animate-fade-in">
                       <div className="px-4 py-2 border-b border-border">
-                        <p className="text-sm font-medium text-foreground">{user.username}</p>
-                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                        <p className="text-sm font-medium text-foreground">
+                          {user.username}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {user.email}
+                        </p>
                       </div>
                       <Link
                         href="/dashboard"
@@ -211,10 +223,10 @@ export default function Header() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                    "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                     isActive(link.href)
-                      ? 'bg-google-blue/10 text-google-blue'
-                      : 'text-foreground hover:bg-muted'
+                      ? "bg-google-blue/10 text-google-blue"
+                      : "text-foreground hover:bg-muted",
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >

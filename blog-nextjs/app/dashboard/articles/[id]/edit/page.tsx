@@ -9,7 +9,11 @@ import { useRouter, useParams } from "next/navigation";
 import { useUserStore } from "@/lib/store/userStore";
 import { getArticleById, updateArticle } from "@/lib/api/article";
 import { ArrowLeft, Save, Eye, Upload, X, Plus } from "lucide-react";
-import type { Article, UpdateArticleRequest } from "@/types";
+import type {
+  Article,
+  UpdateArticleRequest,
+  CreateArticleRequest,
+} from "@/types";
 
 export default function EditArticlePage() {
   const router = useRouter();
@@ -21,16 +25,16 @@ export default function EditArticlePage() {
   const [fetching, setFetching] = useState(true);
   const [publishing, setPublishing] = useState(false);
   const [article, setArticle] = useState<Article | null>(null);
-  const [originalStatus, setOriginalStatus] = useState<string>("");
+  const [originalStatus, setOriginalStatus] = useState<number>(0);
 
-  const [formData, setFormData] = useState<UpdateArticleRequest>({
+  const [formData, setFormData] = useState<CreateArticleRequest>({
     title: "",
     abstract: "",
     content: "",
     category: "",
     tags: [],
     cover: "",
-    status: "draft",
+    status: 0,
   });
 
   const [tagInput, setTagInput] = useState("");
@@ -83,33 +87,43 @@ export default function EditArticlePage() {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Convert status string to number
+    if (name === "status") {
+      setFormData((prev) => ({ ...prev, [name]: parseInt(value) }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, content: e.target.value }));
+    setFormData((prev) => ({ ...prev, content: e.target.value }));
   };
 
   const handleAddTag = (tag: string) => {
     if (tag && !formData.tags.includes(tag) && formData.tags.length < 5) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        tags: [...prev.tags, tag]
+        tags: [...prev.tags, tag],
       }));
     }
     setTagInput("");
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
   };
 
-  const handleSave = async (status: "draft" | "published") => {
+  const handleSave = async (status: number) => {
     if (!formData.title.trim() || !formData.content.trim()) {
       alert("Please fill in the title and content");
       return;
@@ -121,14 +135,17 @@ export default function EditArticlePage() {
 
       const articleData = {
         ...formData,
+        id: articleId,
         status,
-        abstract: formData.abstract || formData.content.substring(0, 200) + "...",
+        abstract:
+          formData.abstract || formData.content.substring(0, 200) + "...",
       };
 
       await updateArticle(articleId, articleData);
 
       // Show success message
-      const action = status === "published" && originalStatus !== "published" ? "published" : "updated";
+      const action =
+        status === 1 && originalStatus !== 1 ? "published" : "updated";
       alert(`Article ${action} successfully!`);
 
       router.push("/dashboard/articles");
@@ -144,7 +161,7 @@ export default function EditArticlePage() {
   const handleImageUpload = () => {
     // Mock image upload - in real app would open file picker
     const mockImageUrl = `https://picsum.photos/seed/article-${Date.now()}/800/400.jpg`;
-    setFormData(prev => ({ ...prev, cover: mockImageUrl }));
+    setFormData((prev) => ({ ...prev, cover: mockImageUrl }));
   };
 
   const togglePreview = () => {
@@ -166,8 +183,12 @@ export default function EditArticlePage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Article Not Found</h2>
-          <p className="text-muted-foreground mb-4">The article you're trying to edit doesn't exist.</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Article Not Found
+          </h2>
+          <p className="text-muted-foreground mb-4">
+            The article you're trying to edit doesn't exist.
+          </p>
           <button
             onClick={() => router.push("/dashboard/articles")}
             className="text-google-blue hover:underline"
@@ -194,13 +215,15 @@ export default function EditArticlePage() {
                 Back to Articles
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-foreground">Edit Article</h1>
+                <h1 className="text-3xl font-bold text-foreground">
+                  Edit Article
+                </h1>
                 <p className="text-muted-foreground">Update your blog post</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => handleSave("draft")}
+                onClick={() => handleSave(0)}
                 disabled={loading}
                 className="btn-secondary flex items-center gap-2"
               >
@@ -208,12 +231,12 @@ export default function EditArticlePage() {
                 Save Draft
               </button>
               <button
-                onClick={() => handleSave("published")}
+                onClick={() => handleSave(1)}
                 disabled={loading}
                 className="btn-primary flex items-center gap-2"
               >
                 <Eye className="w-5 h-5" />
-                {originalStatus === "published" ? "Update" : "Publish"}
+                {originalStatus === 1 ? "Update" : "Publish"}
               </button>
             </div>
           </div>
@@ -226,7 +249,10 @@ export default function EditArticlePage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Title */}
             <div className="card p-6">
-              <label htmlFor="title" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Title
               </label>
               <input
@@ -253,7 +279,9 @@ export default function EditArticlePage() {
                     className="w-full h-64 object-cover rounded-lg"
                   />
                   <button
-                    onClick={() => setFormData(prev => ({ ...prev, cover: "" }))}
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, cover: "" }))
+                    }
                     className="absolute top-2 right-2 p-2 bg-google-red text-white rounded-full hover:bg-[hsl(4,90%,58%)]"
                   >
                     <X className="w-4 h-4" />
@@ -265,7 +293,9 @@ export default function EditArticlePage() {
                   className="w-full h-64 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center hover:border-google-blue transition-colors"
                 >
                   <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                  <span className="text-muted-foreground">Upload cover image</span>
+                  <span className="text-muted-foreground">
+                    Upload cover image
+                  </span>
                 </button>
               )}
             </div>
@@ -273,7 +303,10 @@ export default function EditArticlePage() {
             {/* Content Editor */}
             <div className="card p-6">
               <div className="flex items-center justify-between mb-2">
-                <label htmlFor="content" className="block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="content"
+                  className="block text-sm font-medium text-foreground"
+                >
                   Content
                 </label>
                 <button
@@ -307,7 +340,10 @@ export default function EditArticlePage() {
           <div className="lg:col-span-1">
             {/* Abstract */}
             <div className="card p-6 mb-6">
-              <label htmlFor="abstract" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="abstract"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Abstract
               </label>
               <textarea
@@ -326,7 +362,10 @@ export default function EditArticlePage() {
 
             {/* Category */}
             <div className="card p-6 mb-6">
-              <label htmlFor="category" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="category"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Category
               </label>
               <select
@@ -398,14 +437,16 @@ export default function EditArticlePage() {
 
             {/* Publishing Options */}
             <div className="card p-6">
-              <h3 className="font-medium text-foreground mb-4">Publishing Options</h3>
+              <h3 className="font-medium text-foreground mb-4">
+                Publishing Options
+              </h3>
               <div className="space-y-3">
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
                     name="status"
-                    value="draft"
-                    checked={formData.status === "draft"}
+                    value="0"
+                    checked={formData.status === 0}
                     onChange={handleInputChange}
                     className="rounded border-border"
                   />
@@ -415,8 +456,8 @@ export default function EditArticlePage() {
                   <input
                     type="radio"
                     name="status"
-                    value="published"
-                    checked={formData.status === "published"}
+                    value="1"
+                    checked={formData.status === 1}
                     onChange={handleInputChange}
                     className="rounded border-border"
                   />

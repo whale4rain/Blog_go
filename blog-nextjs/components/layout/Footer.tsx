@@ -2,9 +2,9 @@
 // Footer Component - Google-inspired Design
 // ============================================================================
 
-import React from 'react';
-import Link from 'next/link';
-import { Github, Twitter, Linkedin, Mail, Heart } from 'lucide-react';
+import React from "react";
+import Link from "next/link";
+import { Github, Twitter, Linkedin, Mail, Heart } from "lucide-react";
 
 // ----------------------------------------------------------------------------
 // Component
@@ -20,14 +20,17 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-google-blue to-google-green rounded-lg flex items-center justify-center text-white font-bold text-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-google-blue to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
                 IB
               </div>
-              <span className="text-xl font-semibold text-foreground">Inspiration Blog</span>
+              <span className="text-xl font-semibold text-foreground">
+                Inspiration Blog
+              </span>
             </div>
             <p className="text-muted-foreground mb-4 max-w-md">
-              A modern blog platform built with Next.js and Google-inspired design.
-              Share your thoughts, stories, and inspiration with the world.
+              A modern blog platform built with Next.js and Google-inspired
+              design. Share your thoughts, stories, and inspiration with the
+              world.
             </p>
             <div className="flex items-center gap-4">
               <a
@@ -155,18 +158,29 @@ export default function Footer() {
               © {currentYear} Inspiration Blog. All rights reserved.
             </p>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link href="/privacy" className="hover:text-google-blue transition-colors">
+              <Link
+                href="/privacy"
+                className="hover:text-google-blue transition-colors"
+              >
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="hover:text-google-blue transition-colors">
+              <Link
+                href="/terms"
+                className="hover:text-google-blue transition-colors"
+              >
                 Terms of Service
               </Link>
-              <Link href="/contact" className="hover:text-google-blue transition-colors">
+              <Link
+                href="/contact"
+                className="hover:text-google-blue transition-colors"
+              >
                 Contact
               </Link>
             </div>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
-              Made with <Heart className="w-4 h-4 text-google-red fill-google-red" /> using Next.js
+              Made with{" "}
+              <Heart className="w-4 h-4 text-google-red fill-google-red" />{" "}
+              using Next.js
             </p>
           </div>
         </div>
