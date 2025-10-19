@@ -46,7 +46,6 @@ export default function MarkdownRenderer({
             primaryColor: "hsl(214, 90%, 52%)", // google-blue
             primaryTextColor: "#ffffff",
             primaryBorderColor: "hsl(214, 90%, 65%)",
-            lineColor: "hsl(210, 40%, 96%)", // border color
             secondaryColor: "hsl(214, 90%, 48%)",
             tertiaryColor: "hsl(214, 90%, 95%)",
             background: "hsl(0, 0%, 100%)", // card background
@@ -90,7 +89,6 @@ export default function MarkdownRenderer({
           },
           fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
           fontSize: 14,
-          fontWeight: "normal",
           flowchart: {
             useMaxWidth: true,
             htmlLabels: true,
@@ -110,19 +108,6 @@ export default function MarkdownRenderer({
             messageMargin: 35,
             mirrorActors: true,
             bottomMarginAdj: 1,
-
-            actorBorder: "hsl(210, 40%, 87%)",
-            actorTextColor: "hsl(215, 25%, 27%)",
-            actorLineColor: "hsl(210, 40%, 87%)",
-            signalColor: "hsl(210, 40%, 87%)",
-            signalTextColor: "hsl(215, 25%, 27%)",
-            labelBoxBkgColor: "hsl(0, 0%, 100%)",
-            labelBoxBorderColor: "hsl(210, 40%, 87%)",
-            labelTextColor: "hsl(215, 25%, 27%)",
-            loopTextColor: "hsl(215, 25%, 27%)",
-            noteBorderColor: "hsl(210, 40%, 87%)",
-            noteBkgColor: "hsl(210, 40%, 96%)",
-            noteTextColor: "hsl(215, 25%, 27%)",
           },
           gantt: {
             titleTopMargin: 25,
