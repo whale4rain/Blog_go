@@ -54,7 +54,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       {/* Article Container */}
       <article className="container-custom py-12">
-        <div className="max-w-4xl mx-auto">
+        <div className="flex gap-8 max-w-7xl mx-auto">
           <ArticleClient article={article} comments={comments} />
         </div>
       </article>

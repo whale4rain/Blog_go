@@ -633,3 +633,83 @@ a {
         display: none !important;
     }
 }
+
+/* ============================================================================
+   Table of Contents Styles
+   ============================================================================ */
+
+.table-of-contents {
+    transition: width 0.3s ease;
+}
+
+.toc-link {
+    line-height: 1.4;
+}
+
+.toc-link:hover .chevron-icon {
+    transform: translateX(2px);
+}
+
+.chevron-icon {
+    transition: transform 0.2s ease;
+}
+
+@media (max-width: 768px) {
+    .table-of-contents {
+        transition: transform 0.3s ease;
+    }
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Ensure headings are scrollable targets */
+h1[id],
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+    scroll-margin-top: 6rem;
+}
+
+/* TOC active state transitions */
+.toc-link {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.toc-link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 0;
+    background: hsl(var(--google-blue));
+    transition: height 0.2s ease;
+}
+
+.toc-link.active::before {
+    height: 100%;
+}
+
+/* TOC progress bar animation */
+.toc-progress {
+    transition: width 0.3s ease;
+}
+
+/* Mobile TOC overlay */
+@media (max-width: 768px) {
+    .table-of-contents-mobile {
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+
+    .table-of-contents-mobile.open {
+        transform: translateX(0);
+    }
+}

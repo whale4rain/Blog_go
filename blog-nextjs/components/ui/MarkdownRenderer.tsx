@@ -160,38 +160,70 @@ export default function MarkdownRenderer({
         rehypePlugins={[rehypeRaw, rehypeHighlight, rehypeKatex]}
         components={{
           // Custom components for better styling
-          h1: ({ children, ...props }) => (
-            <h1
-              className="text-3xl font-bold text-foreground mb-6 mt-8 first:mt-0 border-b border-border pb-3"
-              {...props}
-            >
-              {children}
-            </h1>
-          ),
-          h2: ({ children, ...props }) => (
-            <h2
-              className="text-2xl font-bold text-foreground mb-4 mt-6 first:mt-0"
-              {...props}
-            >
-              {children}
-            </h2>
-          ),
-          h3: ({ children, ...props }) => (
-            <h3
-              className="text-xl font-bold text-foreground mb-3 mt-5 first:mt-0"
-              {...props}
-            >
-              {children}
-            </h3>
-          ),
-          h4: ({ children, ...props }) => (
-            <h4
-              className="text-lg font-semibold text-foreground mb-2 mt-4 first:mt-0"
-              {...props}
-            >
-              {children}
-            </h4>
-          ),
+          h1: ({ children, ...props }) => {
+            const text = React.Children.toArray(children).join("");
+            const id = text
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/\s+/g, "-");
+            return (
+              <h1
+                id={id}
+                className="text-3xl font-bold text-foreground mb-6 mt-8 first:mt-0 border-b border-border pb-3 scroll-mt-24"
+                {...props}
+              >
+                {children}
+              </h1>
+            );
+          },
+          h2: ({ children, ...props }) => {
+            const text = React.Children.toArray(children).join("");
+            const id = text
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/\s+/g, "-");
+            return (
+              <h2
+                id={id}
+                className="text-2xl font-bold text-foreground mb-4 mt-6 first:mt-0 scroll-mt-24"
+                {...props}
+              >
+                {children}
+              </h2>
+            );
+          },
+          h3: ({ children, ...props }) => {
+            const text = React.Children.toArray(children).join("");
+            const id = text
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/\s+/g, "-");
+            return (
+              <h3
+                id={id}
+                className="text-xl font-bold text-foreground mb-3 mt-5 first:mt-0 scroll-mt-24"
+                {...props}
+              >
+                {children}
+              </h3>
+            );
+          },
+          h4: ({ children, ...props }) => {
+            const text = React.Children.toArray(children).join("");
+            const id = text
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/\s+/g, "-");
+            return (
+              <h4
+                id={id}
+                className="text-lg font-semibold text-foreground mb-2 mt-4 first:mt-0 scroll-mt-24"
+                {...props}
+              >
+                {children}
+              </h4>
+            );
+          },
           p: ({ children, ...props }) => (
             <p
               className="text-foreground leading-relaxed mb-4 first:mt-0"
