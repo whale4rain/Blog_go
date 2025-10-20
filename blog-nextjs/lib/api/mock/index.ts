@@ -434,6 +434,18 @@ export const mockApi = {
     return mockLoginResponse;
   },
 
+  async getUserCard(uuid: string): Promise<User> {
+    await delay();
+    // Find user by UUID or ID
+    const user = mockUsers.find(
+      (u) => u.uuid === uuid || u.id.toString() === uuid,
+    );
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  },
+
   async sendEmailVerificationCode(email: string): Promise<void> {
     await delay();
     const code = Math.floor(100000 + Math.random() * 900000).toString();

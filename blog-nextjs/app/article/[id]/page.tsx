@@ -40,7 +40,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     });
     comments = commentsData.list || [];
   } catch (error) {
-    console.error("Failed to fetch article:", error);
+    console.error("Failed to fetch article or comments:", error);
     notFound();
   }
 

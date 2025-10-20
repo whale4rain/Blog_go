@@ -97,6 +97,9 @@ export async function updateUserInfo(data: UpdateUserRequest): Promise<User> {
  * Get user card info by UUID
  */
 export async function getUserCard(uuid: string): Promise<User> {
+  if (USE_MOCK_API) {
+    return mockApi.getUserCard(uuid);
+  }
   return get<User>(`/user/card?uuid=${uuid}`);
 }
 

@@ -280,13 +280,15 @@ export async function getAdvertisementList(params?: {
 /**
  * Get website information
  */
-export async function getWebsiteInfo(): Promise<any> {
-  return get<any>("/website/info");
+export async function getWebsiteInfo(): Promise<Record<string, unknown>> {
+  return get<Record<string, unknown>>("/website/info");
 }
 
 /**
  * Update website information
  */
-export async function updateWebsiteInfo(data: any): Promise<any> {
-  return put<any>("/website/update", data);
+export async function updateWebsiteInfo(
+  data: Record<string, unknown>,
+): Promise<Record<string, unknown>> {
+  return put<Record<string, unknown>>("/website/update", data);
 }

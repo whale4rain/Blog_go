@@ -282,6 +282,10 @@ export default function ArticleClient({
 
 // Comment Card Component
 function CommentCard({ comment }: { comment: Comment }) {
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [replyContent, setReplyContent] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -302,47 +306,273 @@ function CommentCard({ comment }: { comment: Comment }) {
     });
   };
 
+  const handleReply = () => {
+    if (!replyContent.trim()) return;
+
+    // TODO: Implement actual reply API call
+    alert(`Reply to ${comment.user.username}: ${replyContent}`);
+    setReplyContent("");
+    setShowReplyForm(false);
+  };
+
   return (
     <div className="card p-6">
       <div className="flex gap-4">
         {/* Avatar */}
         <div className="flex-shrink-0">
-          {comment.user.avatar ? (
-            <img
-              src={comment.user.avatar}
-              alt={comment.user.username}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-10 h-10 bg-google-blue/10 text-google-blue rounded-full flex items-center justify-center font-medium">
-              {comment.user.username.charAt(0).toUpperCase()}
-            </div>
-          )}
+          <a
+            href={`/author/${comment.user.id}`}
+            className="block hover:opacity-80 transition-opacity"
+          >
+            {comment.user.avatar ? (
+              <img
+                src={comment.user.avatar}
+                alt={comment.user.username}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-12 h-12 bg-google-blue/10 text-google-blue rounded-full flex items-center justify-center font-medium text-lg">
+                {comment.user.username.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </a>
         </div>
 
         {/* Content */}
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="font-semibold text-foreground">
-              {comment.user.username}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {formatTimeAgo(comment.created_at)}
-            </span>
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex items-center gap-2 mb-2">
+              <a
+                href={`/author/${comment.user.id}`}
+                className="font-semibold text-foreground hover:text-google-blue transition-colors"
+              >
+                {comment.user.username}
+              </a>
+              <span className="text-sm text-muted-foreground">
+                {formatTimeAgo(comment.created_at)}
+              </span>
+              <span
+                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                  comment.user.role === "admin"
+                    ? "bg-google-red/10 text-google-red"
+                    : "bg-google-green/10 text-google-green"
+                }`}
+              >
+                {comment.user.role === "admin" ? "Admin" : "User"}
+              </span>
+            </div>
           </div>
-          <p className="text-foreground leading-relaxed mb-3">
+
+          {/* Author Details */}
+          {(comment.user.signature || comment.user.address) && (
+            <div className="text-sm text-muted-foreground mb-3">
+              {comment.user.signature && (
+                <p className="mb-1 italic">
+                  &quot;{comment.user.signature}&quot;
+                </p>
+              )}
+              {comment.user.address && (
+                <p className="flex items-center gap-1">
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  {comment.user.address}
+                </p>
+              )}
+            </div>
+          )}
+
+          <p className="text-foreground leading-relaxed mb-4">
             {comment.content}
           </p>
 
           {/* Actions */}
-          <div className="flex items-center gap-4 text-sm">
-            <button className="text-muted-foreground hover:text-google-blue transition-colors">
+          <div className="flex items-center gap-4 text-sm mb-4">
+            <button
+              className="flex items-center gap-1 text-muted-foreground hover:text-google-blue transition-colors"
+              onClick={() => setShowReplyForm(!showReplyForm)}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+                />
+              </svg>
               Reply
             </button>
-            <button className="text-muted-foreground hover:text-google-red transition-colors">
+            <button className="flex items-center gap-1 text-muted-foreground hover:text-google-red transition-colors">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
               Report
             </button>
+            <a
+              href={`/author/${comment.user.id}`}
+              className="flex items-center gap-1 text-muted-foreground hover:text-google-blue transition-colors"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              View Profile
+            </a>
           </div>
+
+          {/* Reply Form */}
+          {showReplyForm && (
+            <div className="bg-muted/50 rounded-lg p-4 mb-4">
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Reply to {comment.user.username}
+                </label>
+                <textarea
+                  value={replyContent}
+                  onChange={(e) => setReplyContent(e.target.value)}
+                  className="w-full min-h-[100px] px-3 py-2 border-2 border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue/50 focus:border-google-blue transition-colors resize-none"
+                  placeholder="Write your reply..."
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => {
+                    setShowReplyForm(false);
+                    setReplyContent("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={handleReply}
+                  disabled={!replyContent.trim()}
+                >
+                  Post Reply
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Replies */}
+          {comment.replies && comment.replies.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  />
+                </svg>
+                <span>
+                  {comment.replies.length}{" "}
+                  {comment.replies.length === 1 ? "Reply" : "Replies"}
+                </span>
+                {comment.replies.length > 2 && (
+                  <button
+                    className="text-google-blue hover:underline"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                  >
+                    {isExpanded
+                      ? "Show less"
+                      : `Show ${comment.replies.length - 2} more`}
+                  </button>
+                )}
+              </div>
+
+              <div className="space-y-4 pl-4 border-l-2 border-border">
+                {(isExpanded
+                  ? comment.replies
+                  : comment.replies.slice(0, 2)
+                ).map((reply) => (
+                  <div key={reply.id} className="flex gap-3">
+                    <div className="flex-shrink-0">
+                      <a
+                        href={`/author/${reply.user.id}`}
+                        className="block hover:opacity-80 transition-opacity"
+                      >
+                        {reply.user.avatar ? (
+                          <img
+                            src={reply.user.avatar}
+                            alt={reply.user.username}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 bg-google-blue/10 text-google-blue rounded-full flex items-center justify-center font-medium text-sm">
+                            {reply.user.username.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </a>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <a
+                          href={`/author/${reply.user.id}`}
+                          className="font-medium text-foreground hover:text-google-blue transition-colors text-sm"
+                        >
+                          {reply.user.username}
+                        </a>
+                        <span className="text-xs text-muted-foreground">
+                          {formatTimeAgo(reply.created_at)}
+                        </span>
+                      </div>
+                      <p className="text-sm text-foreground leading-relaxed">
+                        {reply.content}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

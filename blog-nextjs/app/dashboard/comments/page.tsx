@@ -8,22 +8,15 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserStore } from "@/lib/store/userStore";
-import { getCommentList, deleteComments } from "@/lib/api/comment";
+import { deleteComments } from "@/lib/api/comment";
 import {
   MessageSquare,
   ArrowLeft,
   Trash2,
   Reply,
-  Eye,
-  EyeOff,
   Flag,
   Check,
-  X,
   Search,
-  Filter,
-  MoreVertical,
-  User,
-  Calendar,
   AlertTriangle,
 } from "lucide-react";
 
