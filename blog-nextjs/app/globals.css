@@ -1,0 +1,715 @@
+/* ============================================================================
+   Global Styles - Tailwind CSS Base
+   ============================================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   Code Highlighting - GitHub Dark Theme
+   ============================================================================ */
+
+@import "highlight.js/styles/github-dark.css";
+@import "katex/dist/katex.min.css";
+
+/* ============================================================================
+   CSS Variables
+   ============================================================================ */
+
+:root {
+    /* Google-inspired colors */
+    --google-blue: 214 90% 52%;
+    --google-green: 142 71% 45%;
+    --google-yellow: 45 100% 51%;
+    --google-red: 4 90% 58%;
+
+    /* Base colors */
+    --background: 0 0% 100%;
+    --foreground: 215 25% 27%;
+
+    /* Muted colors */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 10% 46%;
+
+    /* Border */
+    --border: 210 40% 87%;
+
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
+
+    /* Spacing */
+    --radius: 0.5rem;
+}
+
+/* ============================================================================
+   Base Styles
+   ============================================================================ */
+
+* {
+    @apply border-border;
+}
+
+html {
+    @apply antialiased;
+    scroll-behavior: smooth;
+}
+
+/* ============================================================================
+   Mermaid Diagrams - Custom Styling
+   ============================================================================ */
+
+.mermaid-diagram {
+    @apply bg-card border border-border rounded-xl p-6 my-6 overflow-x-auto shadow-sm;
+}
+
+.mermaid-diagram svg {
+    @apply max-w-full h-auto;
+}
+
+/* Flowchart nodes */
+.mermaid-diagram .node rect,
+.mermaid-diagram .node circle,
+.mermaid-diagram .node ellipse,
+.mermaid-diagram .node polygon {
+    @apply fill-card stroke-border;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.mermaid-diagram .node text {
+    @apply fill-foreground text-sm font-medium;
+}
+
+.mermaid-diagram .node .label {
+    @apply fill-foreground;
+}
+
+/* Special node types */
+.mermaid-diagram .node.default .label {
+    @apply text-foreground;
+}
+
+.mermaid-diagram .node.clickable {
+    cursor: pointer;
+}
+
+.mermaid-diagram .node.clickable:hover rect,
+.mermaid-diagram .node.clickable:hover circle,
+.mermaid-diagram .node.clickable:hover ellipse {
+    filter: drop-shadow(0 2px 4px rgba(66, 133, 244, 0.2));
+    stroke: hsl(214, 90%, 52%);
+}
+
+/* Edges and arrows */
+.mermaid-diagram .edgePath .path {
+    @apply stroke-border;
+    stroke-width: 2;
+    fill: none;
+}
+
+.mermaid-diagram .edgePath .arrowhead {
+    @apply fill-border;
+}
+
+.mermaid-diagram .edgeLabel {
+    @apply fill-card text-foreground text-xs px-2 py-1 rounded border border-border;
+    font-weight: 500;
+}
+
+/* Sequence diagram specific */
+.mermaid-diagram .actor {
+    @apply fill-card stroke-border;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.mermaid-diagram .actor text {
+    @apply fill-foreground text-sm font-medium;
+}
+
+.mermaid-diagram .messageLine0,
+.mermaid-diagram .messageLine1 {
+    @apply stroke-border;
+    stroke-width: 2;
+}
+
+.mermaid-diagram .messageText {
+    @apply fill-foreground text-sm;
+}
+
+.mermaid-diagram .activation0,
+.mermaid-diagram .activation1 {
+    @apply fill-google-blue/10 stroke-google-blue;
+}
+
+.mermaid-diagram .note {
+    @apply fill-muted stroke-border;
+}
+
+.mermaid-diagram .noteText {
+    @apply fill-muted-foreground text-sm;
+}
+
+/* Gantt chart specific */
+.mermaid-diagram .grid .tick line {
+    @apply stroke-border/50;
+}
+
+.mermaid-diagram .grid path {
+    @apply stroke-border;
+}
+
+.mermaid-diagram .titleText {
+    @apply fill-foreground text-lg font-semibold;
+}
+
+.mermaid-diagram .sectionTitle {
+    @apply fill-foreground text-base font-medium;
+}
+
+.mermaid-diagram .task {
+    @apply fill-google-blue/80 stroke-google-blue;
+}
+
+.mermaid-diagram .taskText {
+    @apply fill-white text-sm font-medium;
+}
+
+.mermaid-diagram .taskTextOutsideLeft,
+.mermaid-diagram .taskTextOutsideRight {
+    @apply fill-foreground text-sm;
+}
+
+/* Clusters and groups */
+.mermaid-diagram .cluster rect {
+    @apply fill-muted/30 stroke-border;
+    stroke-dasharray: 5 5;
+}
+
+.mermaid-diagram .cluster-label {
+    @apply fill-foreground text-sm font-medium;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .mermaid-diagram {
+        @apply p-4 my-4 rounded-lg;
+    }
+
+    .mermaid-diagram svg {
+        min-width: 300px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .mermaid-diagram .edgeLabel {
+        @apply bg-card border-border text-foreground;
+    }
+}
+
+/* ============================================================================
+   LaTeX/MathJax Styling
+   ============================================================================ */
+
+.katex {
+    @apply text-foreground;
+}
+
+.katex-display {
+    @apply my-4 text-center;
+}
+
+.katex-error {
+    @apply text-google-red;
+}
+
+.katex .base {
+    @apply text-foreground;
+}
+
+.katex .strut {
+    @apply text-foreground;
+}
+
+.katex .textit {
+    @apply italic;
+}
+
+.katex .textbf {
+    @apply font-bold;
+}
+
+.katex .textrm {
+    @apply font-normal;
+}
+
+/* Math block styling */
+.math-display {
+    @apply block my-6 text-center overflow-x-auto;
+}
+
+.math-inline {
+    @apply inline;
+}
+
+/* Code block enhancements for better readability */
+.prose pre {
+    @apply bg-muted border border-border rounded-lg p-4;
+}
+
+.prose code:not(pre code) {
+    @apply bg-google-red/10 text-google-red px-1 py-0.5 rounded text-sm;
+}
+
+.prose pre code {
+    @apply bg-transparent text-foreground p-0;
+}
+
+/* Table styling */
+.prose table {
+    @apply border-collapse border border-border rounded-lg overflow-hidden;
+}
+
+.prose th {
+    @apply bg-muted border border-border px-4 py-2 text-left font-semibold;
+}
+
+.prose td {
+    @apply border border-border px-4 py-2;
+}
+
+/* Blockquote styling */
+.prose blockquote {
+    @apply border-l-4 border-google-blue pl-4 italic text-muted-foreground bg-muted/30 py-2 rounded-r;
+}
+
+/* Link styling in prose */
+.prose a {
+    @apply text-google-blue hover:text-google-blue/80 underline transition-colors;
+}
+
+/* List styling */
+.prose ul {
+    @apply list-disc list-inside space-y-2;
+}
+
+.prose ol {
+    @apply list-decimal list-inside space-y-2;
+}
+
+.prose li {
+    @apply leading-relaxed;
+}
+
+body {
+    @apply bg-background text-foreground;
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Roboto",
+        sans-serif;
+    font-feature-settings:
+        "rlig" 1,
+        "calt" 1;
+}
+
+/* ============================================================================
+   Typography
+   ============================================================================ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply font-semibold text-foreground;
+    line-height: 1.2;
+}
+
+h1 {
+    @apply text-4xl;
+}
+
+h2 {
+    @apply text-3xl;
+}
+
+h3 {
+    @apply text-2xl;
+}
+
+h4 {
+    @apply text-xl;
+}
+
+h5 {
+    @apply text-lg;
+}
+
+h6 {
+    @apply text-base;
+}
+
+p {
+    @apply text-base text-foreground;
+    line-height: 1.6;
+}
+
+a {
+    @apply text-google-blue hover:underline transition-colors;
+}
+
+/* ============================================================================
+   Utility Classes
+   ============================================================================ */
+
+@layer utilities {
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Custom scrollbar */
+    .scrollbar-custom {
+        scrollbar-width: thin;
+        scrollbar-color: hsl(var(--border)) transparent;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+        background: hsl(var(--border));
+        border-radius: 4px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+        background: hsl(var(--muted-foreground));
+    }
+
+    /* Text gradient */
+    .text-gradient {
+        @apply bg-gradient-to-r from-google-blue to-white bg-clip-text text-transparent;
+    }
+
+    /* Container with max width */
+    .container-custom {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    /* Card with Google shadow */
+    .card {
+        @apply bg-card rounded-lg border border-border shadow-md transition-shadow;
+    }
+
+    .card-hover {
+        @apply card hover:shadow-lg;
+    }
+
+    /* Focus visible styles */
+    .focus-visible {
+        @apply focus:outline-none focus:ring-2 focus:ring-google-blue focus:ring-offset-2;
+    }
+
+    /* Skeleton loading animation */
+    .skeleton {
+        @apply animate-pulse bg-muted rounded;
+    }
+
+    /* Text truncate multiline */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+/* ============================================================================
+   Components
+   ============================================================================ */
+
+@layer components {
+    /* Link with hover effect */
+    .link {
+        @apply text-google-blue hover:text-[hsl(214,90%,48%)] transition-colors duration-normal cursor-pointer;
+    }
+
+    /* Badge */
+    .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    .badge-blue {
+        @apply badge bg-google-blue/10 text-google-blue;
+    }
+
+    .badge-green {
+        @apply badge bg-google-green/10 text-google-green;
+    }
+
+    .badge-yellow {
+        @apply badge bg-google-yellow/10 text-[hsl(45,100%,35%)];
+    }
+
+    .badge-red {
+        @apply badge bg-google-red/10 text-google-red;
+    }
+
+    /* Divider */
+    .divider {
+        @apply border-t border-border my-4;
+    }
+
+    /* Section padding */
+    .section {
+        @apply py-12 md:py-16 lg:py-20;
+    }
+
+    /* Responsive grid */
+    .grid-responsive {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+    }
+}
+
+/* ============================================================================
+   Animations
+   ============================================================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* ============================================================================
+   Markdown Content Styles
+   ============================================================================ */
+
+.markdown-content {
+    @apply text-foreground;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+    @apply font-semibold mt-6 mb-3;
+}
+
+.markdown-content p {
+    @apply mb-4;
+}
+
+.markdown-content a {
+    @apply text-google-blue hover:underline;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+    @apply mb-4 ml-6;
+}
+
+.markdown-content li {
+    @apply mb-2;
+}
+
+.markdown-content code {
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.markdown-content pre {
+    @apply bg-muted p-4 rounded-lg overflow-x-auto mb-4;
+}
+
+.markdown-content pre code {
+    @apply bg-transparent p-0;
+}
+
+.markdown-content blockquote {
+    @apply border-l-4 border-google-blue pl-4 italic my-4 text-muted-foreground;
+}
+
+.markdown-content img {
+    @apply rounded-lg my-4 max-w-full h-auto;
+}
+
+.markdown-content table {
+    @apply w-full border-collapse mb-4;
+}
+
+.markdown-content th,
+.markdown-content td {
+    @apply border border-border px-4 py-2 text-left;
+}
+
+.markdown-content th {
+    @apply bg-muted font-semibold;
+}
+
+/* ============================================================================
+   Accessibility
+   ============================================================================ */
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+    @apply outline-none ring-2 ring-google-blue ring-offset-2;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        @apply bg-white text-black;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* ============================================================================
+   Table of Contents Styles
+   ============================================================================ */
+
+.table-of-contents {
+    transition: width 0.3s ease;
+}
+
+.toc-link {
+    line-height: 1.4;
+}
+
+.toc-link:hover .chevron-icon {
+    transform: translateX(2px);
+}
+
+.chevron-icon {
+    transition: transform 0.2s ease;
+}
+
+@media (max-width: 768px) {
+    .table-of-contents {
+        transition: transform 0.3s ease;
+    }
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Ensure headings are scrollable targets */
+h1[id],
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+    scroll-margin-top: 6rem;
+}
+
+/* TOC active state transitions */
+.toc-link {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.toc-link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 0;
+    background: hsl(var(--google-blue));
+    transition: height 0.2s ease;
+}
+
+.toc-link.active::before {
+    height: 100%;
+}
+
+/* TOC progress bar animation */
+.toc-progress {
+    transition: width 0.3s ease;
+}
+
+/* Mobile TOC overlay */
+@media (max-width: 768px) {
+    .table-of-contents-mobile {
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+
+    .table-of-contents-mobile.open {
+        transform: translateX(0);
+    }
+}
