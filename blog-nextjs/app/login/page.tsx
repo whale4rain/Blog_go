@@ -159,7 +159,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-google-blue/5 via-google-green/5 to-google-yellow/5 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-google-blue/5 via-white/5 to-blue-50/5 flex items-center justify-center p-4">
       {/* Back to Home */}
       <Link
         href="/"

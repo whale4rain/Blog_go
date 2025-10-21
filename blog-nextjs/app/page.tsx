@@ -45,7 +45,7 @@ export default async function HomePage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-google-blue/5 via-google-green/5 to-google-yellow/5 py-20">
+      <section className="bg-gradient-to-br from-google-blue/5 via-white/5 to-blue-50/5 py-20">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">

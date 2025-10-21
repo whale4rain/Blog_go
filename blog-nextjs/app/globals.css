@@ -404,7 +404,7 @@ a {
 
     /* Text gradient */
     .text-gradient {
-        @apply bg-gradient-to-r from-google-blue to-google-green bg-clip-text text-transparent;
+        @apply bg-gradient-to-r from-google-blue to-white bg-clip-text text-transparent;
     }
 
     /* Container with max width */
