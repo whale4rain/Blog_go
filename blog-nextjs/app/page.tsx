@@ -7,11 +7,11 @@ import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import {
-  getArticleList,
+  searchArticles,
   getCategoryStats,
   getTagStats,
 } from "@/lib/api/article";
-import type { ArticleListItem, CategoryStat, TagStat } from "@/types";
+import type { Hit, ArticleSource, CategoryStat, TagStat } from "@/types";
 
 // ----------------------------------------------------------------------------
 // Page Component
@@ -19,19 +19,19 @@ import type { ArticleListItem, CategoryStat, TagStat } from "@/types";
 
 export default async function HomePage() {
   // Fetch data on the server
-  let articles: ArticleListItem[] = [];
+  let articles: Hit<ArticleSource>[] = [];
   let categories: CategoryStat[] = [];
   let tags: TagStat[] = [];
 
   try {
     const [articlesResponse, categoriesResponse, tagsResponse] =
       await Promise.all([
-        getArticleList({ page: 1, page_size: 12 }),
+        searchArticles({ page: 1, page_size: 12 }),
         getCategoryStats(),
         getTagStats(),
       ]);
 
-    // Handle response format - mock API returns PaginatedResponse directly
+    // Handle Elasticsearch Hit response format
     articles = articlesResponse.list || [];
     categories = categoriesResponse || [];
     const tagsData = tagsResponse || [];
@@ -87,7 +87,7 @@ export default async function HomePage() {
             {articles.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {articles.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
+                  <ArticleCard key={article._id} article={article} />
                 ))}
               </div>
             ) : (
@@ -184,7 +184,7 @@ export default async function HomePage() {
 // Article Card Component
 // ----------------------------------------------------------------------------
 
-function ArticleCard({ article }: { article: ArticleListItem }) {
+function ArticleCard({ article }: { article: Hit<ArticleSource> }) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -194,17 +194,19 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
     });
   };
 
+  const source = article._source;
+
   return (
     <Link
-      href={`/article/${article.id}`}
+      href={`/article/${article._id}`}
       className="card-hover overflow-hidden flex flex-col group"
     >
       {/* Cover Image */}
-      {article.cover && (
+      {source.cover && (
         <div className="aspect-video w-full overflow-hidden bg-muted">
           <img
-            src={article.cover}
-            alt={article.title}
+            src={source.cover}
+            alt={source.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
@@ -214,24 +216,24 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
       <div className="p-5 flex-1 flex flex-col">
         {/* Category & Date */}
         <div className="flex items-center gap-3 mb-3 text-sm text-muted-foreground">
-          <span className="badge-blue">{article.category}</span>
-          <span>{formatDate(article.created_at)}</span>
+          <span className="badge-blue">{source.category}</span>
+          <span>{formatDate(source.created_at)}</span>
         </div>
 
         {/* Title */}
         <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-google-blue transition-colors line-clamp-2">
-          {article.title}
+          {source.title}
         </h3>
 
         {/* Abstract */}
         <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
-          {article.abstract}
+          {source.abstract}
         </p>
 
         {/* Tags */}
-        {article.tags && article.tags.length > 0 && (
+        {source.tags && source.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-4">
-            {article.tags.slice(0, 3).map((tag) => (
+            {source.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
                 className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded"
@@ -244,24 +246,6 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-border">
-          {/* Author */}
-          <div className="flex items-center gap-2">
-            {article.author?.avatar ? (
-              <img
-                src={article.author.avatar}
-                alt={article.author.username}
-                className="w-6 h-6 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-6 h-6 rounded-full bg-google-blue text-white text-xs flex items-center justify-center">
-                {article.author?.username?.charAt(0).toUpperCase() || "?"}
-              </div>
-            )}
-            <span className="text-sm text-foreground">
-              {article.author?.username || "Unknown"}
-            </span>
-          </div>
-
           {/* Stats */}
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <span className="flex items-center gap-1">
@@ -284,7 +268,7 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
                   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                 />
               </svg>
-              {article.view_count}
+              {source.views}
             </span>
             <span className="flex items-center gap-1">
               <svg
@@ -300,7 +284,7 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
                   d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                 />
               </svg>
-              {article.like_count}
+              {source.likes}
             </span>
           </div>
         </div>

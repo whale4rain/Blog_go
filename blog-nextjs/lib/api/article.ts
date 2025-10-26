@@ -13,6 +13,8 @@ import type {
   CategoryStat,
   TagStat,
   PaginatedResponse,
+  Hit,
+  ArticleSource,
 } from "@/types";
 
 // ----------------------------------------------------------------------------
@@ -83,11 +85,11 @@ export async function getArticleById(id: string): Promise<Article> {
 // ----------------------------------------------------------------------------
 
 /**
- * Search articles with filters
+ * Search articles with filters (returns Elasticsearch Hit structure)
  */
 export async function searchArticles(
   params: ArticleSearchParams,
-): Promise<PaginatedResponse<ArticleListItem>> {
+): Promise<{ list: Hit<ArticleSource>[]; total: number }> {
   const query = new URLSearchParams();
   if (params.query) query.append("query", params.query);
   if (params.category) query.append("category", params.category);
@@ -97,7 +99,7 @@ export async function searchArticles(
   if (params.page) query.append("page", params.page.toString());
   if (params.page_size) query.append("page_size", params.page_size.toString());
 
-  return get<PaginatedResponse<ArticleListItem>>(
+  return get<{ list: Hit<ArticleSource>[]; total: number }>(
     `/article/search?${query.toString()}`,
   );
 }

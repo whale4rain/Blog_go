@@ -21,7 +21,7 @@ import {
   getCategoryStats,
   getTagStats,
 } from "@/lib/api/article";
-import type { ArticleListItem, CategoryStat, TagStat } from "@/types";
+import type { Hit, ArticleSource, CategoryStat, TagStat } from "@/types";
 
 // ----------------------------------------------------------------------------
 // Search Page Component
@@ -32,7 +32,7 @@ function SearchPageContent() {
   const searchParams = useSearchParams();
 
   // State
-  const [articles, setArticles] = useState<ArticleListItem[]>([]);
+  const [articles, setArticles] = useState<Hit<ArticleSource>[]>([]);
   const [categories, setCategories] = useState<CategoryStat[]>([]);
   const [tags, setTags] = useState<TagStat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,8 +47,8 @@ function SearchPageContent() {
   );
   const [selectedTag, setSelectedTag] = useState(searchParams.get("tag") || "");
   const [sortBy, setSortBy] = useState<
-    "created_at" | "view_count" | "like_count"
-  >((searchParams.get("sort") as any) || "created_at");
+    "time" | "view" | "comment" | "like" | ""
+  >((searchParams.get("sort") as any) || "");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
     (searchParams.get("order") as any) || "desc",
   );
@@ -93,7 +93,7 @@ function SearchPageContent() {
         query: searchQuery || undefined,
         category: selectedCategory || undefined,
         tag: selectedTag || undefined,
-        sort: sortBy,
+        sort: sortBy || undefined,
         order: sortOrder,
         page: currentPage,
         page_size: 12,
@@ -121,7 +121,7 @@ function SearchPageContent() {
     if (searchQuery) params.set("query", searchQuery);
     if (selectedCategory) params.set("category", selectedCategory);
     if (selectedTag) params.set("tag", selectedTag);
-    if (sortBy !== "created_at") params.set("sort", sortBy);
+    if (sortBy !== "") params.set("sort", sortBy);
     if (sortOrder !== "desc") params.set("order", sortOrder);
     if (currentPage !== 1) params.set("page", currentPage.toString());
 
@@ -133,7 +133,7 @@ function SearchPageContent() {
     setSearchQuery("");
     setSelectedCategory("");
     setSelectedTag("");
-    setSortBy("created_at");
+    setSortBy("");
     setSortOrder("desc");
     setCurrentPage(1);
     router.push("/search");
@@ -251,10 +251,12 @@ function SearchPageContent() {
                   }}
                   className="w-full h-10 px-3 border-2 border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue/50 focus:border-google-blue transition-colors"
                 >
-                  <option value="created_at-desc">Newest First</option>
-                  <option value="created_at-asc">Oldest First</option>
-                  <option value="view_count-desc">Most Viewed</option>
-                  <option value="like_count-desc">Most Liked</option>
+                  <option value="-desc">Default</option>
+                  <option value="time-desc">Newest First</option>
+                  <option value="time-asc">Oldest First</option>
+                  <option value="view-desc">Most Viewed</option>
+                  <option value="like-desc">Most Liked</option>
+                  <option value="comment-desc">Most Commented</option>
                 </select>
               </div>
             </div>
@@ -335,7 +337,7 @@ function SearchPageContent() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {articles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
+                <ArticleCard key={article._id} article={article} />
               ))}
             </div>
 
@@ -417,7 +419,7 @@ function SearchPageContent() {
 // Article Card Component
 // ----------------------------------------------------------------------------
 
-function ArticleCard({ article }: { article: ArticleListItem }) {
+function ArticleCard({ article }: { article: Hit<ArticleSource> }) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -427,16 +429,18 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
     });
   };
 
+  const source = article._source;
+
   return (
     <Link
-      href={`/article/${article.id}`}
+      href={`/article/${article._id}`}
       className="card-hover overflow-hidden flex flex-col group"
     >
-      {article.cover && (
+      {source.cover && (
         <div className="aspect-video w-full overflow-hidden bg-muted">
           <img
-            src={article.cover}
-            alt={article.title}
+            src={source.cover}
+            alt={source.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
@@ -444,21 +448,21 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
 
       <div className="p-5 flex-1 flex flex-col">
         <div className="flex items-center gap-3 mb-3 text-sm text-muted-foreground">
-          <span className="badge-blue">{article.category}</span>
-          <span>{formatDate(article.created_at)}</span>
+          <span className="badge-blue">{source.category}</span>
+          <span>{formatDate(source.created_at)}</span>
         </div>
 
         <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-google-blue transition-colors line-clamp-2">
-          {article.title}
+          {source.title}
         </h3>
 
         <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
-          {article.abstract}
+          {source.abstract}
         </p>
 
-        {article.tags && article.tags.length > 0 && (
+        {source.tags && source.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-4">
-            {article.tags.slice(0, 3).map((tag) => (
+            {source.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
                 className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded"
@@ -470,25 +474,45 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
         )}
 
         <div className="flex items-center justify-between pt-4 border-t border-border">
-          <div className="flex items-center gap-2">
-            {article.author?.avatar ? (
-              <img
-                src={article.author.avatar}
-                alt={article.author.username}
-                className="w-6 h-6 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-6 h-6 rounded-full bg-google-blue text-white text-xs flex items-center justify-center">
-                {article.author?.username?.charAt(0).toUpperCase() || "?"}
-              </div>
-            )}
-            <span className="text-sm text-foreground">
-              {article.author?.username || "Unknown"}
-            </span>
-          </div>
-
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <span>{article.view_count}</span>
+            <span className="flex items-center gap-1">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+              {source.views}
+            </span>
+            <span className="flex items-center gap-1">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+              {source.likes}
+            </span>
           </div>
         </div>
       </div>

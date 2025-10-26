@@ -1,9 +1,39 @@
 // ============================================================================
-// Core Type Definitions for Blog Application
+// Type Definitions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// API Response Types
+// Elasticsearch Types
+// ----------------------------------------------------------------------------
+
+/**
+ * Elasticsearch Hit structure
+ */
+export interface Hit<T> {
+  _id: string;
+  _source: T;
+}
+
+/**
+ * Article data structure in Elasticsearch
+ */
+export interface ArticleSource {
+  created_at: string;
+  updated_at: string;
+  cover: string;
+  title: string;
+  keyword: string;
+  category: string;
+  tags: string[];
+  abstract: string;
+  content: string;
+  views: number;
+  comments: number;
+  likes: number;
+}
+
+// ----------------------------------------------------------------------------
+// Common Types
 // ----------------------------------------------------------------------------
 
 export interface ApiResponse<T = any> {
@@ -105,6 +135,14 @@ export interface ArticleListItem {
   created_at: string;
 }
 
+/**
+ * Article search result (Elasticsearch response)
+ */
+export interface ArticleSearchResult {
+  list: Hit<ArticleSource>[];
+  total: number;
+}
+
 export interface CreateArticleRequest {
   cover: string;
   title: string;
@@ -122,12 +160,18 @@ export interface ArticleSearchParams {
   query?: string;
   category?: string;
   tag?: string;
-  sort?: "created_at" | "view_count" | "like_count";
+  sort?:
+    | "created_at"
+    | "view_count"
+    | "like_count"
+    | "time"
+    | "view"
+    | "like"
+    | "comment";
   order?: "asc" | "desc";
   page?: number;
   page_size?: number;
 }
-
 // ----------------------------------------------------------------------------
 // Comment Types
 // ----------------------------------------------------------------------------
