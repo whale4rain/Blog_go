@@ -94,7 +94,7 @@ export interface ArticleListItem {
   category: string;
   tags: string[];
   abstract: string;
-  author: {
+  author?: {
     id: number;
     username: string;
     avatar?: string;

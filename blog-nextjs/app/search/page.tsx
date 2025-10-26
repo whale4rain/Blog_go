@@ -323,7 +323,7 @@ function SearchPageContent() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="card p-6">
+              <div key={`skeleton-${i}`} className="card p-6">
                 <div className="skeleton h-48 mb-4" />
                 <div className="skeleton h-6 w-3/4 mb-2" />
                 <div className="skeleton h-4 w-full mb-2" />
@@ -364,7 +364,7 @@ function SearchPageContent() {
 
                   return (
                     <button
-                      key={pageNum}
+                      key={`page-${pageNum}`}
                       onClick={() => setCurrentPage(pageNum)}
                       className={`px-4 py-2 border-2 rounded-lg transition-colors ${
                         currentPage === pageNum
@@ -471,7 +471,7 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
 
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <div className="flex items-center gap-2">
-            {article.author.avatar ? (
+            {article.author?.avatar ? (
               <img
                 src={article.author.avatar}
                 alt={article.author.username}
@@ -479,11 +479,11 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
               />
             ) : (
               <div className="w-6 h-6 rounded-full bg-google-blue text-white text-xs flex items-center justify-center">
-                {article.author.username.charAt(0).toUpperCase()}
+                {article.author?.username?.charAt(0).toUpperCase() || "?"}
               </div>
             )}
             <span className="text-sm text-foreground">
-              {article.author.username}
+              {article.author?.username || "Unknown"}
             </span>
           </div>
 
