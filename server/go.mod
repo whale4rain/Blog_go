@@ -32,13 +32,14 @@ require (
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/alex-ant/gomath v0.0.0-20160516115720-89013a210a82 // indirect
-	github.com/bytedance/sonic v1.13.2 // indirect
+	github.com/bytedance/sonic v1.13.3 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.9 // indirect
 	github.com/gammazero/toposort v0.1.1 // indirect
-	github.com/gin-contrib/sse v1.0.0 // indirect
+	github.com/gin-contrib/cors v1.7.6 // indirect
+	github.com/gin-contrib/sse v1.1.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -63,17 +64,17 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.38.0 // indirect
-	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
-	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/ugorji/go/codec v1.3.0 // indirect
 	go.opentelemetry.io/otel v1.28.0 // indirect
 	go.opentelemetry.io/otel/metric v1.28.0 // indirect
 	go.opentelemetry.io/otel/trace v1.28.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/arch v0.16.0 // indirect
+	golang.org/x/arch v0.18.0 // indirect
 	golang.org/x/image v0.23.0 // indirect
 	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/sync v0.15.0 // indirect

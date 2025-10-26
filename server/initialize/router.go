@@ -16,6 +16,8 @@ func InitRouter() *gin.Engine {
 	// 设置gin模式
 	gin.SetMode(global.Config.System.Env)
 	Router := gin.Default()
+	// 使用CORS中间件
+	Router.Use(middleware.Cors())
 	// 使用日志记录中间件
 	Router.Use(middleware.GinLogger(), middleware.GinRecovery(true))
 	// 使用gin会话路由
