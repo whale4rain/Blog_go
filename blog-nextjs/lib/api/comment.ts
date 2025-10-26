@@ -48,7 +48,7 @@ export async function deleteComments(ids: number[]): Promise<void> {
  * Get comments for an article
  */
 export async function getCommentList(params: {
-  article_id: number;
+  article_id: string;
   page?: number;
   page_size?: number;
 }): Promise<PaginatedResponse<Comment>> {

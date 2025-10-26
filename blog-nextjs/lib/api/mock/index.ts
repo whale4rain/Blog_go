@@ -100,12 +100,14 @@ const createPaginatedResponse = <T>(
 
 const generateId = (): number => {
   return (
-    Math.max(
-      ...mockArticles.map((a) => a.id),
-      ...mockUsers.map((u) => u.id),
-      ...mockComments.map((c) => c.id),
-    ) + 1
+    Math.max(...mockUsers.map((u) => u.id), ...mockComments.map((c) => c.id)) +
+    1
   );
+};
+
+const generateArticleId = (): string => {
+  const maxId = Math.max(...mockArticles.map((a) => parseInt(a.id) || 0), 0);
+  return (maxId + 1).toString();
 };
 
 // ============================================================================
@@ -117,7 +119,7 @@ export const mockApi = {
   // Article API
   // ------------------------------------------------------------------------
 
-  async getArticleById(id: number): Promise<Article> {
+  async getArticleById(id: string): Promise<Article> {
     await delay();
     const article = mockArticles.find((a) => a.id === id);
     if (!article) {
@@ -207,7 +209,7 @@ export const mockApi = {
     return mockTagStats.map((stat) => ({ name: stat.name, count: stat.count }));
   },
 
-  async articleLike(articleId: number): Promise<void> {
+  async articleLike(articleId: string): Promise<void> {
     await delay();
     const article = mockArticles.find((a) => a.id === articleId);
     if (article) {
@@ -215,7 +217,7 @@ export const mockApi = {
     }
   },
 
-  async checkIsLiked(articleId: number): Promise<boolean> {
+  async checkIsLiked(articleId: string): Promise<boolean> {
     await delay();
     // In a real app, this would check against user's likes
     return Math.random() > 0.5;
@@ -225,34 +227,33 @@ export const mockApi = {
     await delay();
 
     const newArticle: Article = {
-      id: generateId(),
+      id: generateArticleId(),
+      cover: data.cover,
       title: data.title,
-      abstract: data.abstract,
-      content: data.content,
       category: data.category,
       tags: data.tags,
-      cover: data.cover,
-      author: mockUsers[0], // Mock current user
+      abstract: data.abstract,
+      content: data.content,
+      author: mockUsers[0],
       author_id: mockUsers[0].id,
       view_count: 0,
       like_count: 0,
       comment_count: 0,
-      status: data.status || 0,
+      status: 1,
       is_top: false,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
 
-    mockArticles.unshift(newArticle);
+    mockArticles.push(newArticle);
     return newArticle;
   },
 
   async updateArticle(
-    id: number,
+    id: string,
     data: UpdateArticleRequest,
   ): Promise<Article> {
     await delay();
-
     const articleIndex = mockArticles.findIndex((a) => a.id === id);
     if (articleIndex === -1) {
       throw new Error(`Article with id ${id} not found`);
@@ -267,7 +268,7 @@ export const mockApi = {
     return mockArticles[articleIndex];
   },
 
-  async deleteArticle(id: number): Promise<void> {
+  async deleteArticle(id: string): Promise<void> {
     await delay();
 
     const articleIndex = mockArticles.findIndex((a) => a.id === id);
@@ -278,7 +279,7 @@ export const mockApi = {
     mockArticles.splice(articleIndex, 1);
   },
 
-  async deleteArticles(ids: number[]): Promise<void> {
+  async deleteArticles(ids: string[]): Promise<void> {
     await delay();
 
     ids.forEach((id) => {
@@ -490,7 +491,7 @@ export const mockApi = {
   },
 
   async getCommentList(params: {
-    article_id: number;
+    article_id: string;
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<Comment>> {

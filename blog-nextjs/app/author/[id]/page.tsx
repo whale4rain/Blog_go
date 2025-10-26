@@ -37,7 +37,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
 
     // Filter articles by this author
     articles = articlesData.list.filter(
-      (article) => article.author.id === authorId,
+      (article) => article.author?.id === authorId,
     );
   } catch (error) {
     console.error("Failed to fetch author data:", error);

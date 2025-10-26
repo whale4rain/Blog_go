@@ -6,7 +6,7 @@ import type { Article, CategoryStat, TagStat } from "@/types";
 
 export const mockArticles: Article[] = [
   {
-    id: 1,
+    id: "1",
     cover: "https://picsum.photos/seed/article1/800/400.jpg",
     title: "Getting Started with Next.js 14",
     category: "Technology",
@@ -104,7 +104,7 @@ Where:
 
 Next.js 14 is a powerful framework for building modern web applications with excellent performance and developer experience. The combination of mathematical optimization and modern architecture makes it an excellent choice for production applications.`,
     author: {
-      id: 1,
+      id: 4,
       uuid: "user-uuid-1",
       username: "John Doe",
       email: "john@example.com",
@@ -126,7 +126,7 @@ Next.js 14 is a powerful framework for building modern web applications with exc
     updated_at: "2024-03-15T10:00:00Z",
   },
   {
-    id: 2,
+    id: "2",
     cover: "https://picsum.photos/seed/article2/800/400.jpg",
     title: "Understanding TypeScript Generics",
     category: "Programming",
@@ -251,7 +251,7 @@ interface Box<T> {
 
 Generics are essential for writing type-safe and reusable TypeScript code.`,
     author: {
-      id: 2,
+      id: 5,
       uuid: "user-uuid-2",
       username: "Jane Smith",
       email: "jane@example.com",
@@ -273,7 +273,7 @@ Generics are essential for writing type-safe and reusable TypeScript code.`,
     updated_at: "2024-03-14T15:30:00Z",
   },
   {
-    id: 3,
+    id: "3",
     cover: "https://picsum.photos/seed/article3/800/400.jpg",
     title: "Modern CSS Techniques",
     category: "Design",
@@ -296,7 +296,7 @@ CSS variables allow for dynamic styling.
 ## Conclusion
 Modern CSS provides powerful tools for creating beautiful, responsive layouts.`,
     author: {
-      id: 1,
+      id: 6,
       uuid: "user-uuid-1",
       username: "John Doe",
       email: "john@example.com",

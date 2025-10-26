@@ -20,7 +20,7 @@ export default function EditArticlePage() {
   const router = useRouter();
   const params = useParams();
   const { user, isLoggedIn } = useUserStore();
-  const articleId = parseInt(params.id as string);
+  const articleId = params.id as string;
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);

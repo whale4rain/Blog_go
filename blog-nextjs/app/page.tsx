@@ -246,7 +246,7 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
         <div className="flex items-center justify-between pt-4 border-t border-border">
           {/* Author */}
           <div className="flex items-center gap-2">
-            {article.author.avatar ? (
+            {article.author?.avatar ? (
               <img
                 src={article.author.avatar}
                 alt={article.author.username}
@@ -254,11 +254,11 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
               />
             ) : (
               <div className="w-6 h-6 rounded-full bg-google-blue text-white text-xs flex items-center justify-center">
-                {article.author.username.charAt(0).toUpperCase()}
+                {article.author?.username?.charAt(0).toUpperCase() || "?"}
               </div>
             )}
             <span className="text-sm text-foreground">
-              {article.author.username}
+              {article.author?.username || "Unknown"}
             </span>
           </div>
 

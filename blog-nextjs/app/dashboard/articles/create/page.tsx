@@ -81,6 +81,14 @@ export default function CreateArticlePage() {
       newErrors.category = "Category is required";
     }
 
+    if (!coverImage.trim()) {
+      newErrors.cover = "Cover image is required";
+    }
+
+    if (tags.length === 0) {
+      newErrors.tags = "At least one tag is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -98,7 +106,7 @@ export default function CreateArticlePage() {
         content: content.trim(),
         category: category.toLowerCase(),
         tags,
-        cover: coverImage,
+        cover: coverImage.trim() || "https://via.placeholder.com/800x400",
       };
 
       await createArticle(articleData);

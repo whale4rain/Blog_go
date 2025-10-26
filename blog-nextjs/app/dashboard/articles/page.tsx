@@ -35,7 +35,7 @@ export default function ArticlesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedArticles, setSelectedArticles] = useState<number[]>([]);
+  const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function ArticlesPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       await deleteArticle(id);
       fetchArticles();
@@ -87,7 +87,7 @@ export default function ArticlesPage() {
     }
   };
 
-  const toggleArticleSelection = (id: number) => {
+  const toggleArticleSelection = (id: string) => {
     setSelectedArticles((prev) =>
       prev.includes(id)
         ? prev.filter((articleId) => articleId !== id)
@@ -232,7 +232,7 @@ export default function ArticlesPage() {
               <tbody className="divide-y divide-border">
                 {loading ? (
                   Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i}>
+                    <tr key={`skeleton-row-${i}`}>
                       <td className="px-6 py-4">
                         <div className="skeleton h-4 w-4 rounded" />
                       </td>

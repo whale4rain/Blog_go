@@ -69,7 +69,7 @@ export interface UpdateUserRequest {
 // ----------------------------------------------------------------------------
 
 export interface Article {
-  id: number;
+  id: string;
   cover: string;
   title: string;
   category: string;
@@ -88,7 +88,7 @@ export interface Article {
 }
 
 export interface ArticleListItem {
-  id: number;
+  id: string;
   cover: string;
   title: string;
   category: string;
@@ -115,7 +115,7 @@ export interface CreateArticleRequest {
 }
 
 export interface UpdateArticleRequest extends CreateArticleRequest {
-  id: number;
+  id: string;
 }
 
 export interface ArticleSearchParams {
@@ -134,7 +134,7 @@ export interface ArticleSearchParams {
 
 export interface Comment {
   id: number;
-  article_id: number;
+  article_id: string;
   user_id: number;
   user: User;
   p_id?: number;
@@ -148,7 +148,7 @@ export interface Comment {
 }
 
 export interface CreateCommentRequest {
-  article_id: number;
+  article_id: string;
   p_id?: number;
   content: string;
 }

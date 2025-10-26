@@ -21,11 +21,7 @@ interface ArticlePageProps {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const articleId = parseInt(params.id);
-
-  if (isNaN(articleId)) {
-    notFound();
-  }
+  const articleId = params.id;
 
   // Fetch article data
   let article: Article | null = null;
@@ -67,13 +63,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 // ============================================================================
 
 export async function generateMetadata({ params }: ArticlePageProps) {
-  const articleId = parseInt(params.id);
-
-  if (isNaN(articleId)) {
-    return {
-      title: "Article Not Found",
-    };
-  }
+  const articleId = params.id;
 
   try {
     const article = await getArticleById(articleId);

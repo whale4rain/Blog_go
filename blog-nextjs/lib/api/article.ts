@@ -35,7 +35,7 @@ export async function createArticle(
  * Update an existing article
  */
 export async function updateArticle(
-  id: number,
+  id: string,
   data: UpdateArticleRequest,
 ): Promise<Article> {
   if (USE_MOCK_API) {
@@ -47,7 +47,7 @@ export async function updateArticle(
 /**
  * Delete article by ID
  */
-export async function deleteArticle(id: number): Promise<void> {
+export async function deleteArticle(id: string): Promise<void> {
   if (USE_MOCK_API) {
     return mockApi.deleteArticle(id);
   }
@@ -59,7 +59,7 @@ export async function deleteArticle(id: number): Promise<void> {
 /**
  * Delete articles by IDs
  */
-export async function deleteArticles(ids: number[]): Promise<void> {
+export async function deleteArticles(ids: string[]): Promise<void> {
   if (USE_MOCK_API) {
     return mockApi.deleteArticles(ids);
   }
@@ -71,7 +71,7 @@ export async function deleteArticles(ids: number[]): Promise<void> {
 /**
  * Get article by ID
  */
-export async function getArticleById(id: number): Promise<Article> {
+export async function getArticleById(id: string): Promise<Article> {
   if (USE_MOCK_API) {
     return mockApi.getArticleById(id);
   }
@@ -133,7 +133,7 @@ export async function getTagStats(): Promise<TagStat[]> {
 /**
  * Like article
  */
-export async function likeArticle(articleId: number): Promise<void> {
+export async function likeArticle(articleId: string): Promise<void> {
   if (USE_MOCK_API) {
     return mockApi.articleLike(articleId);
   }
@@ -143,7 +143,7 @@ export async function likeArticle(articleId: number): Promise<void> {
 /**
  * Check if current user has liked an article
  */
-export async function checkIsLiked(articleId: number): Promise<boolean> {
+export async function checkIsLiked(articleId: string): Promise<boolean> {
   if (USE_MOCK_API) {
     return mockApi.checkIsLiked(articleId);
   }
