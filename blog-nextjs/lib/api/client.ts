@@ -61,8 +61,8 @@ client.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
     const { data } = response;
 
-    // Check API response code
-    if (data.code === 200 || data.code === 0) {
+    // Check API response code (backend returns 0 for success)
+    if (data.code === 0) {
       return response;
     }
 

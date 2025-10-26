@@ -59,6 +59,7 @@ export default function LoginPage() {
       const captchaData = await getCaptcha();
       setCaptchaId(captchaData.captcha_id);
       setCaptchaImage(captchaData.pic_path);
+      console.log(captchaData.pic_path);
     } catch (error) {
       console.error("Failed to load captcha:", error);
     }

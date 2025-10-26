@@ -59,7 +59,7 @@ import {
 // Configuration
 // ============================================================================
 
-export const USE_MOCK_API = true;
+export const USE_MOCK_API = false;
 
 // ============================================================================
 // Helper Functions

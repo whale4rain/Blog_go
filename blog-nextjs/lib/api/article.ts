@@ -41,7 +41,7 @@ export async function updateArticle(
   if (USE_MOCK_API) {
     return mockApi.updateArticle(id, data);
   }
-  return put<Article>(`/article/${id}`, data);
+  return put<Article>("/article/update", { ...data, id });
 }
 
 /**
@@ -51,7 +51,9 @@ export async function deleteArticle(id: number): Promise<void> {
   if (USE_MOCK_API) {
     return mockApi.deleteArticle(id);
   }
-  return del<void>(`/article/${id}`);
+  return del<void>("/article/delete", {
+    data: { ids: [id] },
+  });
 }
 
 /**

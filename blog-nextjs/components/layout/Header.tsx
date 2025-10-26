@@ -94,7 +94,7 @@ export default function Header() {
             href="/"
             className="flex items-center gap-2 text-xl font-semibold text-foreground hover:text-google-blue transition-colors"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-google-blue to-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 bg-gradient-to-br from-google-blue to-white rounded-lg flex items-center justify-center text-white font-bold">
               IB
             </div>
             <span className="hidden sm:inline">Inspiration Blog</span>

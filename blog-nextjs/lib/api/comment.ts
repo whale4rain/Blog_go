@@ -56,13 +56,8 @@ export async function getCommentList(params: {
     return mockApi.getCommentList(params);
   }
 
-  const query = new URLSearchParams();
-  if (params.article_id)
-    query.append("article_id", params.article_id.toString());
-  if (params.page) query.append("page", params.page.toString());
-  if (params.page_size) query.append("page_size", params.page_size.toString());
-
-  return get<PaginatedResponse<Comment>>(`/comment/list?${query.toString()}`);
+  // Backend route: GET /comment/:article_id
+  return get<PaginatedResponse<Comment>>(`/comment/${params.article_id}`);
 }
 
 // ----------------------------------------------------------------------------
@@ -148,21 +143,21 @@ export async function getQQLoginURL(): Promise<string> {
 export async function createFriendLink(
   data: CreateFriendLinkRequest,
 ): Promise<FriendLink> {
-  return post<FriendLink>("/friend-link/create", data);
+  return post<FriendLink>("/friendLink/create", data);
 }
 
 /**
  * Update a friend link
  */
 export async function updateFriendLink(data: FriendLink): Promise<FriendLink> {
-  return put<FriendLink>("/friend-link/update", data);
+  return put<FriendLink>("/friendLink/update", data);
 }
 
 /**
  * Delete friend links by IDs
  */
 export async function deleteFriendLinks(ids: number[]): Promise<void> {
-  return del<void>("/friend-link/delete", {
+  return del<void>("/friendLink/delete", {
     data: { ids },
   });
 }
@@ -179,15 +174,15 @@ export async function getFriendLinkList(params?: {
   if (params?.page_size) query.append("page_size", params.page_size.toString());
 
   return get<PaginatedResponse<FriendLink>>(
-    `/friend-link/list?${query.toString()}`,
+    `/friendLink/list?${query.toString()}`,
   );
 }
 
 /**
- * Get friend links for footer
+ * Get friend links info (public)
  */
 export async function getFooterFriendLinks(): Promise<FriendLink[]> {
-  return get<FriendLink[]>("/friend-link/footer");
+  return get<FriendLink[]>("/friendLink/info");
 }
 
 // ----------------------------------------------------------------------------
@@ -285,10 +280,36 @@ export async function getWebsiteInfo(): Promise<Record<string, unknown>> {
 }
 
 /**
- * Update website information
+ * Get website logo
  */
-export async function updateWebsiteInfo(
-  data: Record<string, unknown>,
-): Promise<Record<string, unknown>> {
-  return put<Record<string, unknown>>("/website/update", data);
+export async function getWebsiteLogo(): Promise<{ logo: string }> {
+  return get<{ logo: string }>("/website/logo");
+}
+
+/**
+ * Get website title
+ */
+export async function getWebsiteTitle(): Promise<{ title: string }> {
+  return get<{ title: string }>("/website/title");
+}
+
+/**
+ * Get website carousel
+ */
+export async function getWebsiteCarousel(): Promise<any[]> {
+  return get<any[]>("/website/carousel");
+}
+
+/**
+ * Get website news
+ */
+export async function getWebsiteNews(): Promise<any[]> {
+  return get<any[]>("/website/news");
+}
+
+/**
+ * Get website footer links
+ */
+export async function getWebsiteFooterLinks(): Promise<any[]> {
+  return get<any[]>("/website/footerLink");
 }
