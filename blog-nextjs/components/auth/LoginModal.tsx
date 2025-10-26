@@ -79,10 +79,19 @@ export default function LoginModal() {
     setLoading(true);
     setError("");
 
+    // Validate captcha
+    if (!captchaInput.trim()) {
+      setError("Please enter the captcha");
+      setLoading(false);
+      return;
+    }
+
     try {
       const userInfo = await apiLogin({
         email: loginEmail,
         password: loginPassword,
+        captcha: captchaInput,
+        captcha_id: captchaId,
       });
 
       // Store user data using the store's login method
@@ -95,6 +104,7 @@ export default function LoginModal() {
       }, 1000);
     } catch (error: any) {
       setError(error.response?.data?.msg || "Login failed. Please try again.");
+      loadCaptcha(); // Reload captcha on error
     } finally {
       setLoading(false);
     }
@@ -161,6 +171,8 @@ export default function LoginModal() {
     setRegisterUsername("");
     setVerificationCode("");
     setCaptchaInput("");
+    setCaptchaId("");
+    setCaptchaImage("");
     setError("");
     setSuccess("");
     setShowLoginPassword(false);
@@ -171,6 +183,10 @@ export default function LoginModal() {
   const switchMode = () => {
     setMode(mode === "login" ? "register" : "login");
     resetForm();
+    // Reload captcha when switching modes
+    setTimeout(() => {
+      loadCaptcha();
+    }, 100);
   };
 
   const handleClose = () => {
@@ -278,6 +294,29 @@ export default function LoginModal() {
                       <Eye className="w-4 h-4" />
                     )}
                   </button>
+                </div>
+              </div>
+
+              {/* Captcha */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Captcha
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={captchaInput}
+                    onChange={(e) => setCaptchaInput(e.target.value)}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue/50 focus:border-google-blue"
+                    placeholder="Enter captcha"
+                    required
+                  />
+                  <img
+                    src={captchaImage}
+                    alt="Captcha"
+                    className="h-10 w-24 border border-gray-300 rounded cursor-pointer"
+                    onClick={loadCaptcha}
+                  />
                 </div>
               </div>
 

@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login, register } from "@/lib/api/user";
-import { getCaptcha, sendEmailVerificationCode } from "@/lib/api/comment";
+import { getCaptcha, sendEmailVerificationCode } from "@/lib/api/base";
 import { useUserStore } from "@/lib/store/userStore";
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from "lucide-react";
 
@@ -101,17 +101,28 @@ export default function LoginPage() {
       return;
     }
 
+    if (!captchaInput.trim()) {
+      setError("Please enter the captcha");
+      return;
+    }
+
     try {
       setLoading(true);
       const userInfo = await login({
         email: loginEmail,
         password: loginPassword,
+        captcha: captchaInput,
+        captcha_id: captchaId,
       });
 
       setUserLogin(userInfo);
       router.push("/dashboard");
     } catch (error: any) {
-      setError(error.message || "Login failed. Please check your credentials.");
+      setError(
+        error.response?.data?.msg ||
+          "Login failed. Please check your credentials.",
+      );
+      loadCaptcha(); // Reload captcha on error
     } finally {
       setLoading(false);
     }
@@ -242,6 +253,29 @@ export default function LoginPage() {
                       <Eye className="w-5 h-5" />
                     )}
                   </button>
+                </div>
+              </div>
+
+              {/* Captcha */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Captcha
+                </label>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={captchaInput}
+                    onChange={(e) => setCaptchaInput(e.target.value)}
+                    placeholder="Enter captcha"
+                    className="flex-1 h-12 px-4 border-2 border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue/50 focus:border-google-blue transition-colors"
+                    required
+                  />
+                  <img
+                    src={captchaImage}
+                    alt="Captcha"
+                    className="h-12 w-28 border-2 border-border rounded-lg cursor-pointer hover:border-google-blue/50 transition-colors"
+                    onClick={loadCaptcha}
+                  />
                 </div>
               </div>
 

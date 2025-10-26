@@ -46,8 +46,8 @@ export interface UserInfo {
 export interface LoginRequest {
   email: string;
   password: string;
-  captcha?: string;
-  captcha_id?: string;
+  captcha: string;
+  captcha_id: string;
 }
 
 export interface RegisterRequest {
