@@ -112,7 +112,6 @@ export interface CreateArticleRequest {
   tags: string[];
   abstract: string;
   content: string;
-  status?: number;
 }
 
 export interface UpdateArticleRequest extends CreateArticleRequest {

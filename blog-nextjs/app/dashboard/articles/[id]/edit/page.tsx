@@ -26,7 +26,6 @@ export default function EditArticlePage() {
   const [fetching, setFetching] = useState(true);
   const [publishing, setPublishing] = useState(false);
   const [article, setArticle] = useState<Article | null>(null);
-  const [originalStatus, setOriginalStatus] = useState<number>(0);
 
   const [formData, setFormData] = useState<CreateArticleRequest>({
     title: "",
@@ -35,7 +34,6 @@ export default function EditArticlePage() {
     category: "",
     tags: [],
     cover: "",
-    status: 0,
   });
 
   const [tagInput, setTagInput] = useState("");
@@ -68,7 +66,6 @@ export default function EditArticlePage() {
       setFetching(true);
       const fetchedArticle = await getArticleById(articleId);
       setArticle(fetchedArticle);
-      setOriginalStatus(fetchedArticle.status);
 
       setFormData({
         title: fetchedArticle.title,
@@ -77,7 +74,6 @@ export default function EditArticlePage() {
         category: fetchedArticle.category,
         tags: fetchedArticle.tags,
         cover: fetchedArticle.cover || "",
-        status: fetchedArticle.status,
       });
     } catch (error) {
       console.error("Failed to fetch article:", error);
@@ -124,7 +120,7 @@ export default function EditArticlePage() {
     }));
   };
 
-  const handleSave = async (status: number) => {
+  const handleSave = async () => {
     if (!formData.title.trim() || !formData.content.trim()) {
       alert("Please fill in the title and content");
       return;
@@ -137,7 +133,6 @@ export default function EditArticlePage() {
       const articleData = {
         ...formData,
         id: articleId,
-        status,
         abstract:
           formData.abstract || formData.content.substring(0, 200) + "...",
       };
@@ -145,9 +140,7 @@ export default function EditArticlePage() {
       await updateArticle(articleId, articleData);
 
       // Show success message
-      const action =
-        status === 1 && originalStatus !== 1 ? "published" : "updated";
-      alert(`Article ${action} successfully!`);
+      alert(`Article updated successfully!`);
 
       router.push("/dashboard/articles");
     } catch (error) {
@@ -224,20 +217,12 @@ export default function EditArticlePage() {
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => handleSave(0)}
-                disabled={loading}
-                className="btn-secondary flex items-center gap-2"
-              >
-                <Save className="w-5 h-5" />
-                Save Draft
-              </button>
-              <button
-                onClick={() => handleSave(1)}
+                onClick={() => handleSave()}
                 disabled={loading}
                 className="btn-primary flex items-center gap-2"
               >
-                <Eye className="w-5 h-5" />
-                {originalStatus === 1 ? "Update" : "Publish"}
+                <Save className="w-5 h-5" />
+                Save Changes
               </button>
             </div>
           </div>
@@ -434,37 +419,6 @@ export default function EditArticlePage() {
               <p className="text-xs text-muted-foreground mt-2">
                 Add up to 5 tags
               </p>
-            </div>
-
-            {/* Publishing Options */}
-            <div className="card p-6">
-              <h3 className="font-medium text-foreground mb-4">
-                Publishing Options
-              </h3>
-              <div className="space-y-3">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="status"
-                    value="0"
-                    checked={formData.status === 0}
-                    onChange={handleInputChange}
-                    className="rounded border-border"
-                  />
-                  <span className="text-sm">Save as Draft</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="status"
-                    value="1"
-                    checked={formData.status === 1}
-                    onChange={handleInputChange}
-                    className="rounded border-border"
-                  />
-                  <span className="text-sm">Publish Immediately</span>
-                </label>
-              </div>
             </div>
           </div>
         </div>

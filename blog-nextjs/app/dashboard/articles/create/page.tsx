@@ -40,7 +40,6 @@ export default function CreateArticlePage() {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [coverImage, setCoverImage] = useState("");
-  const [status, setStatus] = useState<number>(0);
 
   // Form validation
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -86,7 +85,7 @@ export default function CreateArticlePage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = async (publish: boolean = false) => {
+  const handleSave = async () => {
     if (!validateForm()) {
       return;
     }
@@ -100,7 +99,6 @@ export default function CreateArticlePage() {
         category: category.toLowerCase(),
         tags,
         cover: coverImage,
-        status: publish ? 1 : 0,
       };
 
       await createArticle(articleData);
@@ -177,19 +175,12 @@ export default function CreateArticlePage() {
                 {previewMode ? "Edit" : "Preview"}
               </button>
               <button
-                onClick={() => handleSave(false)}
-                disabled={loading}
-                className="flex items-center gap-2 px-6 py-2 border border-border rounded-lg hover:bg-muted transition-colors disabled:opacity-50"
-              >
-                <Save className="w-4 h-4" />
-                {loading ? "Saving..." : "Save Draft"}
-              </button>
-              <button
-                onClick={() => handleSave(true)}
+                onClick={handleSave}
                 disabled={loading}
                 className="flex items-center gap-2 px-6 py-3 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors disabled:opacity-50"
               >
-                {loading ? "Publishing..." : "Publish"}
+                <Save className="w-4 h-4" />
+                {loading ? "Saving..." : "Save Article"}
               </button>
             </div>
           </div>
@@ -386,47 +377,6 @@ export default function CreateArticlePage() {
                 <p className="text-xs text-muted-foreground">
                   Add up to 5 tags to help readers find your article
                 </p>
-              </div>
-            </div>
-
-            {/* Publishing Options */}
-            <div className="card p-6">
-              <h3 className="font-medium text-foreground mb-4">
-                Publishing Options
-              </h3>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="status"
-                    value="0"
-                    checked={status === 0}
-                    onChange={(e) => setStatus(parseInt(e.target.value))}
-                    className="text-google-blue"
-                  />
-                  <div>
-                    <div className="font-medium">Draft</div>
-                    <div className="text-sm text-muted-foreground">
-                      Save as draft and publish later
-                    </div>
-                  </div>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="status"
-                    value="1"
-                    checked={status === 1}
-                    onChange={(e) => setStatus(parseInt(e.target.value))}
-                    className="text-google-blue"
-                  />
-                  <div>
-                    <div className="font-medium">Published</div>
-                    <div className="text-sm text-muted-foreground">
-                      Publish immediately
-                    </div>
-                  </div>
-                </label>
               </div>
             </div>
           </div>
