@@ -18,17 +18,28 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8080/api";
 const TIMEOUT = 30000; // 30 seconds
 
+// Determine if we're in server environment
+const isServer = typeof window === "undefined";
+
 // ----------------------------------------------------------------------------
 // Create Axios Instance
 // ----------------------------------------------------------------------------
 
 const client: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: TIMEOUT,
+  timeout: isServer ? 10000 : TIMEOUT, // Shorter timeout on server
   headers: {
     "Content-Type": "application/json",
+    "User-Agent": isServer ? "Next.js-Server" : "Next.js-Client",
   },
   withCredentials: false, // Disable withCredentials to avoid CORS issues
+  // Add additional configuration for server-side requests
+  ...(isServer && {
+    // Ensure proper DNS resolution on server
+    family: 4,
+    // Disable keep-alive for server requests to avoid connection pooling issues
+    keepAlive: false,
+  }),
 });
 
 // ----------------------------------------------------------------------------
@@ -137,8 +148,23 @@ export async function get<T = unknown>(
   url: string,
   config?: AxiosRequestConfig,
 ): Promise<T> {
-  const response = await client.get<ApiResponse<T>>(url, config);
-  return response.data.data;
+  try {
+    const response = await client.get<ApiResponse<T>>(url, config);
+    return response.data.data;
+  } catch (error) {
+    // Add better error logging for server-side requests
+    if (isServer) {
+      console.error(`Server-side API Error [GET ${url}]:`, {
+        baseURL: API_BASE_URL,
+        error: error instanceof Error ? error.message : "Unknown error",
+        config: {
+          timeout: config?.timeout,
+          headers: config?.headers,
+        },
+      });
+    }
+    throw error;
+  }
 }
 
 /**
@@ -149,8 +175,22 @@ export async function post<T = unknown>(
   data?: unknown,
   config?: AxiosRequestConfig,
 ): Promise<T> {
-  const response = await client.post<ApiResponse<T>>(url, data, config);
-  return response.data.data;
+  try {
+    const response = await client.post<ApiResponse<T>>(url, data, config);
+    return response.data.data;
+  } catch (error) {
+    if (isServer) {
+      console.error(`Server-side API Error [POST ${url}]:`, {
+        baseURL: API_BASE_URL,
+        error: error instanceof Error ? error.message : "Unknown error",
+        config: {
+          timeout: config?.timeout,
+          headers: config?.headers,
+        },
+      });
+    }
+    throw error;
+  }
 }
 
 /**
@@ -161,8 +201,22 @@ export async function put<T = unknown>(
   data?: unknown,
   config?: AxiosRequestConfig,
 ): Promise<T> {
-  const response = await client.put<ApiResponse<T>>(url, data, config);
-  return response.data.data;
+  try {
+    const response = await client.put<ApiResponse<T>>(url, data, config);
+    return response.data.data;
+  } catch (error) {
+    if (isServer) {
+      console.error(`Server-side API Error [PUT ${url}]:`, {
+        baseURL: API_BASE_URL,
+        error: error instanceof Error ? error.message : "Unknown error",
+        config: {
+          timeout: config?.timeout,
+          headers: config?.headers,
+        },
+      });
+    }
+    throw error;
+  }
 }
 
 /**
@@ -172,8 +226,22 @@ export async function del<T = unknown>(
   url: string,
   config?: AxiosRequestConfig,
 ): Promise<T> {
-  const response = await client.delete<ApiResponse<T>>(url, config);
-  return response.data.data;
+  try {
+    const response = await client.delete<ApiResponse<T>>(url, config);
+    return response.data.data;
+  } catch (error) {
+    if (isServer) {
+      console.error(`Server-side API Error [DELETE ${url}]:`, {
+        baseURL: API_BASE_URL,
+        error: error instanceof Error ? error.message : "Unknown error",
+        config: {
+          timeout: config?.timeout,
+          headers: config?.headers,
+        },
+      });
+    }
+    throw error;
+  }
 }
 
 /**

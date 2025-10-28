@@ -1,9 +1,11 @@
 // ============================================================================
-// Article Detail Page - Full Article View with Comments
+// Article Detail Page - Full Article View with Comments (Client-side Rendering)
 // ============================================================================
 
-import React from "react";
-import { notFound } from "next/navigation";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { getArticleById } from "@/lib/api/article";
 import { getCommentList } from "@/lib/api/comment";
 import Header from "@/components/layout/Header";
@@ -11,39 +13,146 @@ import ArticleClient from "@/components/articles/ArticleClient";
 import type { Article, Comment } from "@/types";
 
 // ----------------------------------------------------------------------------
+// Loading Component
+// ----------------------------------------------------------------------------
+
+function ArticleLoading() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="container-custom py-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="animate-pulse">
+            <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-muted rounded w-1/2 mb-8"></div>
+            <div className="h-64 bg-muted rounded mb-8"></div>
+            <div className="space-y-4">
+              <div className="h-4 bg-muted rounded"></div>
+              <div className="h-4 bg-muted rounded"></div>
+              <div className="h-4 bg-muted rounded w-5/6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
 // Page Component
 // ----------------------------------------------------------------------------
 
-interface ArticlePageProps {
-  params: {
-    id: string;
-  };
-}
+export default function ArticlePage() {
+  const params = useParams();
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [article, setArticle] = useState<Article | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
-  const articleId = params.id;
+  useEffect(() => {
+    const fetchArticle = async () => {
+      if (!params.id || typeof params.id !== "string") {
+        setError("Invalid article ID");
+        setLoading(false);
+        return;
+      }
 
-  // Fetch article data
-  let article: Article | null = null;
-  let comments: Comment[] = [];
+      try {
+        setLoading(true);
+        setError(null);
 
-  try {
-    article = await getArticleById(articleId);
-    const commentsData = await getCommentList({
-      article_id: articleId,
-      page: 1,
-      page_size: 50,
-    });
-    comments = commentsData.list || [];
-  } catch (error) {
-    console.error("Failed to fetch article or comments:", error);
-    notFound();
+        // Fetch article data
+        const articleData = await getArticleById(params.id);
+
+        // Transform the data to match the expected Article interface
+        const transformedArticle: Article = {
+          id: params.id,
+          cover: articleData.cover,
+          title: articleData.title,
+          category: articleData.category,
+          tags: articleData.tags,
+          abstract: articleData.abstract,
+          content: articleData.content || "",
+          author: {
+            id: 0,
+            uuid: "",
+            username: "Unknown",
+            email: "",
+            role: "user",
+            status: 1,
+            created_at: articleData.created_at,
+            updated_at: articleData.updated_at || articleData.created_at,
+          },
+          author_id: 0,
+          view_count: articleData.views,
+          like_count: articleData.likes,
+          comment_count: articleData.comments,
+          status: 1,
+          is_top: false,
+          created_at: articleData.created_at,
+          updated_at: articleData.updated_at || articleData.created_at,
+        };
+
+        setArticle(transformedArticle);
+
+        // Fetch comments
+        const commentsData = await getCommentList({
+          article_id: params.id,
+          page: 1,
+          page_size: 50,
+        });
+        setComments(commentsData.list || []);
+      } catch (err) {
+        console.error("Failed to fetch article or comments:", err);
+        setError(
+          "Failed to load article. The article may not exist or has been removed.",
+        );
+
+        // Redirect to 404 after a short delay
+        setTimeout(() => {
+          router.push("/404");
+        }, 3000);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticle();
+  }, [params.id, router]);
+
+  // Show loading state
+  if (loading) {
+    return <ArticleLoading />;
   }
 
-  if (!article) {
-    notFound();
+  // Show error state
+  if (error || !article) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container-custom py-12">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl font-bold text-foreground mb-4">
+              Article Not Found
+            </h1>
+            <p className="text-muted-foreground mb-8">
+              {error ||
+                "The article you're looking for doesn't exist or has been removed."}
+            </p>
+            <button
+              onClick={() => router.push("/")}
+              className="px-6 py-3 bg-google-blue text-white rounded-lg hover:bg-google-blue/90 transition-colors"
+            >
+              Return to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
+  // Show article content
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -56,40 +165,4 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </article>
     </div>
   );
-}
-
-// ============================================================================
-// Metadata Generation
-// ============================================================================
-
-export async function generateMetadata({ params }: ArticlePageProps) {
-  const articleId = params.id;
-
-  try {
-    const article = await getArticleById(articleId);
-
-    if (!article) {
-      return {
-        title: "Article Not Found",
-      };
-    }
-
-    return {
-      title: article.title,
-      description: article.abstract,
-      keywords: article.tags.join(", "),
-      openGraph: {
-        title: article.title,
-        description: article.abstract,
-        type: "article",
-        publishedTime: article.created_at,
-        authors: [article.author.username],
-        tags: article.tags,
-      },
-    };
-  } catch (error) {
-    return {
-      title: "Article Not Found",
-    };
-  }
 }
