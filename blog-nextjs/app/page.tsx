@@ -2,7 +2,9 @@
 // Home Page - Main Blog Landing Page
 // ============================================================================
 
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -17,28 +19,39 @@ import type { Hit, ArticleSource, CategoryStat, TagStat } from "@/types";
 // Page Component
 // ----------------------------------------------------------------------------
 
-export default async function HomePage() {
-  // Fetch data on the server
-  let articles: Hit<ArticleSource>[] = [];
-  let categories: CategoryStat[] = [];
-  let tags: TagStat[] = [];
+export default function HomePage() {
+  // State
+  const [articles, setArticles] = useState<Hit<ArticleSource>[]>([]);
+  const [categories, setCategories] = useState<CategoryStat[]>([]);
+  const [tags, setTags] = useState<TagStat[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  try {
-    const [articlesResponse, categoriesResponse, tagsResponse] =
-      await Promise.all([
-        searchArticles({ page: 1, page_size: 12 }),
-        getCategoryStats(),
-        getTagStats(),
-      ]);
+  // Fetch data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [articlesResponse, categoriesResponse, tagsResponse] =
+          await Promise.all([
+            searchArticles({ page: 1, page_size: 12 }),
+            getCategoryStats(),
+            getTagStats(),
+          ]);
 
-    // Handle Elasticsearch Hit response format
-    articles = articlesResponse.list || [];
-    categories = categoriesResponse || [];
-    const tagsData = tagsResponse || [];
-    tags = Array.isArray(tagsData) ? tagsData.slice(0, 20) : [];
-  } catch (error) {
-    console.error("Failed to fetch home page data:", error);
-  }
+        // Handle Elasticsearch Hit response format
+        setArticles(articlesResponse.list || []);
+        setCategories(categoriesResponse || []);
+        const tagsData = tagsResponse || [];
+        setTags(Array.isArray(tagsData) ? tagsData.slice(0, 20) : []);
+      } catch (error) {
+        console.error("Failed to fetch home page data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -84,7 +97,18 @@ export default async function HomePage() {
               <p className="text-muted-foreground">Fresh content for you</p>
             </div>
 
-            {articles.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={`skeleton-${i}`} className="card p-6">
+                    <div className="skeleton h-48 mb-4 rounded-lg" />
+                    <div className="skeleton h-6 w-3/4 mb-2" />
+                    <div className="skeleton h-4 w-full mb-2" />
+                    <div className="skeleton h-4 w-2/3" />
+                  </div>
+                ))}
+              </div>
+            ) : articles.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {articles.map((article) => (
                   <ArticleCard key={article._id} article={article} />

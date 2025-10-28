@@ -15,7 +15,7 @@ import type { ApiResponse } from "@/types";
 // ----------------------------------------------------------------------------
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8080/api";
 const TIMEOUT = 30000; // 30 seconds
 
 // ----------------------------------------------------------------------------
@@ -28,7 +28,7 @@ const client: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
+  withCredentials: false, // Disable withCredentials to avoid CORS issues
 });
 
 // ----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ const client: AxiosInstance = axios.create({
 
 client.interceptors.request.use(
   (config) => {
-    // Get token from localStorage
+    // Get token from localStorage (client-side only)
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("access_token");
       if (token) {

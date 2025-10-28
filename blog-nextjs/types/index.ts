@@ -11,6 +11,8 @@
  */
 export interface Hit<T> {
   _id: string;
+  _index: string;
+  _score: number;
   _source: T;
 }
 
@@ -19,14 +21,14 @@ export interface Hit<T> {
  */
 export interface ArticleSource {
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
   cover: string;
   title: string;
-  keyword: string;
+  keyword?: string;
   category: string;
   tags: string[];
   abstract: string;
-  content: string;
+  content?: string;
   views: number;
   comments: number;
   likes: number;

@@ -95,7 +95,8 @@ export async function searchArticles(
   if (params.category) query.append("category", params.category);
   if (params.tag) query.append("tag", params.tag);
   if (params.sort) query.append("sort", params.sort);
-  if (params.order) query.append("order", params.order);
+  // Order is required by backend, default to 'desc'
+  query.append("order", params.order || "desc");
   if (params.page) query.append("page", params.page.toString());
   if (params.page_size) query.append("page_size", params.page_size.toString());
 
@@ -115,7 +116,13 @@ export async function getCategoryStats(): Promise<CategoryStat[]> {
   if (USE_MOCK_API) {
     return mockApi.getArticleCategory();
   }
-  return get<CategoryStat[]>("/article/category");
+  // Backend returns {category, number} but frontend expects {name, count}
+  const response =
+    await get<Array<{ category: string; number: number }>>("/article/category");
+  return response.map((item) => ({
+    name: item.category,
+    count: item.number,
+  }));
 }
 
 /**
@@ -125,7 +132,13 @@ export async function getTagStats(): Promise<TagStat[]> {
   if (USE_MOCK_API) {
     return mockApi.getArticleTags();
   }
-  return get<TagStat[]>("/article/tags");
+  // Backend returns {tag, number} but frontend expects {name, count}
+  const response =
+    await get<Array<{ tag: string; number: number }>>("/article/tags");
+  return response.map((item) => ({
+    name: item.tag,
+    count: item.number,
+  }));
 }
 
 // ----------------------------------------------------------------------------
@@ -156,7 +169,7 @@ export async function checkIsLiked(articleId: string): Promise<boolean> {
 }
 
 /**
- * Get article list
+ * Get article list (for admin dashboard)
  */
 export async function getArticleList(params: {
   page?: number;
@@ -170,8 +183,34 @@ export async function getArticleList(params: {
   const query = new URLSearchParams();
   if (params.page) query.append("page", params.page.toString());
   if (params.page_size) query.append("page_size", params.page_size.toString());
+  if (params.query) query.append("query", params.query);
+  // Order is required by backend, default to 'desc'
+  query.append("order", "desc");
 
-  return get<PaginatedResponse<ArticleListItem>>(
-    `/article/list?${query.toString()}`,
+  // Use search endpoint since it returns the proper structure
+  const response = await get<{ list: Hit<ArticleSource>[]; total: number }>(
+    `/article/search?${query.toString()}`,
   );
+
+  // Transform Hit<ArticleSource> to ArticleListItem
+  const listItems: ArticleListItem[] = response.list.map((hit) => ({
+    id: hit._id,
+    cover: hit._source.cover,
+    title: hit._source.title,
+    category: hit._source.category,
+    tags: hit._source.tags,
+    abstract: hit._source.abstract,
+    author: undefined, // Backend doesn't return author info in search
+    view_count: hit._source.views,
+    like_count: hit._source.likes,
+    comment_count: hit._source.comments,
+    created_at: hit._source.created_at,
+  }));
+
+  return {
+    list: listItems,
+    total: response.total,
+    page: params.page || 1,
+    page_size: params.page_size || 10,
+  };
 }
