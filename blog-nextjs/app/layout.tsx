@@ -8,7 +8,8 @@ import "./globals.css";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import LoginModal from "@/components/auth/LoginModal";
 import UserProvider from "./providers/UserProvider";
-import { AuthDebug } from "@/components/debug/AuthDebug";
+import QueryProvider from "./providers/QueryProvider";
+// import { AuthDebug } from "@/components/debug/AuthDebug"; // Temporarily disabled to avoid hydration errors
 
 // ----------------------------------------------------------------------------
 // Font Configuration
@@ -119,21 +120,19 @@ export default function RootLayout({
             </div>
           </div>
         </div>
-
         {/* Main Content */}
         <main className="relative">
-          <UserProvider>{children}</UserProvider>
+          <QueryProvider>
+            <UserProvider>{children}</UserProvider>
+          </QueryProvider>
         </main>
-
         {/* Scroll to Top Button */}
         <ScrollToTopButton />
-
         {/* Login Modal */}
         <LoginModal />
-
         {/* Auth Debug - Development Only */}
-        <AuthDebug />
-
+        {/* <AuthDebug /> */}{" "}
+        {/* Temporarily disabled to avoid hydration errors */}
         {/* Client-side Scripts */}
         <script
           dangerouslySetInnerHTML={{
