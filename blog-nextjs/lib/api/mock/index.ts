@@ -375,6 +375,7 @@ export const mockApi = {
     return {
       user,
       access_token: "mock-token-" + Math.random().toString(36).substr(2, 9),
+      refresh_token: "mock-refresh-" + Math.random().toString(36).substr(2, 9),
       access_token_expires_at: new Date(
         now + 24 * 60 * 60 * 1000,
       ).toISOString(),
@@ -418,6 +419,7 @@ export const mockApi = {
     return {
       user: newUser,
       access_token: "mock-token-" + Math.random().toString(36).substr(2, 9),
+      refresh_token: "mock-refresh-" + Math.random().toString(36).substr(2, 9),
       access_token_expires_at: new Date(
         Date.now() + 24 * 60 * 60 * 1000,
       ).toISOString(),
@@ -427,6 +429,24 @@ export const mockApi = {
   async logout(): Promise<void> {
     await delay();
     // Mock logout - in real app would invalidate token
+  },
+
+  async refreshToken(data: {
+    refresh_token: string;
+  }): Promise<{ access_token: string }> {
+    await delay();
+
+    // Mock refresh token validation - accept tokens starting with "mock-refresh-"
+    if (
+      !data.refresh_token ||
+      !data.refresh_token.startsWith("mock-refresh-")
+    ) {
+      throw new Error("Invalid refresh token");
+    }
+
+    return {
+      access_token: "mock-token-" + Math.random().toString(36).substr(2, 9),
+    };
   },
 
   async getUserInfo(): Promise<UserInfo> {
@@ -531,6 +551,40 @@ export const mockApi = {
   async getFooterFriendLinks(): Promise<FriendLink[]> {
     await delay();
     return mockFriendLinks.filter((link) => link.status === 1);
+  },
+
+  // ------------------------------------------------------------------------
+  // Image API
+  // ------------------------------------------------------------------------
+
+  async uploadImage(
+    file: File,
+    onProgress?: (progress: number) => void,
+  ): Promise<UploadImageResponse> {
+    await delay();
+
+    // Simulate upload progress
+    if (onProgress) {
+      for (let i = 0; i <= 100; i += 10) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        onProgress(i);
+      }
+    }
+
+    // Generate a mock image URL (backend expects form field name "image")
+    const timestamp = Date.now();
+    const filename = file.name || `image-${timestamp}.jpg`;
+    const mockUrl = `https://picsum.photos/seed/${timestamp}/800/400.jpg`;
+
+    return {
+      url: mockUrl,
+      oss_type: "mock",
+    };
+  },
+
+  async deleteImages(ids: number[]): Promise<void> {
+    await delay();
+    // Mock deletion - no actual operation needed
   },
 
   // ------------------------------------------------------------------------

@@ -72,6 +72,15 @@ export async function resetPassword(data: {
   return put<void>("/user/resetPassword", data);
 }
 
+/**
+ * Refresh access token
+ */
+export async function refreshToken(data: {
+  refresh_token: string;
+}): Promise<{ access_token: string }> {
+  return post<{ access_token: string }>("/user/refreshToken", data);
+}
+
 // ----------------------------------------------------------------------------
 // User Information
 // ----------------------------------------------------------------------------

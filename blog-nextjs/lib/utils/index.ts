@@ -2,9 +2,9 @@
 // Utility Functions
 // ============================================================================
 
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { format, formatDistanceToNow, parseISO } from 'date-fns';
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { format, formatDistanceToNow, parseISO } from "date-fns";
 
 // ----------------------------------------------------------------------------
 // Class Name Utilities
@@ -24,13 +24,16 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Format date string to readable format
  */
-export function formatDate(date: string | Date, formatStr: string = 'PPP'): string {
+export function formatDate(
+  date: string | Date,
+  formatStr: string = "PPP",
+): string {
   try {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date;
+    const dateObj = typeof date === "string" ? parseISO(date) : date;
     return format(dateObj, formatStr);
   } catch (error) {
-    console.error('Date formatting error:', error);
-    return '';
+    console.error("Date formatting error:", error);
+    return "";
   }
 }
 
@@ -39,11 +42,11 @@ export function formatDate(date: string | Date, formatStr: string = 'PPP'): stri
  */
 export function formatRelativeTime(date: string | Date): string {
   try {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date;
+    const dateObj = typeof date === "string" ? parseISO(date) : date;
     return formatDistanceToNow(dateObj, { addSuffix: true });
   } catch (error) {
-    console.error('Relative time formatting error:', error);
-    return '';
+    console.error("Relative time formatting error:", error);
+    return "";
   }
 }
 
@@ -51,14 +54,14 @@ export function formatRelativeTime(date: string | Date): string {
  * Format date to simple format (YYYY-MM-DD)
  */
 export function formatSimpleDate(date: string | Date): string {
-  return formatDate(date, 'yyyy-MM-dd');
+  return formatDate(date, "yyyy-MM-dd");
 }
 
 /**
  * Format date to full format (YYYY-MM-DD HH:mm:ss)
  */
 export function formatFullDate(date: string | Date): string {
-  return formatDate(date, 'yyyy-MM-dd HH:mm:ss');
+  return formatDate(date, "yyyy-MM-dd HH:mm:ss");
 }
 
 // ----------------------------------------------------------------------------
@@ -70,7 +73,7 @@ export function formatFullDate(date: string | Date): string {
  */
 export function truncate(text: string, length: number = 100): string {
   if (text.length <= length) return text;
-  return text.substring(0, length) + '...';
+  return text.substring(0, length) + "...";
 }
 
 /**
@@ -80,9 +83,9 @@ export function slugify(text: string): string {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 /**
@@ -100,7 +103,7 @@ export function capitalize(text: string): string {
  * Format number with thousands separator
  */
 export function formatNumber(num: number): string {
-  return new Intl.NumberFormat('en-US').format(num);
+  return new Intl.NumberFormat("en-US").format(num);
 }
 
 /**
@@ -108,21 +111,23 @@ export function formatNumber(num: number): string {
  */
 export function formatCompactNumber(num: number): string {
   if (num < 1000) return num.toString();
-  if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
-  return (num / 1000000).toFixed(1) + 'M';
+  if (num < 1000000) return (num / 1000).toFixed(1) + "K";
+  return (num / 1000000).toFixed(1) + "M";
 }
 
 /**
  * Format bytes to human readable size
  */
 export function formatBytes(bytes: number, decimals: number = 2): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
+  return (
+    parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
+  );
 }
 
 // ----------------------------------------------------------------------------
@@ -134,39 +139,39 @@ export function formatBytes(bytes: number, decimals: number = 2): string {
  */
 export const storage = {
   get: (key: string): string | null => {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === "undefined") return null;
     try {
       return localStorage.getItem(key);
     } catch (error) {
-      console.error('Storage get error:', error);
+      console.error("Storage get error:", error);
       return null;
     }
   },
 
   set: (key: string, value: string): void => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
     try {
       localStorage.setItem(key, value);
     } catch (error) {
-      console.error('Storage set error:', error);
+      console.error("Storage set error:", error);
     }
   },
 
   remove: (key: string): void => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
     try {
       localStorage.removeItem(key);
     } catch (error) {
-      console.error('Storage remove error:', error);
+      console.error("Storage remove error:", error);
     }
   },
 
   clear: (): void => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
     try {
       localStorage.clear();
     } catch (error) {
-      console.error('Storage clear error:', error);
+      console.error("Storage clear error:", error);
     }
   },
 };
@@ -180,7 +185,7 @@ export const storage = {
  */
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
 
@@ -200,7 +205,7 @@ export function debounce<T extends (...args: any[]) => any>(
  */
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
-  limit: number
+  limit: number,
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean = false;
 
@@ -262,7 +267,7 @@ export function unique<T>(array: T[]): T[] {
  */
 export function chunk<T>(array: T[], size: number): T[][] {
   return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
-    array.slice(i * size, i * size + size)
+    array.slice(i * size, i * size + size),
   );
 }
 
@@ -293,17 +298,17 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     }
 
     // Fallback for older browsers
-    const textarea = document.createElement('textarea');
+    const textarea = document.createElement("textarea");
     textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
     document.body.appendChild(textarea);
     textarea.select();
-    const success = document.execCommand('copy');
+    const success = document.execCommand("copy");
     document.body.removeChild(textarea);
     return success;
   } catch (error) {
-    console.error('Copy to clipboard error:', error);
+    console.error("Copy to clipboard error:", error);
     return false;
   }
 }
@@ -346,4 +351,43 @@ export function buildQueryString(params: Record<string, any>): string {
     }
   });
   return searchParams.toString();
+}
+
+// ----------------------------------------------------------------------------
+// Image Utilities
+// ----------------------------------------------------------------------------
+
+/**
+ * Get default avatar URL
+ */
+export function getDefaultAvatar(): string {
+  return "https://ui-avatars.com/api/?name=User&background=random&color=fff";
+}
+
+/**
+ * Get avatar URL with fallback to default
+ */
+export function getAvatarUrl(avatar?: string | null): string {
+  if (!avatar || avatar.trim() === "") {
+    return getDefaultAvatar();
+  }
+
+  // Check if it's a relative path that starts with /
+  if (avatar.startsWith("/")) {
+    // For relative paths, check if it's a known missing path
+    if (
+      avatar.includes("/image/avatar.jpg") ||
+      avatar.includes("/uploads/image/")
+    ) {
+      return getDefaultAvatar();
+    }
+    return avatar;
+  }
+
+  // Check if it's an invalid URL
+  if (!isValidUrl(avatar)) {
+    return getDefaultAvatar();
+  }
+
+  return avatar;
 }

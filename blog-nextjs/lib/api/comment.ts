@@ -71,8 +71,12 @@ export async function uploadImage(
   file: File,
   onProgress?: (progress: number) => void,
 ): Promise<UploadImageResponse> {
+  if (USE_MOCK_API) {
+    return mockApi.uploadImage(file, onProgress);
+  }
+
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("image", file);
 
   return upload<UploadImageResponse>("/image/upload", formData, onProgress);
 }
@@ -81,6 +85,10 @@ export async function uploadImage(
  * Delete images by IDs
  */
 export async function deleteImages(ids: number[]): Promise<void> {
+  if (USE_MOCK_API) {
+    return mockApi.deleteImages(ids);
+  }
+
   return del<void>("/image/delete", {
     data: { ids },
   });

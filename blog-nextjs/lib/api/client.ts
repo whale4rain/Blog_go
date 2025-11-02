@@ -30,7 +30,7 @@ const client: AxiosInstance = axios.create({
   timeout: isServer ? 10000 : TIMEOUT, // Shorter timeout on server
   headers: {
     "Content-Type": "application/json",
-    "User-Agent": isServer ? "Next.js-Server" : "Next.js-Client",
+    ...(isServer && { "User-Agent": "Next.js-Server" as any }), // Only set User-Agent on server-side
   },
   withCredentials: false, // Disable withCredentials to avoid CORS issues
   // Add additional configuration for server-side requests
@@ -68,6 +68,24 @@ client.interceptors.request.use(
 // Response Interceptor
 // ----------------------------------------------------------------------------
 
+// Flag to prevent multiple token refresh attempts
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(token!);
+    }
+  });
+  failedQueue = [];
+};
+
 client.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
     const { data } = response;
@@ -81,23 +99,94 @@ client.interceptors.response.use(
     console.error("API Error:", data.msg);
     return Promise.reject(new Error(data.msg || "Unknown error"));
   },
-  (error: AxiosError<ApiResponse>) => {
+  async (error: AxiosError<ApiResponse>) => {
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
     // Handle HTTP errors
     if (error.response) {
       const { status, data } = error.response;
 
       switch (status) {
         case 401:
-          // Unauthorized - clear token and redirect to login
+          // Unauthorized - try to refresh token or redirect to login
           if (typeof window !== "undefined") {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("user");
+            // Check if this is a retry request
+            if (originalRequest._retry) {
+              // Already retried, clear tokens and redirect to login
+              localStorage.removeItem("access_token");
+              localStorage.removeItem("user");
+              localStorage.removeItem("refresh_token");
 
-            // Only redirect if not already on login page
-            if (!window.location.pathname.includes("/login")) {
-              window.location.href =
-                "/login?redirect=" +
-                encodeURIComponent(window.location.pathname);
+              if (!window.location.pathname.includes("/login")) {
+                window.location.href =
+                  "/login?redirect=" +
+                  encodeURIComponent(window.location.pathname);
+              }
+              return Promise.reject(error);
+            }
+
+            // Mark request as retry
+            originalRequest._retry = true;
+
+            if (isRefreshing) {
+              // If already refreshing, add to queue
+              return new Promise((resolve, reject) => {
+                failedQueue.push({ resolve, reject });
+              })
+                .then((token) => {
+                  if (originalRequest.headers) {
+                    originalRequest.headers.Authorization = `Bearer ${token}`;
+                  }
+                  return client(originalRequest);
+                })
+                .catch((err) => {
+                  return Promise.reject(err);
+                });
+            }
+
+            isRefreshing = true;
+
+            try {
+              // Try to refresh the token
+              const refreshToken = localStorage.getItem("refresh_token");
+              if (refreshToken) {
+                const response = await client.post("/user/refreshToken", {
+                  refresh_token: refreshToken,
+                });
+
+                const { access_token } = response.data.data;
+
+                // Update stored token
+                localStorage.setItem("access_token", access_token);
+
+                // Process queue
+                processQueue(null, access_token);
+
+                // Update authorization header and retry original request
+                if (originalRequest.headers) {
+                  originalRequest.headers.Authorization = `Bearer ${access_token}`;
+                }
+                return client(originalRequest);
+              } else {
+                throw new Error("No refresh token available");
+              }
+            } catch (refreshError) {
+              // Refresh failed, clear everything and redirect
+              processQueue(refreshError, null);
+              localStorage.removeItem("access_token");
+              localStorage.removeItem("user");
+              localStorage.removeItem("refresh_token");
+
+              if (!window.location.pathname.includes("/login")) {
+                window.location.href =
+                  "/login?redirect=" +
+                  encodeURIComponent(window.location.pathname);
+              }
+              return Promise.reject(refreshError);
+            } finally {
+              isRefreshing = false;
             }
           }
           break;

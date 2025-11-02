@@ -8,6 +8,7 @@ import "./globals.css";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import LoginModal from "@/components/auth/LoginModal";
 import UserProvider from "./providers/UserProvider";
+import { AuthDebug } from "@/components/debug/AuthDebug";
 
 // ----------------------------------------------------------------------------
 // Font Configuration
@@ -129,6 +130,9 @@ export default function RootLayout({
 
         {/* Login Modal */}
         <LoginModal />
+
+        {/* Auth Debug - Development Only */}
+        <AuthDebug />
 
         {/* Client-side Scripts */}
         <script

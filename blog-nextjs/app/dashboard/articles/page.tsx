@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/lib/store/userStore";
+import { useAuth } from "@/lib/store/userStore";
 import { getArticleList, deleteArticle } from "@/lib/api/article";
 import {
   FileText,
@@ -29,7 +29,7 @@ import type { ArticleListItem } from "@/types";
 
 export default function ArticlesPage() {
   const router = useRouter();
-  const { isLoggedIn } = useUserStore();
+  const { isAuthenticated, isInitialized } = useAuth();
   const [articles, setArticles] = useState<ArticleListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,15 +39,21 @@ export default function ArticlesPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    // Only redirect after initialization and if not authenticated
+    if (isInitialized && !isAuthenticated) {
       router.push("/login");
       return;
     }
 
-    fetchArticles();
-  }, [isLoggedIn, currentPage, searchTerm]);
+    // Only fetch articles if authenticated
+    if (isAuthenticated) {
+      fetchArticles();
+    }
+  }, [isInitialized, isAuthenticated, currentPage, searchTerm]);
 
   const fetchArticles = async () => {
+    if (!isAuthenticated) return;
+
     try {
       setLoading(true);
       const response = await getArticleList({
@@ -64,6 +70,23 @@ export default function ArticlesPage() {
       setLoading(false);
     }
   };
+
+  // Show loading while initializing
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin h-8 w-8 border-3 border-google-blue border-t-transparent rounded-full" />
+          <span className="text-muted-foreground">Initializing...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Show nothing if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const handleDelete = async (id: string) => {
     try {
@@ -111,7 +134,7 @@ export default function ArticlesPage() {
     });
   };
 
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     return null;
   }
 

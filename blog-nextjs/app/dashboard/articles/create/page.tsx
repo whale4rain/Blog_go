@@ -6,8 +6,9 @@
 
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/lib/store/userStore";
+import { useAuth } from "@/lib/store/userStore";
 import { createArticle } from "@/lib/api/article";
+import { uploadImage } from "@/lib/api/comment";
 import {
   Save,
   Eye,
@@ -27,9 +28,10 @@ import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 
 export default function CreateArticlePage() {
   const router = useRouter();
-  const { user, isLoggedIn } = useUserStore();
+  const { isAuthenticated, isInitialized } = useAuth();
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Article data
@@ -56,11 +58,12 @@ export default function CreateArticlePage() {
   ];
 
   React.useEffect(() => {
-    if (!isLoggedIn) {
+    // Only redirect after initialization and if not authenticated
+    if (isInitialized && !isAuthenticated) {
       router.push("/login");
       return;
     }
-  }, [isLoggedIn]);
+  }, [isInitialized, isAuthenticated, router]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -131,13 +134,25 @@ export default function CreateArticlePage() {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      // In a real implementation, you would upload to a server
-      // For now, we'll use a local URL
-      const url = URL.createObjectURL(file);
-      setCoverImage(url);
+      try {
+        setUploadingImage(true);
+        const response = await uploadImage(file, (progress) => {
+          console.log(`Upload progress: ${progress}%`);
+        });
+        setCoverImage(response.url);
+      } catch (error) {
+        console.error("Failed to upload image:", error);
+        alert("图片上传失败，请重试。");
+        // Fallback to placeholder
+        setCoverImage("https://via.placeholder.com/800x400");
+      } finally {
+        setUploadingImage(false);
+      }
     }
   };
 
@@ -148,7 +163,20 @@ export default function CreateArticlePage() {
     }
   };
 
-  if (!isLoggedIn) {
+  // Show loading while initializing
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin h-8 w-8 border-3 border-google-blue border-t-transparent rounded-full" />
+          <span className="text-muted-foreground">Initializing...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Show nothing if not authenticated (will redirect)
+  if (!isAuthenticated) {
     return null;
   }
 
@@ -298,15 +326,26 @@ export default function CreateArticlePage() {
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
+                    disabled={uploadingImage}
                     className="hidden"
                   />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full p-4 border-2 border-dashed border-border rounded-lg hover:border-google-blue transition-colors"
+                    disabled={uploadingImage}
+                    className="w-full p-4 border-2 border-dashed border-border rounded-lg hover:border-google-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                      <Upload className="w-6 h-6" />
-                      <span className="text-sm">Upload Cover Image</span>
+                      {uploadingImage ? (
+                        <>
+                          <div className="animate-spin h-6 w-6 border-2 border-google-blue border-t-transparent rounded-full" />
+                          <span className="text-sm">上传中...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-6 h-6" />
+                          <span className="text-sm">Upload Cover Image</span>
+                        </>
+                      )}
                     </div>
                   </button>
                 </div>
