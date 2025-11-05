@@ -1,8 +1,8 @@
 // ============================================================================
-// User API Functions
+// User API Functions (Fixed for Cookie-based Refresh Token)
 // ============================================================================
 
-import { get, post, put } from "./client";
+import { get, post, put, clearAuth } from "./client";
 import { USE_MOCK_API, mockApi } from "./mock/index";
 import type {
   User,
@@ -43,12 +43,23 @@ export async function register(data: RegisterRequest): Promise<UserInfo> {
 
 /**
  * User logout
+ * Note: This will clear the refresh token cookie on backend
  */
 export async function logout(): Promise<void> {
-  if (USE_MOCK_API) {
-    return mockApi.logout();
+  try {
+    if (USE_MOCK_API) {
+      await mockApi.logout();
+    } else {
+      // Call backend logout API to clear refresh token cookie
+      await post<void>("/user/logout");
+    }
+  } catch (error) {
+    console.error("Logout API error:", error);
+    // Continue with local cleanup even if API fails
+  } finally {
+    // Always clear local authentication data
+    clearAuth();
   }
-  return post<void>("/user/logout");
 }
 
 /**
@@ -74,6 +85,7 @@ export async function resetPassword(data: {
 
 /**
  * Refresh access token
+ * Note: refresh_token should be read from HTTP-only cookie
  */
 export async function refreshToken(data: {
   refresh_token: string;

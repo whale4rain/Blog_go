@@ -72,7 +72,7 @@ export interface User {
 export interface UserInfo {
   user: User;
   access_token: string;
-  refresh_token?: string;
+  refresh_token?: string; // Note: This is set in HTTP-only cookie by backend, not stored in localStorage
   access_token_expires_at: string;
 }
 

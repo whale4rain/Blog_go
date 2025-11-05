@@ -65,7 +65,7 @@ func Cors() gin.HandlerFunc {
 			"OPTIONS",
 			"PATCH",
 		},
-		// AllowHeaders specifies the headers allowed for CORS
+		// AllowHeaders specifies headers allowed for CORS
 		AllowHeaders: []string{
 			"Origin",
 			"Content-Type",
@@ -73,11 +73,16 @@ func Cors() gin.HandlerFunc {
 			"Authorization",
 			"X-Requested-With",
 			"Cache-Control",
+			"x-access-token",
+			"new-access-token",
+			"new-access-expires-at",
 		},
 		// ExposeHeaders specifies the headers that are safe to expose to the API
 		ExposeHeaders: []string{
 			"Content-Length",
 			"Content-Type",
+			"new-access-token",
+			"new-access-expires-at",
 		},
 		// AllowCredentials indicates whether the request can include user credentials
 		AllowCredentials: true,

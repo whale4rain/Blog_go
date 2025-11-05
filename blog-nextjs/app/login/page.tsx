@@ -1,5 +1,5 @@
 // ============================================================================
-// Login Page - User Authentication
+// Login Page - User Authentication (Fixed for Cookie-based Refresh Token)
 // ============================================================================
 
 "use client";
@@ -11,6 +11,9 @@ import { login, register } from "@/lib/api/user";
 import { getCaptcha, sendEmailVerificationCode } from "@/lib/api/base";
 import { useUserStore } from "@/lib/store/userStore";
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from "lucide-react";
+
+// Note: Refresh token is now handled via HTTP-only cookies set by backend
+// We only need to store access token and user info in state
 
 // ----------------------------------------------------------------------------
 // Page Component
@@ -115,6 +118,7 @@ export default function LoginPage() {
         captcha_id: captchaId,
       });
 
+      // Login successful - refresh token is automatically set in cookie by backend
       setUserLogin(userInfo);
       router.push("/dashboard");
     } catch (error: any) {
@@ -161,6 +165,7 @@ export default function LoginPage() {
         verification_code: verificationCode,
       });
 
+      // Registration successful - refresh token is automatically set in cookie by backend
       setUserLogin(userInfo);
       router.push("/dashboard");
     } catch (error: any) {
