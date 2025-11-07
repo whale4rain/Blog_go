@@ -105,7 +105,7 @@ export default function TestJWTPage() {
           },
           credentials: "include", // Important: include cookies
           body: JSON.stringify({ refresh_token: refreshTokenValue }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -137,6 +137,55 @@ export default function TestJWTPage() {
   };
 
   // Test: Upload File (check if cookie is preserved)
+  // Test: Fix Admin Role (if user is admin but not detected)
+  const testFixAdminRole = async () => {
+    setTestResults((prev) => ({
+      ...prev,
+      fixAdmin: { status: "pending", message: "Checking admin role..." },
+    }));
+
+    try {
+      if (!auth.user || auth.user.role_id !== 2) {
+        throw new Error("Current user is not an admin (role_id ≠ 2)");
+      }
+
+      if (auth.isAdmin) {
+        setTestResults((prev) => ({
+          ...prev,
+          fixAdmin: {
+            status: "success",
+            message: "Admin role already correctly detected ✓",
+          },
+        }));
+        return;
+      }
+
+      // Force fix admin state
+      const store = useUserStore.getState();
+      store.setState({
+        ...store,
+        isAdmin: true,
+        isInitialized: true,
+      });
+
+      setTestResults((prev) => ({
+        ...prev,
+        fixAdmin: {
+          status: "success",
+          message: "Admin role detection fixed! ✓",
+        },
+      }));
+    } catch (error: any) {
+      setTestResults((prev) => ({
+        ...prev,
+        fixAdmin: {
+          status: "error",
+          message: `Failed: ${error.message}`,
+        },
+      }));
+    }
+  };
+
   const testUpload = async () => {
     setTestResults((prev) => ({
       ...prev,
@@ -199,14 +248,20 @@ export default function TestJWTPage() {
     // Skip upload test as it might not have upload endpoint
   };
 
-  const StatusIcon = ({ status }: { status: "success" | "error" | "pending" }) => {
+  const StatusIcon = ({
+    status,
+  }: {
+    status: "success" | "error" | "pending";
+  }) => {
     switch (status) {
       case "success":
         return <CheckCircle className="w-5 h-5 text-green-500" />;
       case "error":
         return <XCircle className="w-5 h-5 text-red-500" />;
       case "pending":
-        return <AlertCircle className="w-5 h-5 text-yellow-500 animate-pulse" />;
+        return (
+          <AlertCircle className="w-5 h-5 text-yellow-500 animate-pulse" />
+        );
     }
   };
 
@@ -256,7 +311,9 @@ export default function TestJWTPage() {
               <div className="flex justify-between">
                 <span className="text-gray-600">Logged In:</span>
                 <span
-                  className={auth.isLoggedIn ? "text-green-600" : "text-red-600"}
+                  className={
+                    auth.isLoggedIn ? "text-green-600" : "text-red-600"
+                  }
                 >
                   {auth.isLoggedIn ? "✓" : "✗"}
                 </span>
@@ -269,12 +326,16 @@ export default function TestJWTPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Has Access Token:</span>
-                <span className={auth.token ? "text-green-600" : "text-red-600"}>
+                <span
+                  className={auth.token ? "text-green-600" : "text-red-600"}
+                >
                   {auth.token ? "✓" : "✗"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Has Refresh Token (Cookie):</span>
+                <span className="text-gray-600">
+                  Has Refresh Token (Cookie):
+                </span>
                 <span
                   className={refreshToken ? "text-green-600" : "text-red-600"}
                 >
@@ -283,19 +344,61 @@ export default function TestJWTPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Is Admin:</span>
-                <span className={auth.isAdmin ? "text-green-600" : "text-gray-400"}>
+                <span
+                  className={auth.isAdmin ? "text-green-600" : "text-red-600"}
+                >
                   {auth.isAdmin ? "✓" : "✗"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Role ID:</span>
+                <span className="text-gray-700">
+                  {auth.user?.role_id} (
+                  {auth.user?.role_id === 2
+                    ? "Admin"
+                    : auth.user?.role_id === 1
+                      ? "User"
+                      : "Guest"}
+                  )
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Admin Status:</span>
+                <span
+                  className={
+                    auth.user?.role_id === 2 && auth.isAdmin
+                      ? "text-green-600"
+                      : auth.user?.role_id === 2 && !auth.isAdmin
+                        ? "text-orange-600"
+                        : "text-gray-400"
+                  }
+                >
+                  {auth.user?.role_id === 2 && auth.isAdmin
+                    ? "✓ Correct"
+                    : auth.user?.role_id === 2 && !auth.isAdmin
+                      ? "⚠️ Fix Needed"
+                      : "✗ Not Admin"}
                 </span>
               </div>
             </div>
             {auth.user && (
               <div className="mt-4 pt-4 border-t">
                 <p className="text-sm text-gray-600">
-                  Username: <span className="font-medium">{auth.user.username}</span>
+                  Username:{" "}
+                  <span className="font-medium">{auth.user.username}</span>
                 </p>
                 <p className="text-sm text-gray-600">
                   Email: <span className="font-medium">{auth.user.email}</span>
                 </p>
+                <p className="text-sm text-gray-600">
+                  User ID: <span className="font-medium">{auth.user.id}</span>
+                </p>
+                {auth.user.role_id === 2 && !auth.isAdmin && (
+                  <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded text-xs text-orange-800">
+                    ⚠️ You are an admin but not detected as one. Click "Fix
+                    Admin Role" to fix this.
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -368,6 +471,12 @@ export default function TestJWTPage() {
               {isRefreshing ? "Refreshing..." : "Test Refresh"}
             </button>
             <button
+              onClick={testFixAdminRole}
+              className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition"
+            >
+              Fix Admin Role
+            </button>
+            <button
               onClick={runAllTests}
               className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
             >
@@ -406,8 +515,12 @@ export default function TestJWTPage() {
           </h3>
           <ul className="space-y-2 text-blue-800">
             <li>✅ Access Token stored in localStorage (short-lived, 15min)</li>
-            <li>✅ Refresh Token stored in HTTP-only Cookie (long-lived, 30 days)</li>
-            <li>✅ Refresh Token not accessible via JavaScript (XSS protection)</li>
+            <li>
+              ✅ Refresh Token stored in HTTP-only Cookie (long-lived, 30 days)
+            </li>
+            <li>
+              ✅ Refresh Token not accessible via JavaScript (XSS protection)
+            </li>
             <li>✅ Automatic token refresh when Access Token expires</li>
             <li>✅ Cookie preserved during file uploads</li>
             <li>✅ withCredentials enabled for all requests</li>

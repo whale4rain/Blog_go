@@ -125,7 +125,7 @@ export const useUserStore = create<UserState>()(
             user,
             token: access_token,
             isLoggedIn: true,
-            isAdmin: user.role === "admin",
+            isAdmin: user.role_id === 2, // 2 = Admin role (matches backend)
             isInitialized: true,
           });
 
@@ -195,7 +195,7 @@ export const useUserStore = create<UserState>()(
             if (state.token && state.user && hasRefresh) {
               set({
                 isLoggedIn: true,
-                isAdmin: state.user.role === "admin",
+                isAdmin: state.user.role_id === 2, // 2 = Admin role (matches backend)
                 isInitialized: true,
               });
             } else {
@@ -238,7 +238,7 @@ export const useUserStore = create<UserState>()(
             const hasRefresh = hasRefreshToken();
             if (hasRefresh) {
               state.isLoggedIn = true;
-              state.isAdmin = state.user.role === "admin";
+              state.isAdmin = state.user.role_id === 2; // 2 = Admin role (matches backend)
             } else {
               // No refresh token, clear state
               state.user = null;

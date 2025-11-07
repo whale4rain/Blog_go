@@ -353,12 +353,12 @@ function CommentCard({ comment }: { comment: Comment }) {
               </span>
               <span
                 className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                  comment.user.role === "admin"
+                  comment.user.role_id === 2
                     ? "bg-google-red/10 text-google-red"
                     : "bg-google-green/10 text-google-green"
                 }`}
               >
-                {comment.user.role === "admin" ? "Admin" : "User"}
+                {comment.user.role_id === 2 ? "Admin" : "User"}
               </span>
             </div>
           </div>

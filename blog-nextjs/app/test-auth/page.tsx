@@ -38,17 +38,25 @@ export default function TestAuthPage() {
         <div className="space-y-6">
           {/* Auth Status Card */}
           <div className="card p-6">
-            <h2 className="text-xl font-semibold mb-4">Authentication Status</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Authentication Status
+            </h2>
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <span>Initialized:</span>
-                <span className={isInitialized ? "text-green-600" : "text-red-600"}>
+                <span
+                  className={isInitialized ? "text-green-600" : "text-red-600"}
+                >
                   {isInitialized ? "✅ Yes" : "❌ No"}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <span>Authenticated:</span>
-                <span className={isAuthenticated ? "text-green-600" : "text-red-600"}>
+                <span
+                  className={
+                    isAuthenticated ? "text-green-600" : "text-red-600"
+                  }
+                >
                   {isAuthenticated ? "✅ Yes" : "❌ No"}
                 </span>
               </div>
@@ -76,7 +84,12 @@ export default function TestAuthPage() {
                   <span className="font-medium">ID:</span> {user.id}
                 </div>
                 <div>
-                  <span className="font-medium">Role:</span> {user.role}
+                  <span className="font-medium">Role:</span>{" "}
+                  {user.role_id === 2
+                    ? "Admin"
+                    : user.role_id === 1
+                      ? "User"
+                      : "Guest"}
                 </div>
                 <div>
                   <span className="font-medium">Status:</span>{" "}
@@ -84,7 +97,9 @@ export default function TestAuthPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-muted-foreground">No user information available</p>
+              <p className="text-muted-foreground">
+                No user information available
+              </p>
             )}
           </div>
 
@@ -133,9 +148,9 @@ export default function TestAuthPage() {
               <li>Try accessing the dashboard link</li>
             </ol>
             <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-              <strong>Expected behavior:</strong> After logging in, refreshing the page
-              should maintain your authentication state. The debug panel should show
-              consistent information across refreshes.
+              <strong>Expected behavior:</strong> After logging in, refreshing
+              the page should maintain your authentication state. The debug
+              panel should show consistent information across refreshes.
             </div>
           </div>
         </div>

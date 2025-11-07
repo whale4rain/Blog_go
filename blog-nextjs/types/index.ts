@@ -60,11 +60,13 @@ export interface User {
   uuid: string;
   username: string;
   email: string;
-  avatar?: string;
-  role: "user" | "admin";
-  status: number;
-  signature?: string;
-  address?: string;
+  openid: string;
+  avatar: string;
+  address: string;
+  signature: string;
+  role_id: number; // 0=Guest, 1=User, 2=Admin (matches backend)
+  register: string;
+  freeze: boolean;
   created_at: string;
   updated_at: string;
 }
