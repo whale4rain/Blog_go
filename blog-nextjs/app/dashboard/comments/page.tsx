@@ -4,21 +4,21 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useUserStore } from "@/lib/store/userStore";
 import { deleteComments } from "@/lib/api/comment";
+import { useUserStore } from "@/lib/store/userStore";
 import {
-  MessageSquare,
-  ArrowLeft,
-  Trash2,
-  Reply,
-  Flag,
-  Check,
-  Search,
-  AlertTriangle,
+    AlertTriangle,
+    ArrowLeft,
+    Check,
+    Flag,
+    MessageSquare,
+    Reply,
+    Search,
+    Trash2,
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Comment {
   id: number;

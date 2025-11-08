@@ -4,17 +4,16 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { useUserStore } from "@/lib/store/userStore";
-import { getArticleById, updateArticle } from "@/lib/api/article";
-import { ArrowLeft, Save, Eye, Upload, X, Plus } from "lucide-react";
-import type {
-  Article,
-  UpdateArticleRequest,
-  CreateArticleRequest,
-} from "@/types";
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
+import { getArticleById, updateArticle } from "@/lib/api/article";
+import { useUserStore } from "@/lib/store/userStore";
+import type {
+    Article,
+    CreateArticleRequest
+} from "@/types";
+import { ArrowLeft, Plus, Save, Upload, X } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function EditArticlePage() {
   const router = useRouter();

@@ -4,22 +4,19 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { useUserStore } from "@/lib/store/userStore";
-import { useRouter } from "next/navigation";
 import {
-  FileText,
-  Users,
-  MessageSquare,
-  Eye,
-  Heart,
-  TrendingUp,
-  Calendar,
-  Image as ImageIcon,
-  Settings,
-  PlusCircle,
+    Eye,
+    FileText,
+    Heart,
+    Image as ImageIcon,
+    MessageSquare,
+    PlusCircle,
+    Settings
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 // ----------------------------------------------------------------------------
 // Page Component

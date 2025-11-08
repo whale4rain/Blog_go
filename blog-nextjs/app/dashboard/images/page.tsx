@@ -4,27 +4,22 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useUserStore } from "@/lib/store/userStore";
 import {
-  ArrowLeft,
-  Upload,
-  Image as ImageIcon,
-  Trash2,
-  Download,
-  Eye,
-  Search,
-  Filter,
-  Grid,
-  List,
-  MoreVertical,
-  X,
-  FolderOpen,
-  Calendar,
-  FileImage,
+    ArrowLeft,
+    Eye,
+    FolderOpen,
+    Grid,
+    Image as ImageIcon,
+    List,
+    Search,
+    Trash2,
+    Upload,
+    X
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 type ImageFile = {
   id: string;

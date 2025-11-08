@@ -4,28 +4,25 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { resetPassword, updateUserInfo } from "@/lib/api/user";
 import { useUserStore } from "@/lib/store/userStore";
-import { updateUserInfo, resetPassword } from "@/lib/api/user";
-import { sendEmailVerificationCode } from "@/lib/api/comment";
 import {
-  ArrowLeft,
-  User,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  Save,
-  Bell,
-  Shield,
-  Globe,
-  Palette,
-  Camera,
-  Check,
-  X,
+    ArrowLeft,
+    Bell,
+    Camera,
+    Check,
+    Eye,
+    EyeOff,
+    Lock,
+    Palette,
+    Save,
+    Shield,
+    User,
+    X
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface SettingsFormData {
   username: string;
