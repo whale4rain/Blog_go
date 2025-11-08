@@ -63,6 +63,16 @@ const nextConfig = {
       },
     ];
   },
+
+  // Rewrites for proxying uploads to backend
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: 'http://localhost:8080/uploads/:path*',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

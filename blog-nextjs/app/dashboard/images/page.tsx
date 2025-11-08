@@ -4,31 +4,34 @@
 
 "use client";
 
+import { deleteImages, getImageList, uploadImage } from "@/lib/api/comment";
 import { useUserStore } from "@/lib/store/userStore";
+import { getImageUrl } from "@/lib/utils";
 import {
-    ArrowLeft,
-    Eye,
-    FolderOpen,
-    Grid,
-    Image as ImageIcon,
-    List,
-    Search,
-    Trash2,
-    Upload,
-    X
+  ArrowLeft,
+  Eye,
+  FolderOpen,
+  Grid,
+  Image as ImageIcon,
+  List,
+  Search,
+  Trash2,
+  Upload,
+  X
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 type ImageFile = {
-  id: string;
+  id: number;
   name: string;
   url: string;
   size: number;
   type: string;
   uploadedAt: string;
   folder?: string;
+  category?: string;
   dimensions?: {
     width: number;
     height: number;
@@ -45,10 +48,13 @@ export default function ImagesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFolder, setSelectedFolder] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [previewImage, setPreviewImage] = useState<ImageFile | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalImages, setTotalImages] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
 
   const folders = [
     { id: "all", name: "All Images", count: 0 },
@@ -68,79 +74,45 @@ export default function ImagesPage() {
     }
 
     fetchImages();
-  }, [isLoggedIn, hasHydrated]);
+  }, [isLoggedIn, hasHydrated, currentPage, searchQuery, selectedFolder]);
 
   const fetchImages = async () => {
     try {
       setLoading(true);
-      // Mock data - in real app would fetch from API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await getImageList({
+        name: searchQuery,
+        category: selectedFolder === "all" ? undefined : selectedFolder,
+        page: currentPage,
+        page_size: 20,
+      });
 
-      const mockImages: ImageFile[] = [
-        {
-          id: "1",
-          name: "blog-cover-1.jpg",
-          url: "https://picsum.photos/seed/blog1/800/400.jpg",
-          size: 245760,
-          type: "image/jpeg",
-          uploadedAt: "2024-03-15T10:30:00Z",
-          folder: "covers",
-          dimensions: { width: 800, height: 400 },
-        },
-        {
-          id: "2",
-          name: "article-image-2.png",
-          url: "https://picsum.photos/seed/article2/600/400.jpg",
-          size: 184320,
-          type: "image/png",
-          uploadedAt: "2024-03-14T15:45:00Z",
-          folder: "articles",
-          dimensions: { width: 600, height: 400 },
-        },
-        {
-          id: "3",
-          name: "gallery-photo-3.jpg",
-          url: "https://picsum.photos/seed/gallery3/1200/800.jpg",
-          size: 512000,
-          type: "image/jpeg",
-          uploadedAt: "2024-03-13T09:20:00Z",
-          folder: "gallery",
-          dimensions: { width: 1200, height: 800 },
-        },
-        {
-          id: "4",
-          name: "recent-upload-4.webp",
-          url: "https://picsum.photos/seed/recent4/400/400.jpg",
-          size: 98304,
-          type: "image/webp",
-          uploadedAt: "2024-03-16T14:10:00Z",
-          folder: "uploads",
-          dimensions: { width: 400, height: 400 },
-        },
-        {
-          id: "5",
-          name: "blog-cover-5.jpg",
-          url: "https://picsum.photos/seed/blog5/800/400.jpg",
-          size: 262144,
-          type: "image/jpeg",
-          uploadedAt: "2024-03-12T11:25:00Z",
-          folder: "covers",
-          dimensions: { width: 800, height: 400 },
-        },
-      ];
+      // 转换后端数据格式为前端格式
+      const formattedImages: ImageFile[] = response.list.map((img: any) => ({
+        id: img.id,
+        name: img.name,
+        url: getImageUrl(img.url), // 处理图片 URL，使其指向后端服务器
+        size: img.size || 0,
+        type: img.type || "image/jpeg",
+        uploadedAt: img.created_at,
+        folder: img.category || "uploads",
+        category: img.category,
+        dimensions: undefined, // 后端暂时没有提供宽高信息
+      }));
 
-      setImages(mockImages);
+      setImages(formattedImages);
+      setTotalImages(response.total);
 
       // Update folder counts
       folders.forEach(folder => {
         if (folder.id === "all") {
-          folder.count = mockImages.length;
+          folder.count = response.total;
         } else {
-          folder.count = mockImages.filter(img => img.folder === folder.id).length;
+          folder.count = formattedImages.filter(img => img.folder === folder.id).length;
         }
       });
     } catch (error) {
       console.error("Failed to fetch images:", error);
+      alert("Failed to load images. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -150,51 +122,71 @@ export default function ImagesPage() {
     if (files.length === 0) return;
 
     setUploading(true);
-    const newImages: ImageFile[] = [];
+    const uploadedCount = { success: 0, failed: 0 };
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const url = URL.createObjectURL(file);
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileKey = `${file.name}-${i}`;
 
-      const newImage: ImageFile = {
-        id: `upload-${Date.now()}-${i}`,
-        name: file.name,
-        url,
-        size: file.size,
-        type: file.type,
-        uploadedAt: new Date().toISOString(),
-        folder: "uploads",
-      };
+        try {
+          // 上传图片到服务器
+          const response = await uploadImage(file, (progress) => {
+            setUploadProgress(prev => ({
+              ...prev,
+              [fileKey]: progress,
+            }));
+          });
 
-      // Get dimensions for images
-      if (file.type.startsWith("image/")) {
-        const img = new window.Image();
-        img.onload = () => {
-          newImage.dimensions = { width: img.width, height: img.height };
-        };
-        img.src = url;
+          if (response && response.url) {
+            uploadedCount.success++;
+          }
+
+          // 清除进度
+          setUploadProgress(prev => {
+            const newProgress = { ...prev };
+            delete newProgress[fileKey];
+            return newProgress;
+          });
+        } catch (error) {
+          console.error(`Failed to upload ${file.name}:`, error);
+          uploadedCount.failed++;
+        }
       }
 
-      newImages.push(newImage);
+      // 上传完成后重新获取图片列表
+      await fetchImages();
+      
+      // 显示上传结果
+      if (uploadedCount.failed === 0) {
+        alert(`Successfully uploaded ${uploadedCount.success} image${uploadedCount.success > 1 ? "s" : ""}!`);
+      } else {
+        alert(
+          `Uploaded ${uploadedCount.success} image${uploadedCount.success !== 1 ? "s" : ""}, ` +
+          `${uploadedCount.failed} failed. Please try again.`
+        );
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload images. Please try again.");
+    } finally {
+      setUploading(false);
+      setUploadProgress({});
+      setShowUploadModal(false);
     }
-
-    // Simulate upload delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    setImages(prev => [...newImages, ...prev]);
-    setUploading(false);
-    setShowUploadModal(false);
   };
 
-  const handleDelete = async (ids: string[]) => {
+  const handleDelete = async (ids: number[]) => {
     if (!confirm(`Are you sure you want to delete ${ids.length} image${ids.length > 1 ? "s" : ""}?`)) {
       return;
     }
 
     try {
-      // Mock delete - in real app would call API
-      setImages(prev => prev.filter(img => !ids.includes(img.id)));
+      await deleteImages(ids);
       setSelectedImages([]);
+      // 重新获取图片列表
+      await fetchImages();
+      alert(`Successfully deleted ${ids.length} image${ids.length > 1 ? "s" : ""}!`);
     } catch (error) {
       console.error("Failed to delete images:", error);
       alert("Failed to delete images. Please try again.");
@@ -221,7 +213,7 @@ export default function ImagesPage() {
     }
   };
 
-  const toggleImageSelection = (id: string) => {
+  const toggleImageSelection = (id: number) => {
     setSelectedImages(prev =>
       prev.includes(id)
         ? prev.filter(imageId => imageId !== id)
@@ -609,9 +601,29 @@ export default function ImagesPage() {
             </div>
 
             {uploading && (
-              <div className="mt-4 text-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-google-blue mx-auto mb-2"></div>
-                <p className="text-sm text-muted-foreground">Uploading...</p>
+              <div className="mt-4">
+                <div className="text-center mb-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-google-blue mx-auto mb-2"></div>
+                  <p className="text-sm text-muted-foreground">Uploading images...</p>
+                </div>
+                {Object.entries(uploadProgress).length > 0 && (
+                  <div className="space-y-2">
+                    {Object.entries(uploadProgress).map(([fileName, progress]) => (
+                      <div key={fileName} className="space-y-1">
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span className="truncate max-w-[200px]">{fileName.split("-")[0]}</span>
+                          <span>{progress}%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-1">
+                          <div
+                            className="bg-google-blue h-1 rounded-full transition-all"
+                            style={{ width: `${progress}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

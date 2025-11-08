@@ -2,22 +2,22 @@
 // Comment, Image, Base, and Other API Functions
 // ============================================================================
 
-import { get, post, put, del, upload } from "./client";
-import { USE_MOCK_API, mockApi } from "./mock/index";
 import type {
-  Comment,
-  CreateCommentRequest,
-  Image,
-  UploadImageResponse,
-  FriendLink,
-  CreateFriendLinkRequest,
-  Feedback,
-  CreateFeedbackRequest,
-  ReplyFeedbackRequest,
   Advertisement,
   CaptchaResponse,
+  Comment,
+  CreateCommentRequest,
+  CreateFeedbackRequest,
+  CreateFriendLinkRequest,
+  Feedback,
+  FriendLink,
+  Image,
   PaginatedResponse,
+  ReplyFeedbackRequest,
+  UploadImageResponse,
 } from "@/types";
+import { del, get, post, put, upload } from "./client";
+import { USE_MOCK_API, mockApi } from "./mock/index";
 
 // ----------------------------------------------------------------------------
 // Comment API
@@ -72,7 +72,7 @@ export async function uploadImage(
   onProgress?: (progress: number) => void,
 ): Promise<UploadImageResponse> {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("image", file); // 后端接收的字段名是 "image"
 
   return upload<UploadImageResponse>("/image/upload", formData, onProgress);
 }

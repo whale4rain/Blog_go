@@ -280,6 +280,11 @@ export async function upload<T = unknown>(
 ): Promise<T> {
   const response = await client.post<ApiResponse<T>>(url, formData, {
     ...config,
+    headers: {
+      ...config?.headers,
+      // 让浏览器自动设置 Content-Type (multipart/form-data with boundary)
+      'Content-Type': 'multipart/form-data',
+    },
     onUploadProgress: (progressEvent) => {
       if (onProgress && progressEvent.total) {
         const progress = Math.round(

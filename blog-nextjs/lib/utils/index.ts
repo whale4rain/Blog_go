@@ -3,8 +3,8 @@
 // ============================================================================
 
 import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
+import { twMerge } from 'tailwind-merge';
 
 // ----------------------------------------------------------------------------
 // Class Name Utilities
@@ -346,4 +346,35 @@ export function buildQueryString(params: Record<string, any>): string {
     }
   });
   return searchParams.toString();
+}
+
+// ----------------------------------------------------------------------------
+// Image URL Utilities
+// ----------------------------------------------------------------------------
+
+/**
+ * Get full image URL
+ * If the URL is relative (starts with /uploads), it will be served through Next.js proxy
+ * Otherwise return the URL as-is (for CDN URLs)
+ */
+export function getImageUrl(url: string): string {
+  if (!url) return '';
+  
+  // If it's already a full URL (http:// or https://), return as-is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  // If it's a relative URL starting with /uploads, return as-is
+  // Next.js will proxy it to the backend server
+  if (url.startsWith('/uploads')) {
+    return url;
+  }
+  
+  // If it's a relative URL but doesn't start with /, prepend /
+  if (!url.startsWith('/')) {
+    return `/${url}`;
+  }
+  
+  return url;
 }
