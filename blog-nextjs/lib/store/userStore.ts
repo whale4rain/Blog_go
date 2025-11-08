@@ -2,10 +2,10 @@
 // User Store - Zustand State Management
 // ============================================================================
 
+import { storage } from '@/lib/utils';
+import type { User, UserInfo } from '@/types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User, UserInfo } from '@/types';
-import { storage } from '@/lib/utils';
 
 // ----------------------------------------------------------------------------
 // Store Types
@@ -75,7 +75,24 @@ export const useUserStore = create<UserState>()(
       },
 
       // Logout action
-      logout: () => {
+      logout: async () => {
+        // Call backend logout API to clear refresh_token cookie and blacklist
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8080/api'}/user/logout`,
+            {
+              method: 'POST',
+              credentials: 'include', // Important: send cookies
+              headers: {
+                'x-access-token': storage.get('access_token') || '',
+              },
+            }
+          );
+        } catch (error) {
+          console.error('Logout API error:', error);
+        }
+
+        // Clear local state and storage
         set({
           user: null,
           token: null,
@@ -83,7 +100,7 @@ export const useUserStore = create<UserState>()(
           isAdmin: false,
         });
 
-        // Clear storage
+        // Clear storage (only access_token and user, refresh_token is HttpOnly cookie)
         storage.remove('access_token');
         storage.remove('user');
       },

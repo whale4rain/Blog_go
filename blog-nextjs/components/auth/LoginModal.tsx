@@ -4,29 +4,31 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  X,
-  Mail,
-  Lock,
-  User,
-  Eye,
-  EyeOff,
-  AlertCircle,
-  CheckCircle,
-} from "lucide-react";
-import { useUIStore } from "@/lib/store/uiStore";
-import { useUserStore } from "@/lib/store/userStore";
+import { getCaptcha } from "@/lib/api/base";
 import {
   login as apiLogin,
   register as apiRegister,
   sendEmailVerificationCode,
 } from "@/lib/api/user";
-import { getCaptcha } from "@/lib/api/base";
+import { useUIStore } from "@/lib/store/uiStore";
+import { useUserStore } from "@/lib/store/userStore";
+import {
+  AlertCircle,
+  CheckCircle,
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  User,
+  X,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function LoginModal() {
   const { loginModalOpen, closeLoginModal } = useUIStore();
   const { login: storeLogin } = useUserStore();
+  const router = useRouter();
 
   const [mode, setMode] = useState<"login" | "register">("login");
   const [loading, setLoading] = useState(false);
@@ -98,10 +100,12 @@ export default function LoginModal() {
       storeLogin(userInfo);
 
       setSuccess("Login successful!");
+      // Close modal and navigate to dashboard (use router.push to avoid full reload and make behavior
+      // consistent with page login). Small delay keeps UX smooth and ensures response processed.
       setTimeout(() => {
         closeLoginModal();
-        window.location.reload();
-      }, 1000);
+        router.push("/");
+      }, 300);
     } catch (error: any) {
       setError(error.response?.data?.msg || "Login failed. Please try again.");
       loadCaptcha(); // Reload captcha on error

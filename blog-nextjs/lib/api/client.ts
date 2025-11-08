@@ -30,7 +30,8 @@ const client: AxiosInstance = axios.create({
   timeout: isServer ? 10000 : TIMEOUT, // Shorter timeout on server
   headers: {
     "Content-Type": "application/json",
-    "User-Agent": isServer ? "Next.js-Server" : "Next.js-Client",
+    // User-Agent cannot be set from browser (Refused to set unsafe header).
+    // Set User-Agent only on server side via conditional spread below.
   },
   withCredentials: true, // Enable withCredentials to send cookies cross-domain
   // Add additional configuration for server-side requests
@@ -39,6 +40,8 @@ const client: AxiosInstance = axios.create({
     family: 4,
     // Disable keep-alive for server requests to avoid connection pooling issues
     keepAlive: false,
+    // Add User-Agent header only when running server-side
+    ...(isServer ? { headers: { "User-Agent": "Next.js-Server" } } : {}),
   }),
 });
 
@@ -183,6 +186,22 @@ export async function post<T = unknown>(
 ): Promise<T> {
   try {
     const response = await client.post<ApiResponse<T>>(url, data, config);
+
+    // Temporary debug: when calling login endpoint, log request/response headers (client-side only)
+    if (!isServer && url.includes("/user/login")) {
+      try {
+        // eslint-disable-next-line no-console
+        console.debug("[API-DEBUG] login request -> response headers:", {
+          requestUrl: `${API_BASE_URL}${url}`,
+          requestConfig: config,
+          responseHeaders: response.headers,
+          setCookie: response.headers["set-cookie"] || response.headers["Set-Cookie"],
+        });
+      } catch (e) {
+        // ignore
+      }
+    }
+
     return response.data.data;
   } catch (error) {
     if (isServer) {

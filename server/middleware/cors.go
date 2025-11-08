@@ -79,6 +79,8 @@ func Cors() gin.HandlerFunc {
 		ExposeHeaders: []string{
 			"Content-Length",
 			"Content-Type",
+			"New-Access-Token",
+			"New-Access-Expires-At",
 		},
 		// AllowCredentials indicates whether the request can include user credentials
 		AllowCredentials: true,
