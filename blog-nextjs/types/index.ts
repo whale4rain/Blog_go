@@ -55,16 +55,29 @@ export interface PaginatedResponse<T> {
 // User Types
 // ----------------------------------------------------------------------------
 
+/**
+ * User role enum matching backend RoleID
+ * 0 = Guest, 1 = User, 2 = Admin
+ */
+export enum UserRole {
+  Guest = 0,
+  User = 1,
+  Admin = 2,
+}
+
 export interface User {
   id: number;
   uuid: string;
   username: string;
   email: string;
   avatar?: string;
-  role: "user" | "admin";
-  status: number;
+  role_id: number; // Backend uses role_id (number), not role (string)
+  status?: number;
   signature?: string;
   address?: string;
+  register?: string;
+  openid?: string;
+  freeze?: boolean;
   created_at: string;
   updated_at: string;
 }

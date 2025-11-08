@@ -4,12 +4,12 @@
 
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { Heart, Share2, Calendar, Clock, Eye } from "lucide-react";
-import type { Article, Comment } from "@/types";
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 import TableOfContents from "@/components/ui/TableOfContents";
+import type { Article, Comment } from "@/types";
+import { Calendar, Clock, Eye, Heart, Share2 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 interface ArticleClientProps {
   article: Article;
@@ -353,12 +353,12 @@ function CommentCard({ comment }: { comment: Comment }) {
               </span>
               <span
                 className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                  comment.user.role === "admin"
+                  comment.user.role_id === 2
                     ? "bg-google-red/10 text-google-red"
                     : "bg-google-green/10 text-google-green"
                 }`}
               >
-                {comment.user.role === "admin" ? "Admin" : "User"}
+                {comment.user.role_id === 2 ? "Admin" : "User"}
               </span>
             </div>
           </div>

@@ -2,12 +2,11 @@
 // Author Profile Page - Display User Information and Articles
 // ============================================================================
 
-import React from "react";
-import { notFound } from "next/navigation";
-import { getUserCard } from "@/lib/api/user";
-import { getArticleList } from "@/lib/api/article";
 import Header from "@/components/layout/Header";
-import type { User, ArticleListItem } from "@/types";
+import { getArticleList } from "@/lib/api/article";
+import { getUserCard } from "@/lib/api/user";
+import type { ArticleListItem, User } from "@/types";
+import { notFound } from "next/navigation";
 
 interface AuthorPageProps {
   params: {
@@ -165,12 +164,12 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
               <div className="flex items-center gap-2">
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                    author.role === "admin"
+                    author.role_id === 2
                       ? "bg-google-red/10 text-google-red"
                       : "bg-google-green/10 text-google-green"
                   }`}
                 >
-                  {author.role === "admin" ? "Admin" : "User"}
+                  {author.role_id === 2 ? "Admin" : "User"}
                 </span>
 
                 {author.status === 1 ? (

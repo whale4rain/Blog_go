@@ -2,6 +2,7 @@
 // User Store - Zustand State Management
 // ============================================================================
 
+import { USER_ROLES } from '@/lib/constants/roles';
 import { storage } from '@/lib/utils';
 import type { User, UserInfo } from '@/types';
 import { create } from 'zustand';
@@ -45,7 +46,7 @@ export const useUserStore = create<UserState>()(
         set({
           user,
           isLoggedIn: !!user,
-          isAdmin: user?.role === 'admin',
+          isAdmin: user?.role_id === USER_ROLES.ADMIN,
         }),
 
       // Set token
@@ -66,7 +67,7 @@ export const useUserStore = create<UserState>()(
           user,
           token: access_token,
           isLoggedIn: true,
-          isAdmin: user.role === 'admin',
+          isAdmin: user.role_id === USER_ROLES.ADMIN,
         });
 
         // Store token in localStorage
@@ -129,7 +130,7 @@ export const useUserStore = create<UserState>()(
               user,
               token,
               isLoggedIn: true,
-              isAdmin: user.role === 'admin',
+              isAdmin: user.role_id === USER_ROLES.ADMIN,
             });
           } catch (error) {
             console.error('Failed to parse user from storage:', error);
