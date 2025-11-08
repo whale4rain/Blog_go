@@ -5,6 +5,7 @@ import (
 	"server/global"
 	"server/model/appTypes"
 	"server/model/request"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
@@ -29,20 +30,25 @@ func ClearRefreshToken(c *gin.Context) {
 	if err != nil {
 		host = c.Request.Host
 	}
+	// 调用setCookie设置refresh-token
 	// 调用setCookie设置cookie值为空并过期，删除refresh-token
 	setCookie(c, "x-refresh-token", "", -1, host)
 }
 
 // setCookie 设置指定名称和值的cookie
 func setCookie(c *gin.Context, name, value string, maxAge int, host string) {
-	// 判断host是否是IP地址
-	if net.ParseIP(host) != nil {
-		// 如果是IP地址，设置cookie的domain为“/”
-		c.SetCookie(name, value, maxAge, "/", "", false, true)
-	} else {
-		// 如果是域名，设置cookie的domain为域名
-		c.SetCookie(name, value, maxAge, "/", host, false, true)
+	// 对于 IP 地址 或 localhost，不显式设置 domain
+	// 同时不设置 SameSite（在开发环境中避免跨站限制）
+	if net.ParseIP(host) != nil || host == "localhost" {
+		// 不显式设置 SameSite，让浏览器使用默认行为（适用于本地开发）
+		cookieStr := name + "=" + value + "; Path=/; Max-Age=" + strconv.Itoa(maxAge) + "; HttpOnly"
+		c.Header("Set-Cookie", cookieStr)
+		return
 	}
+
+	// 生产环境：为真实域名设置 domain 和 SameSite=Lax
+	cookieStr := name + "=" + value + "; Path=/; Domain=" + host + "; Max-Age=" + strconv.Itoa(maxAge) + "; HttpOnly; SameSite=Lax"
+	c.Header("Set-Cookie", cookieStr)
 }
 
 // GetAccessToken 从请求头获取Access Token

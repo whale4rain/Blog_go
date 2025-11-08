@@ -140,9 +140,13 @@ export const useUserStore = create<UserState>()(
     }),
     {
       name: 'user-storage',
+      // Persist all state fields (user, token, isLoggedIn, isAdmin)
+      // Zustand automatically excludes functions from persistence
       partialize: (state) => ({
         user: state.user,
         token: state.token,
+        isLoggedIn: state.isLoggedIn,
+        isAdmin: state.isAdmin,
       }),
     }
   )
