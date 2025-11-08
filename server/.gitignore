@@ -2,3 +2,4 @@ main.exe
 main
 *.sql
 config.yaml
+uploads/
