@@ -18,6 +18,7 @@ interface UserState {
   token: string | null;
   isLoggedIn: boolean;
   isAdmin: boolean;
+  hasHydrated: boolean; // Track if state has been rehydrated from storage
 
   // Actions
   setUser: (user: User | null) => void;
@@ -26,6 +27,7 @@ interface UserState {
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
   initializeUser: () => void;
+  setHasHydrated: (state: boolean) => void;
 }
 
 // ----------------------------------------------------------------------------
@@ -40,6 +42,10 @@ export const useUserStore = create<UserState>()(
       token: null,
       isLoggedIn: false,
       isAdmin: false,
+      hasHydrated: false,
+
+      // Set hydration state
+      setHasHydrated: (state) => set({ hasHydrated: state }),
 
       // Set user
       setUser: (user) =>
@@ -149,6 +155,10 @@ export const useUserStore = create<UserState>()(
         isLoggedIn: state.isLoggedIn,
         isAdmin: state.isAdmin,
       }),
+      // Set hasHydrated to true after rehydration completes
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );
@@ -161,3 +171,4 @@ export const selectUser = (state: UserState) => state.user;
 export const selectIsLoggedIn = (state: UserState) => state.isLoggedIn;
 export const selectIsAdmin = (state: UserState) => state.isAdmin;
 export const selectToken = (state: UserState) => state.token;
+export const selectHasHydrated = (state: UserState) => state.hasHydrated;

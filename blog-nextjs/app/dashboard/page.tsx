@@ -27,7 +27,7 @@ import {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, isLoggedIn, isAdmin } = useUserStore();
+  const { user, isLoggedIn, isAdmin, hasHydrated } = useUserStore();
   const [stats, setStats] = useState({
     totalArticles: 0,
     totalViews: 0,
@@ -37,13 +37,17 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Wait for Zustand to rehydrate state from localStorage
+    if (!hasHydrated) return;
+
+    // After hydration, check if user is logged in
     if (!isLoggedIn) {
       router.push("/login");
       return;
     }
 
     fetchStats();
-  }, [isLoggedIn]);
+  }, [isLoggedIn, hasHydrated]);
 
   const fetchStats = async () => {
     try {
@@ -62,7 +66,7 @@ export default function DashboardPage() {
     }
   };
 
-  if (!isLoggedIn) {
+  if (!hasHydrated || !isLoggedIn) {
     return null;
   }
 

@@ -29,7 +29,7 @@ import type { ArticleListItem } from "@/types";
 
 export default function ArticlesPage() {
   const router = useRouter();
-  const { isLoggedIn } = useUserStore();
+  const { isLoggedIn, hasHydrated } = useUserStore();
   const [articles, setArticles] = useState<ArticleListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,13 +39,16 @@ export default function ArticlesPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
+    // Wait for Zustand to rehydrate state from localStorage
+    if (!hasHydrated) return;
+
     if (!isLoggedIn) {
       router.push("/login");
       return;
     }
 
     fetchArticles();
-  }, [isLoggedIn, currentPage, searchTerm]);
+  }, [isLoggedIn, hasHydrated, currentPage, searchTerm]);
 
   const fetchArticles = async () => {
     try {

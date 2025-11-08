@@ -42,7 +42,7 @@ interface Comment {
 
 export default function CommentsPage() {
   const router = useRouter();
-  const { user, isLoggedIn } = useUserStore();
+  const { user, isLoggedIn, hasHydrated } = useUserStore();
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,13 +57,16 @@ export default function CommentsPage() {
   const [expandedComments, setExpandedComments] = useState<number[]>([]);
 
   useEffect(() => {
+    // Wait for Zustand to rehydrate state from localStorage
+    if (!hasHydrated) return;
+
     if (!isLoggedIn) {
       router.push("/login");
       return;
     }
 
     fetchComments();
-  }, [isLoggedIn, currentPage, statusFilter]);
+  }, [isLoggedIn, hasHydrated, currentPage, statusFilter]);
 
   const fetchComments = async () => {
     try {

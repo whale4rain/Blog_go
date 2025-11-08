@@ -42,7 +42,7 @@ type ImageFile = {
 
 export default function ImagesPage() {
   const router = useRouter();
-  const { user, isLoggedIn } = useUserStore();
+  const { user, isLoggedIn, hasHydrated } = useUserStore();
 
   const [images, setImages] = useState<ImageFile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,13 +64,16 @@ export default function ImagesPage() {
   ];
 
   useEffect(() => {
+    // Wait for Zustand to rehydrate state from localStorage
+    if (!hasHydrated) return;
+
     if (!isLoggedIn) {
       router.push("/login");
       return;
     }
 
     fetchImages();
-  }, [isLoggedIn]);
+  }, [isLoggedIn, hasHydrated]);
 
   const fetchImages = async () => {
     try {

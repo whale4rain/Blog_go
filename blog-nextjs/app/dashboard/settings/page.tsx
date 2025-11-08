@@ -43,7 +43,7 @@ interface SettingsFormData {
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, isLoggedIn, updateUser } = useUserStore();
+  const { user, isLoggedIn, hasHydrated, updateUser } = useUserStore();
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -69,6 +69,9 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
+    // Wait for Zustand to rehydrate state from localStorage
+    if (!hasHydrated) return;
+
     if (!isLoggedIn) {
       router.push("/login");
       return;
@@ -84,7 +87,7 @@ export default function SettingsPage() {
       }));
       setAvatarPreview(user.avatar || "");
     }
-  }, [isLoggedIn, user]);
+  }, [isLoggedIn, hasHydrated, user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;

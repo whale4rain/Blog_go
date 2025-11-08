@@ -19,7 +19,7 @@ import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 export default function EditArticlePage() {
   const router = useRouter();
   const params = useParams();
-  const { user, isLoggedIn } = useUserStore();
+  const { user, isLoggedIn, hasHydrated } = useUserStore();
   const articleId = params.id as string;
 
   const [loading, setLoading] = useState(false);
@@ -51,6 +51,9 @@ export default function EditArticlePage() {
   ];
 
   useEffect(() => {
+    // Wait for Zustand to rehydrate state from localStorage
+    if (!hasHydrated) return;
+
     if (!isLoggedIn) {
       router.push("/login");
       return;
@@ -59,7 +62,7 @@ export default function EditArticlePage() {
     if (articleId) {
       fetchArticle();
     }
-  }, [isLoggedIn, articleId]);
+  }, [isLoggedIn, hasHydrated, articleId]);
 
   const fetchArticle = async () => {
     try {

@@ -27,7 +27,7 @@ import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 
 export default function CreateArticlePage() {
   const router = useRouter();
-  const { user, isLoggedIn } = useUserStore();
+  const { user, isLoggedIn, hasHydrated } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,11 +56,14 @@ export default function CreateArticlePage() {
   ];
 
   React.useEffect(() => {
+    // Wait for Zustand to rehydrate state from localStorage
+    if (!hasHydrated) return;
+
     if (!isLoggedIn) {
       router.push("/login");
       return;
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, hasHydrated]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
