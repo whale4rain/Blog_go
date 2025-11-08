@@ -2,13 +2,13 @@
 // Axios HTTP Client Configuration
 // ============================================================================
 
+import type { ApiResponse } from "@/types";
 import axios, {
   AxiosError,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
 } from "axios";
-import type { ApiResponse } from "@/types";
 
 // ----------------------------------------------------------------------------
 // Client Configuration
@@ -32,7 +32,7 @@ const client: AxiosInstance = axios.create({
     "Content-Type": "application/json",
     "User-Agent": isServer ? "Next.js-Server" : "Next.js-Client",
   },
-  withCredentials: false, // Disable withCredentials to avoid CORS issues
+  withCredentials: true, // Enable withCredentials to send cookies cross-domain
   // Add additional configuration for server-side requests
   ...(isServer && {
     // Ensure proper DNS resolution on server
@@ -52,7 +52,7 @@ client.interceptors.request.use(
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("access_token");
       if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers["x-access-token"] = token;
       }
     }
 
@@ -70,7 +70,13 @@ client.interceptors.request.use(
 
 client.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
-    const { data } = response;
+    const { data, headers } = response;
+
+    // Handle automatic token refresh
+    const newAccessToken = headers["new-access-token"];
+    if (newAccessToken && typeof window !== "undefined") {
+      localStorage.setItem("access_token", newAccessToken);
+    }
 
     // Check API response code (backend returns 0 for success)
     if (data.code === 0) {

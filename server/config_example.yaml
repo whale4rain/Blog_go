@@ -1,0 +1,95 @@
+captcha:
+  height: 100
+  width: 300
+  length: 4
+  max_skew: 0.5
+  dot_count: 50
+email:
+  host: smtp.mock.com
+  port: 123
+  from: mock@email.com
+  nickname: mock_nickname
+  secret: mock_secret
+  is_ssl: false
+es:
+  url: http://mock-es-url:9200
+  username: mock_user
+  password: mock_pass
+  is_console_print: false
+gaode:
+  enable: false
+  key: mock_gaode_key
+jwt:
+  access_token_secret: mock_access_token_secret
+  refresh_token_secret: mock_refresh_token_secret
+  access_token_expiry_time: 1h
+  refresh_token_expiry_time: 1d
+  issuer: mock_issuer
+mysql:
+  host: mock-mysql-host
+  port: 3306
+  config: charset=mock&parseTime=False&loc=Mock
+  db_name: mock_db
+  username: mock_user
+  password: mock_pass
+  max_idle_conns: 5
+  max_open_conns: 10
+  log_mode: silent
+qiniu:
+  zone: mock_zone
+  bucket: mock_bucket
+  img_path: https://mock.img.path/
+  access_key: mock_access_key
+  secret_key: mock_secret_key
+  use_https: false
+  use_cdn_domains: false
+qq:
+  enable: false
+  app_id: "mock_app_id"
+  app_key: mock_app_key
+  redirect_uri: http://mock.redirect/login?flag=qq
+redis:
+  address: mock_redis:6379
+  password: mock_redis_pass
+  db: 1
+system:
+  host: 127.0.0.1
+  port: 8000
+  env: mock
+  router_prefix: mock_api
+  use_multipoint: false
+  sessions_secret: mock_sessions_secret
+  oss_type: mock_oss
+upload:
+  size: 10
+  path: mock_uploads
+website:
+  logo: "/mock/logo.jpg"
+  full_logo: "mock_full_logo"
+  title: mock_blog_title
+  slogan: mock_slogan
+  slogan_en: mock_slogan_en
+  description: mock_description
+  version: 0.0.1
+  created_at: "2025-01-01"
+  icp_filing: mock_icp
+  public_security_filing: mock_security
+  bilibili_url: https://mock.bilibili.com
+  gitee_url: https://mock.gitee.com
+  github_url: https://mock.github.com
+  name: mock_name
+  job: mock_job
+  address: mock_address
+  email: mock@email.com
+  qq_image: "mock_qq_image"
+  wechat_image: "mock_wechat_image"
+zap:
+  level: debug
+  filename: log/mock.log
+  max_size: 10
+  max_backups: 2
+  max_age: 1
+  is_console_print: false
+ai:
+  key: mock_ai_key
+  base_url: https://mock.ai.api

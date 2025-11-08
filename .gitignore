@@ -1,4 +1,6 @@
 node_modules
-go_blog.log
+*.log
 .vscode
 nul
+server/log/*.log
+config_backup.yaml

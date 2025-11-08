@@ -72,6 +72,7 @@ func Cors() gin.HandlerFunc {
 			"Accept",
 			"Authorization",
 			"X-Requested-With",
+			"X-Access-Token",
 			"Cache-Control",
 		},
 		// ExposeHeaders specifies the headers that are safe to expose to the API
