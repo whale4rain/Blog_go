@@ -249,10 +249,10 @@ export default function ArticleClient({
                 </p>
               )}
               <Link
-                href={`/author/${article.author.id}`}
+                href="/about"
                 className="text-google-blue hover:underline font-medium"
               >
-                View Profile →
+                Learn More →
               </Link>
             </div>
           </div>
@@ -399,7 +399,7 @@ function CommentCard({
         {/* Avatar */}
         <div className="flex-shrink-0">
           <a
-            href={`/author/${user.id}`}
+            href="/about"
             className="block hover:opacity-80 transition-opacity"
           >
             {user.avatar ? (
@@ -421,7 +421,7 @@ function CommentCard({
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2 mb-2">
               <a
-                href={`/author/${user.id}`}
+                href="/about"
                 className="font-semibold text-foreground hover:text-google-blue transition-colors"
               >
                 {user.username}
@@ -518,7 +518,7 @@ function CommentCard({
               Report
             </button>
             <a
-              href={`/author/${user.id}`}
+              href="/about"
               className="flex items-center gap-1 text-muted-foreground hover:text-google-blue transition-colors"
             >
               <svg
@@ -534,7 +534,7 @@ function CommentCard({
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
-              View Profile
+              About Blog
             </a>
           </div>
 
@@ -615,7 +615,7 @@ function CommentCard({
                     <div key={reply.id} className="flex gap-3">
                       <div className="flex-shrink-0">
                         <a
-                          href={`/author/${replyUser.id}`}
+                          href="/about"
                           className="block hover:opacity-80 transition-opacity"
                         >
                           {replyUser.avatar ? (
@@ -634,7 +634,7 @@ function CommentCard({
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <a
-                            href={`/author/${replyUser.id}`}
+                            href="/about"
                             className="font-medium text-foreground hover:text-google-blue transition-colors text-sm"
                           >
                             {replyUser.username}
