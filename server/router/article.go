@@ -21,10 +21,10 @@ func (a *ArticleRouter) InitArticleRouter(Router *gin.RouterGroup, PublicRouter 
 		articleRouter.GET("likesList", articleApi.ArticleLikesList)
 	}
 	{
-		articlePublicRouter.GET(":id", articleApi.ArticleInfoByID)
 		articlePublicRouter.GET("search", articleApi.ArticleSearch)
 		articlePublicRouter.GET("category", articleApi.ArticleCategory)
 		articlePublicRouter.GET("tags", articleApi.ArticleTags)
+		articlePublicRouter.GET(":id", articleApi.ArticleInfoByID)
 	}
 	{
 		articleAdminRouter.POST("create", articleApi.ArticleCreate)

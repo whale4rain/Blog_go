@@ -6,17 +6,18 @@
 
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 import { createArticle } from "@/lib/api/article";
+import { uploadImage } from "@/lib/api/comment";
 import { useUserStore } from "@/lib/store/userStore";
 import {
-    ArrowLeft,
-    Eye,
-    FileText,
-    Hash,
-    Image as ImageIcon,
-    Plus,
-    Save,
-    Upload,
-    X,
+  ArrowLeft,
+  Eye,
+  FileText,
+  Hash,
+  Image as ImageIcon,
+  Plus,
+  Save,
+  Upload,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
@@ -30,6 +31,7 @@ export default function CreateArticlePage() {
   const { user, isLoggedIn, hasHydrated } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Article data
@@ -134,13 +136,43 @@ export default function CreateArticlePage() {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // In a real implementation, you would upload to a server
-      // For now, we'll use a local URL
-      const url = URL.createObjectURL(file);
-      setCoverImage(url);
+    if (!file) return;
+
+    // 验证文件类型
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    // 验证文件大小（最大 10MB）
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image size should be less than 10MB');
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+      const response = await uploadImage(file);
+      
+      if (response && response.url) {
+        // 如果返回的是相对路径，使用 Next.js 代理路径
+        let imageUrl = response.url;
+        if (imageUrl.startsWith('/')) {
+          imageUrl = imageUrl;
+        }
+        setCoverImage(imageUrl);
+      }
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setUploadingImage(false);
+      // 重置 input 以允许重新选择同一文件
+      if (event.target) {
+        event.target.value = '';
+      }
     }
   };
 
@@ -302,15 +334,24 @@ export default function CreateArticlePage() {
                     accept="image/*"
                     onChange={handleImageUpload}
                     className="hidden"
+                    disabled={uploadingImage}
                   />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full p-4 border-2 border-dashed border-border rounded-lg hover:border-google-blue transition-colors"
+                    disabled={uploadingImage}
+                    className="w-full p-4 border-2 border-dashed border-border rounded-lg hover:border-google-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                      <Upload className="w-6 h-6" />
-                      <span className="text-sm">Upload Cover Image</span>
-                    </div>
+                    {uploadingImage ? (
+                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-google-blue"></div>
+                        <span className="text-sm">Uploading...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                        <Upload className="w-6 h-6" />
+                        <span className="text-sm">Upload Cover Image</span>
+                      </div>
+                    )}
                   </button>
                 </div>
               )}

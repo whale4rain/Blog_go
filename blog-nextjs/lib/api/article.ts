@@ -2,20 +2,21 @@
 // Article API Functions
 // ============================================================================
 
-import { get, post, put, del } from "./client";
-import { USE_MOCK_API, mockApi } from "./mock";
 import type {
   Article,
   ArticleListItem,
-  CreateArticleRequest,
-  UpdateArticleRequest,
   ArticleSearchParams,
-  CategoryStat,
-  TagStat,
-  PaginatedResponse,
-  Hit,
   ArticleSource,
+  CategoryStat,
+  CreateArticleRequest,
+  Hit,
+  PaginatedResponse,
+  TagStat,
+  UpdateArticleRequest,
+  User,
 } from "@/types";
+import { del, get, post, put } from "./client";
+import { USE_MOCK_API, mockApi } from "./mock";
 
 // ----------------------------------------------------------------------------
 // Article CRUD Operations
@@ -77,7 +78,29 @@ export async function getArticleById(id: string): Promise<Article> {
   if (USE_MOCK_API) {
     return mockApi.getArticleById(id);
   }
-  return get<Article>(`/article/${id}`);
+  
+  // 后端返回的是 Elasticsearch Article 结构，需要转换
+  const response = await get<ArticleSource>(`/article/${id}`);
+  
+  // 转换为前端期望的 Article 格式
+  return {
+    id: id,
+    cover: response.cover,
+    title: response.title,
+    category: response.category,
+    tags: response.tags,
+    abstract: response.abstract,
+    content: response.content || '',
+    author: {} as User, // 后端不返回作者信息，需要从用户信息获取
+    author_id: 0, // 后端不返回作者ID
+    view_count: response.views,
+    like_count: response.likes,
+    comment_count: response.comments,
+    status: 1, // 默认状态为已发布
+    is_top: false, // 默认不置顶
+    created_at: response.created_at,
+    updated_at: response.updated_at || response.created_at,
+  };
 }
 
 // ----------------------------------------------------------------------------
