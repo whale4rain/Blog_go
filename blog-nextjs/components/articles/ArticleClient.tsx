@@ -96,9 +96,10 @@ export default function ArticleClient({
   };
 
   return (
-    <div className="flex gap-8">
-      {/* Main Content */}
-      <div className="flex-1 min-w-0">
+    <div className="flex gap-8 w-full">
+      {/* Main Content - 75% width on desktop, max-width for readability */}
+      <div className="w-full lg:w-[75%] min-w-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
           <Link href="/" className="hover:text-foreground transition-colors">
@@ -314,6 +315,7 @@ export default function ArticleClient({
             Related articles will be shown here...
           </p>
         </section>
+        </div>
       </div>
 
       {/* Table of Contents Sidebar */}

@@ -4,8 +4,8 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { ChevronRight, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface TocItem {
   id: string;
@@ -114,7 +114,7 @@ export default function TableOfContents({
       });
 
       // Close mobile menu after click
-      if (window.innerWidth < 768) {
+      if (window.innerWidth < 1024) {
         setIsMobileOpen(false);
       }
     }
@@ -166,7 +166,7 @@ export default function TableOfContents({
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsMobileOpen(true)}
-        className="md:hidden fixed bottom-6 right-6 z-50 w-14 h-14 bg-google-blue text-white rounded-full shadow-lg flex items-center justify-center hover:bg-[hsl(214,90%,48%)] transition-colors"
+        className="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 bg-google-blue text-white rounded-full shadow-lg flex items-center justify-center hover:bg-[hsl(214,90%,48%)] transition-colors"
         aria-label="Toggle table of contents"
       >
         <Menu className="w-6 h-6" />
@@ -175,7 +175,7 @@ export default function TableOfContents({
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -184,18 +184,18 @@ export default function TableOfContents({
       <div
         className={`
         table-of-contents
-        ${isMobileOpen ? "fixed inset-y-0 right-0 z-50" : "hidden md:block"}
-        md:relative md:z-auto
-        ${isCollapsed ? "w-16" : "w-64"}
+        ${isMobileOpen ? "fixed inset-y-0 right-0 z-50 w-80" : "hidden lg:block"}
+        lg:relative lg:z-auto
+        ${isCollapsed ? "lg:w-16" : "lg:w-[25%]"}
         ${className}
       `}
       >
         <div
           className="
           h-full bg-card border-l border-border
-          md:sticky md:top-24 md:h-[calc(100vh-6rem)]
+          lg:sticky lg:top-24 lg:h-[calc(100vh-6rem)]
           overflow-hidden flex flex-col
-          shadow-xl md:shadow-none
+          shadow-xl lg:shadow-none
         "
         >
           {/* Header */}
@@ -214,7 +214,7 @@ export default function TableOfContents({
               {/* Collapse Toggle (Desktop) */}
               <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="hidden md:flex items-center justify-center w-8 h-8 rounded-md hover:bg-muted transition-colors"
+                className="hidden lg:flex items-center justify-center w-8 h-8 rounded-md hover:bg-muted transition-colors"
                 aria-label={isCollapsed ? "Expand" : "Collapse"}
               >
                 <ChevronRight
@@ -229,7 +229,7 @@ export default function TableOfContents({
               {isMobileOpen && (
                 <button
                   onClick={() => setIsMobileOpen(false)}
-                  className="md:hidden flex items-center justify-center w-8 h-8 rounded-md hover:bg-muted transition-colors"
+                  className="lg:hidden flex items-center justify-center w-8 h-8 rounded-md hover:bg-muted transition-colors"
                   aria-label="Close"
                 >
                   <X className="w-4 h-4 text-muted-foreground" />

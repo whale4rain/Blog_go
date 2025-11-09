@@ -166,8 +166,8 @@ export default function ArticlePage() {
       <Header />
 
       {/* Article Container */}
-      <article className="container-custom py-12">
-        <div className="flex gap-8 max-w-7xl mx-auto">
+      <article className="w-full py-12">
+        <div className="w-full px-6 lg:px-8">
           <ArticleClient
             article={article}
             comments={comments}
