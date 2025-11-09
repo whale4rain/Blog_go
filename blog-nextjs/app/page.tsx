@@ -4,16 +4,16 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import {
-  searchArticles,
   getCategoryStats,
   getTagStats,
+  searchArticles,
 } from "@/lib/api/article";
-import type { Hit, ArticleSource, CategoryStat, TagStat } from "@/types";
+import type { ArticleSource, CategoryStat, Hit, TagStat } from "@/types";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 // ----------------------------------------------------------------------------
 // Page Component
@@ -33,7 +33,12 @@ export default function HomePage() {
         setLoading(true);
         const [articlesResponse, categoriesResponse, tagsResponse] =
           await Promise.all([
-            searchArticles({ page: 1, page_size: 12 }),
+            searchArticles({ 
+              page: 1, 
+              page_size: 12,
+              sort: "time",
+              order: "desc"
+            }),
             getCategoryStats(),
             getTagStats(),
           ]);

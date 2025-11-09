@@ -3,17 +3,17 @@
 // ============================================================================
 
 import type {
-  Article,
-  ArticleListItem,
-  ArticleSearchParams,
-  ArticleSource,
-  CategoryStat,
-  CreateArticleRequest,
-  Hit,
-  PaginatedResponse,
-  TagStat,
-  UpdateArticleRequest,
-  User,
+    Article,
+    ArticleListItem,
+    ArticleSearchParams,
+    ArticleSource,
+    CategoryStat,
+    CreateArticleRequest,
+    Hit,
+    PaginatedResponse,
+    TagStat,
+    UpdateArticleRequest,
+    User,
 } from "@/types";
 import { del, get, post, put } from "./client";
 import { USE_MOCK_API, mockApi } from "./mock";
@@ -118,7 +118,7 @@ export async function searchArticles(
   if (params.category) query.append("category", params.category);
   if (params.tag) query.append("tag", params.tag);
   if (params.sort) query.append("sort", params.sort);
-  // Order is required by backend, default to 'desc'
+  // Order is required by backend, default to 'desc' for latest first
   query.append("order", params.order || "desc");
   if (params.page) query.append("page", params.page.toString());
   if (params.page_size) query.append("page_size", params.page_size.toString());
@@ -207,7 +207,7 @@ export async function getArticleList(params: {
   if (params.page) query.append("page", params.page.toString());
   if (params.page_size) query.append("page_size", params.page_size.toString());
   if (params.query) query.append("query", params.query);
-  // Order is required by backend, default to 'desc'
+  // Order is required by backend, default to 'desc' for latest first
   query.append("order", "desc");
 
   // Use search endpoint since it returns the proper structure

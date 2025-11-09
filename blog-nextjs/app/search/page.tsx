@@ -4,24 +4,23 @@
 
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
-import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import {
-  Search,
-  Filter,
-  X,
-  Calendar,
-  Tag as TagIcon,
-  Folder,
-} from "lucide-react";
-import {
-  searchArticles,
-  getCategoryStats,
-  getTagStats,
+    getCategoryStats,
+    getTagStats,
+    searchArticles,
 } from "@/lib/api/article";
-import type { Hit, ArticleSource, CategoryStat, TagStat } from "@/types";
+import type { ArticleSource, CategoryStat, Hit, TagStat } from "@/types";
+import {
+    Filter,
+    Folder,
+    Search,
+    Tag as TagIcon,
+    X
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense, useEffect, useState } from "react";
 
 // ----------------------------------------------------------------------------
 // Search Page Component
@@ -48,7 +47,7 @@ function SearchPageContent() {
   const [selectedTag, setSelectedTag] = useState(searchParams.get("tag") || "");
   const [sortBy, setSortBy] = useState<
     "time" | "view" | "comment" | "like" | ""
-  >((searchParams.get("sort") as any) || "");
+  >((searchParams.get("sort") as any) || "time");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
     (searchParams.get("order") as any) || "desc",
   );
@@ -121,7 +120,7 @@ function SearchPageContent() {
     if (searchQuery) params.set("query", searchQuery);
     if (selectedCategory) params.set("category", selectedCategory);
     if (selectedTag) params.set("tag", selectedTag);
-    if (sortBy !== "") params.set("sort", sortBy);
+    if (sortBy !== "time") params.set("sort", sortBy);
     if (sortOrder !== "desc") params.set("order", sortOrder);
     if (currentPage !== 1) params.set("page", currentPage.toString());
 
@@ -133,7 +132,7 @@ function SearchPageContent() {
     setSearchQuery("");
     setSelectedCategory("");
     setSelectedTag("");
-    setSortBy("");
+    setSortBy("time");
     setSortOrder("desc");
     setCurrentPage(1);
     router.push("/search");
@@ -251,8 +250,7 @@ function SearchPageContent() {
                   }}
                   className="w-full h-10 px-3 border-2 border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue/50 focus:border-google-blue transition-colors"
                 >
-                  <option value="-desc">Default</option>
-                  <option value="time-desc">Newest First</option>
+                  <option value="time-desc">Newest First (Default)</option>
                   <option value="time-asc">Oldest First</option>
                   <option value="view-desc">Most Viewed</option>
                   <option value="like-desc">Most Liked</option>
