@@ -3,20 +3,19 @@
 // ============================================================================
 
 import type {
-    Article,
-    ArticleListItem,
-    ArticleSearchParams,
-    ArticleSource,
-    CategoryStat,
-    CreateArticleRequest,
-    Hit,
-    PaginatedResponse,
-    TagStat,
-    UpdateArticleRequest,
-    User,
+  Article,
+  ArticleListItem,
+  ArticleSearchParams,
+  ArticleSource,
+  CategoryStat,
+  CreateArticleRequest,
+  Hit,
+  PaginatedResponse,
+  TagStat,
+  UpdateArticleRequest,
+  User,
 } from "@/types";
 import { del, get, post, put } from "./client";
-import { USE_MOCK_API, mockApi } from "./mock";
 
 // ----------------------------------------------------------------------------
 // Article CRUD Operations
@@ -28,9 +27,6 @@ import { USE_MOCK_API, mockApi } from "./mock";
 export async function createArticle(
   data: CreateArticleRequest,
 ): Promise<Article> {
-  if (USE_MOCK_API) {
-    return mockApi.createArticle(data);
-  }
   return post<Article>("/article/create", data);
 }
 
@@ -41,9 +37,6 @@ export async function updateArticle(
   id: string,
   data: UpdateArticleRequest,
 ): Promise<Article> {
-  if (USE_MOCK_API) {
-    return mockApi.updateArticle(id, data);
-  }
   return put<Article>("/article/update", { ...data, id });
 }
 
@@ -51,9 +44,6 @@ export async function updateArticle(
  * Delete article by ID
  */
 export async function deleteArticle(id: string): Promise<void> {
-  if (USE_MOCK_API) {
-    return mockApi.deleteArticle(id);
-  }
   return del<void>("/article/delete", {
     data: { ids: [id] },
   });
@@ -63,9 +53,6 @@ export async function deleteArticle(id: string): Promise<void> {
  * Delete articles by IDs
  */
 export async function deleteArticles(ids: string[]): Promise<void> {
-  if (USE_MOCK_API) {
-    return mockApi.deleteArticles(ids);
-  }
   return del<void>("/article/delete", {
     data: { ids },
   });
@@ -75,10 +62,6 @@ export async function deleteArticles(ids: string[]): Promise<void> {
  * Get article by ID
  */
 export async function getArticleById(id: string): Promise<Article> {
-  if (USE_MOCK_API) {
-    return mockApi.getArticleById(id);
-  }
-  
   // 后端返回的是 Elasticsearch Article 结构，需要转换
   const response = await get<ArticleSource>(`/article/${id}`);
   
@@ -136,9 +119,6 @@ export async function searchArticles(
  * Get article categories
  */
 export async function getCategoryStats(): Promise<CategoryStat[]> {
-  if (USE_MOCK_API) {
-    return mockApi.getArticleCategory();
-  }
   // Backend returns {category, number} but frontend expects {name, count}
   const response =
     await get<Array<{ category: string; number: number }>>("/article/category");
@@ -152,9 +132,6 @@ export async function getCategoryStats(): Promise<CategoryStat[]> {
  * Get article tags
  */
 export async function getTagStats(): Promise<TagStat[]> {
-  if (USE_MOCK_API) {
-    return mockApi.getArticleTags();
-  }
   // Backend returns {tag, number} but frontend expects {name, count}
   const response =
     await get<Array<{ tag: string; number: number }>>("/article/tags");
@@ -172,9 +149,6 @@ export async function getTagStats(): Promise<TagStat[]> {
  * Like article
  */
 export async function likeArticle(articleId: string): Promise<void> {
-  if (USE_MOCK_API) {
-    return mockApi.articleLike(articleId);
-  }
   return post<void>("/article/like", { article_id: articleId });
 }
 
@@ -182,9 +156,6 @@ export async function likeArticle(articleId: string): Promise<void> {
  * Check if current user has liked an article
  */
 export async function checkIsLiked(articleId: string): Promise<boolean> {
-  if (USE_MOCK_API) {
-    return mockApi.checkIsLiked(articleId);
-  }
   const result = await get<{ is_liked: boolean }>(
     `/article/isLike?article_id=${articleId}`,
   );
@@ -198,17 +169,17 @@ export async function getArticleList(params: {
   page?: number;
   page_size?: number;
   query?: string;
+  sort?: string;
+  order?: "asc" | "desc";
 }): Promise<PaginatedResponse<ArticleListItem>> {
-  if (USE_MOCK_API) {
-    return mockApi.getArticleList(params);
-  }
-
   const query = new URLSearchParams();
   if (params.page) query.append("page", params.page.toString());
   if (params.page_size) query.append("page_size", params.page_size.toString());
   if (params.query) query.append("query", params.query);
+  // Default sort by created_at (latest first)
+  query.append("sort", params.sort || "created_at");
   // Order is required by backend, default to 'desc' for latest first
-  query.append("order", "desc");
+  query.append("order", params.order || "desc");
 
   // Use search endpoint since it returns the proper structure
   const response = await get<{ list: Hit<ArticleSource>[]; total: number }>(

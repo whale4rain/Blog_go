@@ -17,7 +17,6 @@ import type {
   UploadImageResponse,
 } from "@/types";
 import { del, get, post, put, upload } from "./client";
-import { USE_MOCK_API, mockApi } from "./mock/index";
 
 // ----------------------------------------------------------------------------
 // Comment API
@@ -29,10 +28,6 @@ import { USE_MOCK_API, mockApi } from "./mock/index";
 export async function createComment(
   data: CreateCommentRequest,
 ): Promise<void> {
-  if (USE_MOCK_API) {
-    await mockApi.createComment(data);
-    return;
-  }
   // Backend returns success message, not the comment object
   return post<void>("/comment/create", data);
 }
@@ -74,10 +69,6 @@ export async function getCommentList(params: {
   page?: number;
   page_size?: number;
 }): Promise<PaginatedResponse<Comment>> {
-  if (USE_MOCK_API) {
-    return mockApi.getCommentList(params);
-  }
-
   // Backend route: GET /comment/:article_id
   // Backend returns Comment[] directly, not PaginatedResponse
   const comments = await get<Comment[]>(`/comment/${params.article_id}`);
@@ -95,6 +86,15 @@ export async function getCommentList(params: {
     page: params.page || 1,
     page_size: params.page_size || 50,
   };
+}
+
+/**
+ * Get newest comments (public endpoint, no auth required)
+ */
+export async function getNewestComments(): Promise<Comment[]> {
+  // Backend route: GET /comment/new
+  // Returns the newest comments across all articles
+  return get<Comment[]>("/comment/new");
 }
 
 // ----------------------------------------------------------------------------

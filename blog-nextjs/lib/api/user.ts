@@ -2,17 +2,16 @@
 // User API Functions
 // ============================================================================
 
-import { get, post, put } from "./client";
-import { USE_MOCK_API, mockApi } from "./mock/index";
 import type {
-  User,
-  UserInfo,
-  LoginRequest,
-  RegisterRequest,
-  UpdateUserRequest,
-  UserChartData,
-  PaginatedResponse,
+    LoginRequest,
+    PaginatedResponse,
+    RegisterRequest,
+    UpdateUserRequest,
+    User,
+    UserChartData,
+    UserInfo,
 } from "@/types";
+import { get, post, put } from "./client";
 
 // Re-export sendEmailVerificationCode from base API
 export { sendEmailVerificationCode } from "./base";
@@ -25,9 +24,6 @@ export { sendEmailVerificationCode } from "./base";
  * User login
  */
 export async function login(data: LoginRequest): Promise<UserInfo> {
-  if (USE_MOCK_API) {
-    return mockApi.login(data);
-  }
   return post<UserInfo>("/user/login", data);
 }
 
@@ -35,9 +31,6 @@ export async function login(data: LoginRequest): Promise<UserInfo> {
  * User registration
  */
 export async function register(data: RegisterRequest): Promise<UserInfo> {
-  if (USE_MOCK_API) {
-    return mockApi.register(data);
-  }
   return post<UserInfo>("/user/register", data);
 }
 
@@ -45,9 +38,6 @@ export async function register(data: RegisterRequest): Promise<UserInfo> {
  * User logout
  */
 export async function logout(): Promise<void> {
-  if (USE_MOCK_API) {
-    return mockApi.logout();
-  }
   return post<void>("/user/logout");
 }
 
@@ -80,9 +70,6 @@ export async function resetPassword(data: {
  * Get user info
  */
 export async function getUserInfo(): Promise<UserInfo> {
-  if (USE_MOCK_API) {
-    return mockApi.getUserInfo();
-  }
   return get<UserInfo>("/user/info");
 }
 
@@ -97,9 +84,6 @@ export async function updateUserInfo(data: UpdateUserRequest): Promise<User> {
  * Get user card info by UUID
  */
 export async function getUserCard(uuid: string): Promise<User> {
-  if (USE_MOCK_API) {
-    return mockApi.getUserCard(uuid);
-  }
   return get<User>(`/user/card?uuid=${uuid}`);
 }
 

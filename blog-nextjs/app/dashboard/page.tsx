@@ -5,17 +5,17 @@
 "use client";
 
 import { searchArticles } from "@/lib/api/article";
-import { getCommentList } from "@/lib/api/comment";
+import { getAdminCommentList, getNewestComments } from "@/lib/api/comment";
 import { useUserStore } from "@/lib/store/userStore";
 import type { ArticleSource, Comment, Hit } from "@/types";
 import {
-    Eye,
-    FileText,
-    Heart,
-    Image as ImageIcon,
-    MessageSquare,
-    PlusCircle,
-    Settings
+  Eye,
+  FileText,
+  Heart,
+  Image as ImageIcon,
+  MessageSquare,
+  PlusCircle,
+  Settings
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -109,18 +109,29 @@ export default function DashboardPage() {
       setRecentArticles(articlesData.list.slice(0, 3));
 
       // 获取最近的评论
-      // 由于没有全局评论接口，我们从最新的文章中获取评论
-      if (articlesData.list.length > 0) {
+      // 优先尝试使用公开的最新评论API（不需要认证）
+      // 如果失败，则尝试使用管理员评论列表接口
+      try {
+        const comments = await getNewestComments();
+        setRecentComments(comments.slice(0, 3));
+      } catch (error) {
+        console.log("Failed to fetch newest comments, trying admin list:", error);
+        // 如果公开API失败，尝试管理员API
         try {
-          const firstArticleId = articlesData.list[0]._id;
-          const commentsData = await getCommentList({
-            article_id: firstArticleId,
+          const commentsData = await getAdminCommentList({
             page: 1,
             page_size: 3,
           });
-          setRecentComments(commentsData.list.slice(0, 3));
-        } catch (error) {
-          console.error("Failed to fetch comments:", error);
+          // 确保返回的是数组
+          if (commentsData && Array.isArray(commentsData.list)) {
+            setRecentComments(commentsData.list);
+          } else {
+            console.warn("Comments data format unexpected:", commentsData);
+            setRecentComments([]);
+          }
+        } catch (adminError) {
+          console.error("Failed to fetch admin comments:", adminError);
+          // 即使失败也设置为空数组，避免 undefined
           setRecentComments([]);
         }
       }
@@ -288,8 +299,8 @@ export default function DashboardPage() {
                 recentComments.map((comment) => (
                   <CommentItem
                     key={comment.id}
-                    author={comment.user.username}
-                    content={comment.content}
+                    author={comment.user?.username || "Unknown User"}
+                    content={comment.content || "No content"}
                     date={formatTimeAgo(comment.created_at)}
                   />
                 ))
