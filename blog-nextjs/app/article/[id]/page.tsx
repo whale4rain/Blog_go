@@ -4,13 +4,13 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import ArticleClient from "@/components/articles/ArticleClient";
+import Header from "@/components/layout/Header";
 import { getArticleById } from "@/lib/api/article";
 import { getCommentList } from "@/lib/api/comment";
-import Header from "@/components/layout/Header";
-import ArticleClient from "@/components/articles/ArticleClient";
 import type { Article, Comment } from "@/types";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // ----------------------------------------------------------------------------
 // Loading Component
@@ -77,17 +77,17 @@ export default function ArticlePage() {
           author: {
             id: 0,
             uuid: "",
-            username: "Unknown",
+            username: "whale",
             email: "",
-            role: "user",
+            role_id: 1,
             status: 1,
             created_at: articleData.created_at,
             updated_at: articleData.updated_at || articleData.created_at,
           },
           author_id: 0,
-          view_count: articleData.views,
-          like_count: articleData.likes,
-          comment_count: articleData.comments,
+          view_count: articleData.view_count || 0,
+          like_count: articleData.like_count || 0,
+          comment_count: articleData.comment_count || 0,
           status: 1,
           is_top: false,
           created_at: articleData.created_at,
@@ -97,12 +97,7 @@ export default function ArticlePage() {
         setArticle(transformedArticle);
 
         // Fetch comments
-        const commentsData = await getCommentList({
-          article_id: params.id,
-          page: 1,
-          page_size: 50,
-        });
-        setComments(commentsData.list || []);
+        await fetchComments(params.id);
       } catch (err) {
         console.error("Failed to fetch article or comments:", err);
         setError(
@@ -120,6 +115,19 @@ export default function ArticlePage() {
 
     fetchArticle();
   }, [params.id, router]);
+
+  const fetchComments = async (articleId: string) => {
+    try {
+      const commentsData = await getCommentList({
+        article_id: articleId,
+        page: 1,
+        page_size: 50,
+      });
+      setComments(commentsData.list || []);
+    } catch (err) {
+      console.error("Failed to fetch comments:", err);
+    }
+  };
 
   // Show loading state
   if (loading) {
@@ -160,7 +168,11 @@ export default function ArticlePage() {
       {/* Article Container */}
       <article className="container-custom py-12">
         <div className="flex gap-8 max-w-7xl mx-auto">
-          <ArticleClient article={article} comments={comments} />
+          <ArticleClient
+            article={article}
+            comments={comments}
+            onCommentAdded={() => fetchComments(article.id)}
+          />
         </div>
       </article>
     </div>

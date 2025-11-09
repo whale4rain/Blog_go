@@ -201,7 +201,8 @@ export interface Comment {
   content: string;
   like_count: number;
   reply_count: number;
-  replies?: Comment[];
+  children?: Comment[]; // Backend uses 'children' instead of 'replies'
+  replies?: Comment[]; // Keep for compatibility
   created_at: string;
   updated_at: string;
 }

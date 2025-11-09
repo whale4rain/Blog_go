@@ -6,6 +6,7 @@
 
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 import TableOfContents from "@/components/ui/TableOfContents";
+import { createComment } from "@/lib/api/comment";
 import type { Article, Comment } from "@/types";
 import { Calendar, Clock, Eye, Heart, Share2 } from "lucide-react";
 import Link from "next/link";
@@ -14,13 +15,18 @@ import { useState } from "react";
 interface ArticleClientProps {
   article: Article;
   comments: Comment[];
+  onCommentAdded?: () => void | Promise<void>;
 }
 
 export default function ArticleClient({
   article,
   comments,
+  onCommentAdded,
 }: ArticleClientProps) {
   const [isLiked, setIsLiked] = useState(false);
+  const [commentList, setCommentList] = useState<Comment[]>(comments);
+  const [newCommentContent, setNewCommentContent] = useState("");
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -56,6 +62,36 @@ export default function ArticleClient({
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href);
       alert("Link copied to clipboard!");
+    }
+  };
+
+  const handlePostComment = async () => {
+    if (!newCommentContent.trim()) {
+      alert("Please enter a comment");
+      return;
+    }
+
+    try {
+      setIsSubmittingComment(true);
+
+      // Backend returns void, not the created comment
+      await createComment({
+        article_id: article.id,
+        content: newCommentContent.trim(),
+      });
+
+      setNewCommentContent("");
+      alert("Comment posted successfully!");
+      
+      // Refresh comments list
+      if (onCommentAdded) {
+        await onCommentAdded();
+      }
+    } catch (error) {
+      console.error("Failed to post comment:", error);
+      alert("Failed to post comment. Please try again.");
+    } finally {
+      setIsSubmittingComment(false);
     }
   };
 
@@ -225,10 +261,10 @@ export default function ArticleClient({
         {/* Comments Section */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-foreground mb-8">
-            Comments ({comments.length})
+            Comments ({commentList.length})
           </h2>
 
-          {/* Comment Form - Placeholder */}
+          {/* Comment Form */}
           <div className="card p-6 mb-8">
             <h3 className="text-lg font-semibold text-foreground mb-4">
               Leave a Comment
@@ -236,24 +272,30 @@ export default function ArticleClient({
             <textarea
               className="w-full min-h-[120px] px-4 py-3 border-2 border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue/50 focus:border-google-blue transition-colors"
               placeholder="Share your thoughts..."
+              value={newCommentContent}
+              onChange={(e) => setNewCommentContent(e.target.value)}
+              disabled={isSubmittingComment}
             />
             <div className="flex justify-end mt-4">
               <button
-                className="px-6 py-2 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors font-medium"
-                onClick={() =>
-                  alert("Comment feature - implement with API call")
-                }
+                className="px-6 py-2 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handlePostComment}
+                disabled={isSubmittingComment || !newCommentContent.trim()}
               >
-                Post Comment
+                {isSubmittingComment ? "Posting..." : "Post Comment"}
               </button>
             </div>
           </div>
 
           {/* Comments List */}
-          {comments.length > 0 ? (
+          {commentList.length > 0 ? (
             <div className="space-y-6">
-              {comments.map((comment) => (
-                <CommentCard key={comment.id} comment={comment} />
+              {commentList.map((comment) => (
+                <CommentCard
+                  key={comment.id}
+                  comment={comment}
+                  onReplyAdded={onCommentAdded}
+                />
               ))}
             </div>
           ) : (
@@ -281,10 +323,23 @@ export default function ArticleClient({
 }
 
 // Comment Card Component
-function CommentCard({ comment }: { comment: Comment }) {
+function CommentCard({
+  comment,
+  onReplyAdded,
+}: {
+  comment: Comment;
+  onReplyAdded?: () => void | Promise<void>;
+}) {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+  
+  // Backend uses 'children' field, fallback to 'replies' for compatibility
+  const replies = comment.children || comment.replies || [];
+
+  // Backend always includes user object
+  const user = comment.user;
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -306,13 +361,36 @@ function CommentCard({ comment }: { comment: Comment }) {
     });
   };
 
-  const handleReply = () => {
-    if (!replyContent.trim()) return;
+  const handleReply = async () => {
+    if (!replyContent.trim()) {
+      alert("Please enter a reply");
+      return;
+    }
 
-    // TODO: Implement actual reply API call
-    alert(`Reply to ${comment.user.username}: ${replyContent}`);
-    setReplyContent("");
-    setShowReplyForm(false);
+    try {
+      setIsSubmittingReply(true);
+
+      // Backend returns void, not the created reply
+      await createComment({
+        article_id: comment.article_id,
+        p_id: comment.id,
+        content: replyContent.trim(),
+      });
+
+      setReplyContent("");
+      setShowReplyForm(false);
+      alert("Reply posted successfully!");
+      
+      // Refresh comments list
+      if (onReplyAdded) {
+        await onReplyAdded();
+      }
+    } catch (error) {
+      console.error("Failed to post reply:", error);
+      alert("Failed to post reply. Please try again.");
+    } finally {
+      setIsSubmittingReply(false);
+    }
   };
 
   return (
@@ -321,18 +399,18 @@ function CommentCard({ comment }: { comment: Comment }) {
         {/* Avatar */}
         <div className="flex-shrink-0">
           <a
-            href={`/author/${comment.user.id}`}
+            href={`/author/${user.id}`}
             className="block hover:opacity-80 transition-opacity"
           >
-            {comment.user.avatar ? (
+            {user.avatar ? (
               <img
-                src={comment.user.avatar}
-                alt={comment.user.username}
+                src={user.avatar}
+                alt={user.username}
                 className="w-12 h-12 rounded-full object-cover"
               />
             ) : (
               <div className="w-12 h-12 bg-google-blue/10 text-google-blue rounded-full flex items-center justify-center font-medium text-lg">
-                {comment.user.username.charAt(0).toUpperCase()}
+                {user.username.charAt(0).toUpperCase()}
               </div>
             )}
           </a>
@@ -343,35 +421,35 @@ function CommentCard({ comment }: { comment: Comment }) {
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2 mb-2">
               <a
-                href={`/author/${comment.user.id}`}
+                href={`/author/${user.id}`}
                 className="font-semibold text-foreground hover:text-google-blue transition-colors"
               >
-                {comment.user.username}
+                {user.username}
               </a>
               <span className="text-sm text-muted-foreground">
                 {formatTimeAgo(comment.created_at)}
               </span>
               <span
                 className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                  comment.user.role_id === 2
+                  user.role_id === 2
                     ? "bg-google-red/10 text-google-red"
                     : "bg-google-green/10 text-google-green"
                 }`}
               >
-                {comment.user.role_id === 2 ? "Admin" : "User"}
+                {user.role_id === 2 ? "Admin" : "User"}
               </span>
             </div>
           </div>
 
           {/* Author Details */}
-          {(comment.user.signature || comment.user.address) && (
+          {(user.signature || user.address) && (
             <div className="text-sm text-muted-foreground mb-3">
-              {comment.user.signature && (
+              {user.signature && (
                 <p className="mb-1 italic">
-                  &quot;{comment.user.signature}&quot;
+                  &quot;{user.signature}&quot;
                 </p>
               )}
-              {comment.user.address && (
+              {user.address && (
                 <p className="flex items-center gap-1">
                   <svg
                     className="w-3 h-3"
@@ -392,7 +470,7 @@ function CommentCard({ comment }: { comment: Comment }) {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  {comment.user.address}
+                  {user.address}
                 </p>
               )}
             </div>
@@ -440,7 +518,7 @@ function CommentCard({ comment }: { comment: Comment }) {
               Report
             </button>
             <a
-              href={`/author/${comment.user.id}`}
+              href={`/author/${user.id}`}
               className="flex items-center gap-1 text-muted-foreground hover:text-google-blue transition-colors"
             >
               <svg
@@ -465,7 +543,7 @@ function CommentCard({ comment }: { comment: Comment }) {
             <div className="bg-muted/50 rounded-lg p-4 mb-4">
               <div className="mb-3">
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Reply to {comment.user.username}
+                  Reply to {user.username}
                 </label>
                 <textarea
                   value={replyContent}
@@ -487,16 +565,16 @@ function CommentCard({ comment }: { comment: Comment }) {
                 <button
                   className="px-4 py-2 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={handleReply}
-                  disabled={!replyContent.trim()}
+                  disabled={!replyContent.trim() || isSubmittingReply}
                 >
-                  Post Reply
+                  {isSubmittingReply ? "Posting..." : "Post Reply"}
                 </button>
               </div>
             </div>
           )}
 
           {/* Replies */}
-          {comment.replies && comment.replies.length > 0 && (
+          {replies && replies.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <svg
@@ -513,63 +591,65 @@ function CommentCard({ comment }: { comment: Comment }) {
                   />
                 </svg>
                 <span>
-                  {comment.replies.length}{" "}
-                  {comment.replies.length === 1 ? "Reply" : "Replies"}
+                  {replies.length}{" "}
+                  {replies.length === 1 ? "Reply" : "Replies"}
                 </span>
-                {comment.replies.length > 2 && (
+                {replies.length > 2 && (
                   <button
                     className="text-google-blue hover:underline"
                     onClick={() => setIsExpanded(!isExpanded)}
                   >
                     {isExpanded
                       ? "Show less"
-                      : `Show ${comment.replies.length - 2} more`}
+                      : `Show ${replies.length - 2} more`}
                   </button>
                 )}
               </div>
 
               <div className="space-y-4 pl-4 border-l-2 border-border">
-                {(isExpanded
-                  ? comment.replies
-                  : comment.replies.slice(0, 2)
-                ).map((reply) => (
-                  <div key={reply.id} className="flex gap-3">
-                    <div className="flex-shrink-0">
-                      <a
-                        href={`/author/${reply.user.id}`}
-                        className="block hover:opacity-80 transition-opacity"
-                      >
-                        {reply.user.avatar ? (
-                          <img
-                            src={reply.user.avatar}
-                            alt={reply.user.username}
-                            className="w-8 h-8 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-8 h-8 bg-google-blue/10 text-google-blue rounded-full flex items-center justify-center font-medium text-sm">
-                            {reply.user.username.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                      </a>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                {(isExpanded ? replies : replies.slice(0, 2)).map((reply) => {
+                  // Backend always includes user object
+                  const replyUser = reply.user;
+
+                  return (
+                    <div key={reply.id} className="flex gap-3">
+                      <div className="flex-shrink-0">
                         <a
-                          href={`/author/${reply.user.id}`}
-                          className="font-medium text-foreground hover:text-google-blue transition-colors text-sm"
+                          href={`/author/${replyUser.id}`}
+                          className="block hover:opacity-80 transition-opacity"
                         >
-                          {reply.user.username}
+                          {replyUser.avatar ? (
+                            <img
+                              src={replyUser.avatar}
+                              alt={replyUser.username}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 bg-google-blue/10 text-google-blue rounded-full flex items-center justify-center font-medium text-sm">
+                              {replyUser.username.charAt(0).toUpperCase()}
+                            </div>
+                          )}
                         </a>
-                        <span className="text-xs text-muted-foreground">
-                          {formatTimeAgo(reply.created_at)}
-                        </span>
                       </div>
-                      <p className="text-sm text-foreground leading-relaxed">
-                        {reply.content}
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <a
+                            href={`/author/${replyUser.id}`}
+                            className="font-medium text-foreground hover:text-google-blue transition-colors text-sm"
+                          >
+                            {replyUser.username}
+                          </a>
+                          <span className="text-xs text-muted-foreground">
+                            {formatTimeAgo(reply.created_at)}
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground leading-relaxed">
+                          {reply.content}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

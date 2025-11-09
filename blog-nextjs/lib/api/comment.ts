@@ -28,11 +28,13 @@ import { USE_MOCK_API, mockApi } from "./mock/index";
  */
 export async function createComment(
   data: CreateCommentRequest,
-): Promise<Comment> {
+): Promise<void> {
   if (USE_MOCK_API) {
-    return mockApi.createComment(data);
+    await mockApi.createComment(data);
+    return;
   }
-  return post<Comment>("/comment/create", data);
+  // Backend returns success message, not the comment object
+  return post<void>("/comment/create", data);
 }
 
 /**
@@ -57,7 +59,22 @@ export async function getCommentList(params: {
   }
 
   // Backend route: GET /comment/:article_id
-  return get<PaginatedResponse<Comment>>(`/comment/${params.article_id}`);
+  // Backend returns Comment[] directly, not PaginatedResponse
+  const comments = await get<Comment[]>(`/comment/${params.article_id}`);
+  
+  // Convert children to replies for frontend compatibility
+  const commentsWithReplies = comments.map((comment) => ({
+    ...comment,
+    replies: comment.children || [],
+  }));
+
+  // Wrap in PaginatedResponse format for frontend compatibility
+  return {
+    list: commentsWithReplies,
+    total: commentsWithReplies.length,
+    page: params.page || 1,
+    page_size: params.page_size || 50,
+  };
 }
 
 // ----------------------------------------------------------------------------
