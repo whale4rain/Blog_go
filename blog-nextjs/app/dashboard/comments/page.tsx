@@ -4,56 +4,37 @@
 
 "use client";
 
-import { deleteComments } from "@/lib/api/comment";
+import { deleteComments, getAdminCommentList } from "@/lib/api/comment";
 import { useUserStore } from "@/lib/store/userStore";
+import type { Comment } from "@/types";
 import {
-    AlertTriangle,
     ArrowLeft,
     Check,
-    Flag,
     MessageSquare,
-    Reply,
     Search,
-    Trash2,
+    Trash2
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface Comment {
-  id: number;
-  article_id: number;
-  article_title: string;
-  user_id: number;
-  user: {
-    id: number;
-    username: string;
-    avatar: string;
-  };
-  p_id: number | null;
-  content: string;
-  like_count: number;
-  reply_count: number;
-  status: "approved" | "pending" | "spam" | "deleted";
-  created_at: string;
-  updated_at: string;
-  replies?: Comment[];
+// 扩展 Comment 类型以包含文章标题
+interface CommentWithArticle extends Comment {
+  article_title?: string;
 }
 
 export default function CommentsPage() {
   const router = useRouter();
   const { user, isLoggedIn, hasHydrated } = useUserStore();
 
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentWithArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const [selectedComments, setSelectedComments] = useState<number[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [replyContent, setReplyContent] = useState("");
   const [expandedComments, setExpandedComments] = useState<number[]>([]);
 
   useEffect(() => {
@@ -66,127 +47,48 @@ export default function CommentsPage() {
     }
 
     fetchComments();
-  }, [isLoggedIn, hasHydrated, currentPage, statusFilter]);
+  }, [isLoggedIn, hasHydrated, currentPage]);
 
   const fetchComments = async () => {
     try {
       setLoading(true);
-      // Mock data - in real app would fetch from API
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      
+      const params: any = {
+        page: currentPage,
+        page_size: 20,
+      };
 
-      const mockComments: Comment[] = [
-        {
-          id: 1,
-          article_id: 1,
-          article_title: "Getting Started with Next.js",
-          user_id: 2,
-          user: {
-            id: 2,
-            username: "Jane Smith",
-            avatar: "https://picsum.photos/seed/user2/100/100.jpg",
-          },
-          p_id: null,
-          content:
-            "Great article! Very helpful information about Next.js fundamentals. I especially liked the explanation of server-side rendering.",
-          like_count: 12,
-          reply_count: 2,
-          status: "approved",
-          created_at: "2024-03-15T10:30:00Z",
-          updated_at: "2024-03-15T10:30:00Z",
-          replies: [
-            {
-              id: 2,
-              article_id: 1,
-              article_title: "Getting Started with Next.js",
-              user_id: 1,
-              user: {
-                id: 1,
-                username: "John Doe",
-                avatar: "https://picsum.photos/seed/user1/100/100.jpg",
-              },
-              p_id: 1,
-              content:
-                "I agree! The examples were very clear and easy to follow.",
-              like_count: 5,
-              reply_count: 0,
-              status: "approved",
-              created_at: "2024-03-15T11:00:00Z",
-              updated_at: "2024-03-15T11:00:00Z",
-            },
-          ],
-        },
-        {
-          id: 3,
-          article_id: 2,
-          article_title: "React Best Practices",
-          user_id: 3,
-          user: {
-            id: 3,
-            username: "Bob Wilson",
-            avatar: "https://picsum.photos/seed/user3/100/100.jpg",
-          },
-          p_id: null,
-          content:
-            "This is spam content that should be moderated. Check out my website for cheap products!",
-          like_count: 0,
-          reply_count: 0,
-          status: "spam",
-          created_at: "2024-03-14T15:45:00Z",
-          updated_at: "2024-03-14T15:45:00Z",
-        },
-        {
-          id: 4,
-          article_id: 3,
-          article_title: "TypeScript Tips and Tricks",
-          user_id: 4,
-          user: {
-            id: 4,
-            username: "Alice Johnson",
-            avatar: "https://picsum.photos/seed/user4/100/100.jpg",
-          },
-          p_id: null,
-          content:
-            "Can you write more about advanced TypeScript patterns? I'd love to see more content on conditional types.",
-          like_count: 8,
-          reply_count: 1,
-          status: "pending",
-          created_at: "2024-03-13T09:20:00Z",
-          updated_at: "2024-03-13T09:20:00Z",
-        },
-      ];
+      // 添加搜索过滤
+      if (searchQuery.trim()) {
+        params.content = searchQuery;
+      }
 
-      setComments(mockComments);
-      setTotalPages(1);
+      const response = await getAdminCommentList(params);
+      
+      // 添加 article_title 字段（如果后端没有返回）
+      const commentsWithTitle = response.list.map((comment) => ({
+        ...comment,
+        article_title: `Article ${comment.article_id}`, // 后端可能没有返回文章标题
+      }));
+
+      setComments(commentsWithTitle);
+      setTotal(response.total);
+      setTotalPages(Math.ceil(response.total / 20));
     } catch (error) {
       console.error("Failed to fetch comments:", error);
+      // 出错时显示空列表
+      setComments([]);
+      setTotal(0);
+      setTotalPages(1);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleStatusChange = async (
-    commentId: number,
-    newStatus: Comment["status"],
-  ) => {
-    try {
-      // Mock API call - in real app would call API
-      setComments((prev) =>
-        prev.map((comment) =>
-          comment.id === commentId
-            ? { ...comment, status: newStatus }
-            : comment,
-        ),
-      );
-    } catch (error) {
-      console.error("Failed to update comment status:", error);
-      alert("Failed to update comment status");
     }
   };
 
   const handleDelete = async (commentId: number) => {
     try {
       await deleteComments([commentId]);
-      setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+      fetchComments(); // 重新获取列表
       setSelectedComments([]);
       setShowDeleteConfirm(false);
     } catch (error) {
@@ -198,59 +100,12 @@ export default function CommentsPage() {
   const handleBulkDelete = async () => {
     try {
       await deleteComments(selectedComments);
-      setComments((prev) =>
-        prev.filter((comment) => !selectedComments.includes(comment.id)),
-      );
+      fetchComments(); // 重新获取列表
       setSelectedComments([]);
       setShowDeleteConfirm(false);
     } catch (error) {
       console.error("Failed to delete comments:", error);
       alert("Failed to delete comments");
-    }
-  };
-
-  const handleReply = async (commentId: number) => {
-    if (!replyContent.trim()) return;
-
-    try {
-      // Mock reply - in real app would call API
-      const newReply: Comment = {
-        id: Date.now(),
-        article_id: comments.find((c) => c.id === commentId)?.article_id || 0,
-        article_title:
-          comments.find((c) => c.id === commentId)?.article_title || "",
-        user_id: user?.id || 0,
-        user: {
-          id: user?.id || 0,
-          username: user?.username || "",
-          avatar: user?.avatar || "",
-        },
-        p_id: commentId,
-        content: replyContent,
-        like_count: 0,
-        reply_count: 0,
-        status: "approved",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      setComments((prev) =>
-        prev.map((comment) =>
-          comment.id === commentId
-            ? {
-                ...comment,
-                reply_count: comment.reply_count + 1,
-                replies: [...(comment.replies || []), newReply],
-              }
-            : comment,
-        ),
-      );
-
-      setReplyContent("");
-      setReplyingTo(null);
-    } catch (error) {
-      console.error("Failed to reply to comment:", error);
-      alert("Failed to post reply");
     }
   };
 
@@ -262,31 +117,14 @@ export default function CommentsPage() {
     );
   };
 
-  const getStatusBadge = (status: Comment["status"]) => {
-    const statusStyles = {
-      approved: "bg-google-green/10 text-google-green",
-      pending: "bg-google-yellow/10 text-[hsl(45,100%,35%)]",
-      spam: "bg-google-red/10 text-google-red",
-      deleted: "bg-gray-100 text-gray-600",
-    };
-
-    return (
-      <span
-        className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status]}`}
-      >
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    );
-  };
-
   const filteredComments = comments.filter((comment) => {
-    const matchesSearch =
-      comment.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      comment.user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      comment.article_title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || comment.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    if (!searchQuery) return true;
+    const search = searchQuery.toLowerCase();
+    return (
+      comment.content.toLowerCase().includes(search) ||
+      comment.user.username.toLowerCase().includes(search) ||
+      comment.article_title?.toLowerCase().includes(search)
+    );
   });
 
   const toggleCommentSelection = (commentId: number) => {
@@ -355,27 +193,25 @@ export default function CommentsPage() {
                 placeholder="Search comments..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    fetchComments();
+                  }
+                }}
                 className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue"
               />
             </div>
-            <div className="flex gap-2">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue"
-              >
-                <option value="all">All Status</option>
-                <option value="approved">Approved</option>
-                <option value="pending">Pending</option>
-                <option value="spam">Spam</option>
-                <option value="deleted">Deleted</option>
-              </select>
-            </div>
+            <button
+              onClick={() => fetchComments()}
+              className="px-6 py-2 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors"
+            >
+              Search
+            </button>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="card p-6">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-google-blue/10 rounded-lg">
@@ -383,7 +219,7 @@ export default function CommentsPage() {
               </div>
               <div>
                 <div className="text-2xl font-bold text-foreground">
-                  {comments.length}
+                  {total}
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Total Comments
@@ -398,35 +234,9 @@ export default function CommentsPage() {
               </div>
               <div>
                 <div className="text-2xl font-bold text-foreground">
-                  {comments.filter((c) => c.status === "approved").length}
+                  {comments.length}
                 </div>
-                <div className="text-sm text-muted-foreground">Approved</div>
-              </div>
-            </div>
-          </div>
-          <div className="card p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-google-yellow/10 rounded-lg">
-                <AlertTriangle className="w-6 h-6 text-[hsl(45,100%,35%)]" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-foreground">
-                  {comments.filter((c) => c.status === "pending").length}
-                </div>
-                <div className="text-sm text-muted-foreground">Pending</div>
-              </div>
-            </div>
-          </div>
-          <div className="card p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-google-red/10 rounded-lg">
-                <Flag className="w-6 h-6 text-google-red" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-foreground">
-                  {comments.filter((c) => c.status === "spam").length}
-                </div>
-                <div className="text-sm text-muted-foreground">Spam</div>
+                <div className="text-sm text-muted-foreground">On This Page</div>
               </div>
             </div>
           </div>
@@ -441,28 +251,6 @@ export default function CommentsPage() {
                 {selectedComments.length > 1 ? "s" : ""} selected
               </span>
               <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    selectedComments.forEach((id) =>
-                      handleStatusChange(id, "approved"),
-                    );
-                    setSelectedComments([]);
-                  }}
-                  className="px-4 py-2 bg-google-green text-white rounded-lg hover:bg-[hsl(142,71%,41%)] transition-colors text-sm"
-                >
-                  Approve Selected
-                </button>
-                <button
-                  onClick={() => {
-                    selectedComments.forEach((id) =>
-                      handleStatusChange(id, "spam"),
-                    );
-                    setSelectedComments([]);
-                  }}
-                  className="px-4 py-2 bg-google-yellow text-white rounded-lg hover:bg-[hsl(45,100%,35%)] transition-colors text-sm"
-                >
-                  Mark as Spam
-                </button>
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
                   className="px-4 py-2 bg-google-red text-white rounded-lg hover:bg-[hsl(4,90%,58%)] transition-colors text-sm"
@@ -497,8 +285,8 @@ export default function CommentsPage() {
                 No comments found
               </h3>
               <p className="text-muted-foreground">
-                {searchQuery || statusFilter !== "all"
-                  ? "Try adjusting your filters"
+                {searchQuery
+                  ? "Try adjusting your search"
                   : "No comments have been posted yet"}
               </p>
             </div>
@@ -552,7 +340,6 @@ export default function CommentsPage() {
                         <span className="font-medium text-foreground">
                           {comment.user.username}
                         </span>
-                        {getStatusBadge(comment.status)}
                         <span className="text-sm text-muted-foreground">
                           {formatDate(comment.created_at)}
                         </span>
@@ -568,14 +355,18 @@ export default function CommentsPage() {
                           href={`/article/${comment.article_id}`}
                           className="text-google-blue hover:underline"
                         >
-                          {comment.article_title}
+                          {comment.article_title || `Article ${comment.article_id}`}
                         </Link>
-                        <span>•</span>
-                        <span className="flex items-center gap-1">
-                          <MessageSquare className="w-4 h-4" />
-                          {comment.like_count} likes
-                        </span>
-                        {comment.reply_count > 0 && (
+                        {comment.like_count > 0 && (
+                          <>
+                            <span>•</span>
+                            <span className="flex items-center gap-1">
+                              <MessageSquare className="w-4 h-4" />
+                              {comment.like_count} likes
+                            </span>
+                          </>
+                        )}
+                        {comment.children && comment.children.length > 0 && (
                           <>
                             <span>•</span>
                             <button
@@ -583,27 +374,33 @@ export default function CommentsPage() {
                               className="flex items-center gap-1 hover:text-foreground"
                             >
                               <MessageSquare className="w-4 h-4" />
-                              {comment.reply_count} replies
+                              {comment.children.length} replies
                             </button>
                           </>
                         )}
                       </div>
 
                       {/* Replies */}
-                      {comment.replies &&
-                        comment.replies.length > 0 &&
+                      {comment.children &&
+                        comment.children.length > 0 &&
                         expandedComments.includes(comment.id) && (
                           <div className="ml-8 mt-4 space-y-4 border-l-2 border-border pl-4">
-                            {comment.replies.map((reply) => (
+                            {comment.children.map((reply) => (
                               <div
                                 key={reply.id}
                                 className="flex items-start gap-3"
                               >
-                                <img
-                                  src={reply.user.avatar}
-                                  alt={reply.user.username}
-                                  className="w-8 h-8 rounded-full"
-                                />
+                                {reply.user.avatar ? (
+                                  <img
+                                    src={reply.user.avatar}
+                                    alt={reply.user.username}
+                                    className="w-8 h-8 rounded-full"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 bg-google-blue/10 text-google-blue rounded-full flex items-center justify-center text-sm font-medium">
+                                    {reply.user.username.charAt(0).toUpperCase()}
+                                  </div>
+                                )}
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-1">
                                     <span className="font-medium text-foreground text-sm">
@@ -622,74 +419,8 @@ export default function CommentsPage() {
                           </div>
                         )}
 
-                      {/* Reply Form */}
-                      {replyingTo === comment.id && (
-                        <div className="ml-8 mt-4">
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              value={replyContent}
-                              onChange={(e) => setReplyContent(e.target.value)}
-                              placeholder="Write a reply..."
-                              className="flex-1 px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue"
-                              onKeyPress={(e) => {
-                                if (e.key === "Enter" && !e.shiftKey) {
-                                  e.preventDefault();
-                                  handleReply(comment.id);
-                                }
-                              }}
-                            />
-                            <button
-                              onClick={() => handleReply(comment.id)}
-                              className="px-4 py-2 bg-google-blue text-white rounded-lg hover:bg-[hsl(214,90%,48%)] transition-colors"
-                            >
-                              Reply
-                            </button>
-                            <button
-                              onClick={() => {
-                                setReplyingTo(null);
-                                setReplyContent("");
-                              }}
-                              className="px-4 py-2 border border-border rounded-lg hover:bg-muted transition-colors"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
                       {/* Action Buttons */}
                       <div className="flex items-center gap-2 mt-4">
-                        <button
-                          onClick={() =>
-                            setReplyingTo(
-                              replyingTo === comment.id ? null : comment.id,
-                            )
-                          }
-                          className="p-2 text-muted-foreground hover:text-google-blue hover:bg-google-blue/10 rounded"
-                        >
-                          <Reply className="w-4 h-4" />
-                        </button>
-                        {comment.status !== "approved" && (
-                          <button
-                            onClick={() =>
-                              handleStatusChange(comment.id, "approved")
-                            }
-                            className="p-2 text-muted-foreground hover:text-google-green hover:bg-google-green/10 rounded"
-                          >
-                            <Check className="w-4 h-4" />
-                          </button>
-                        )}
-                        {comment.status !== "spam" && (
-                          <button
-                            onClick={() =>
-                              handleStatusChange(comment.id, "spam")
-                            }
-                            className="p-2 text-muted-foreground hover:text-google-yellow hover:bg-google-yellow/10 rounded"
-                          >
-                            <Flag className="w-4 h-4" />
-                          </button>
-                        )}
                         <button
                           onClick={() => {
                             setSelectedComments([comment.id]);

@@ -47,6 +47,26 @@ export async function deleteComments(ids: number[]): Promise<void> {
 }
 
 /**
+ * Get comment list for admin (all comments with filters)
+ */
+export async function getAdminCommentList(params?: {
+  article_id?: string;
+  user_uuid?: string;
+  content?: string;
+  page?: number;
+  page_size?: number;
+}): Promise<PaginatedResponse<Comment>> {
+  const query = new URLSearchParams();
+  if (params?.article_id) query.append("article_id", params.article_id);
+  if (params?.user_uuid) query.append("user_uuid", params.user_uuid);
+  if (params?.content) query.append("content", params.content);
+  if (params?.page) query.append("page", params.page.toString());
+  if (params?.page_size) query.append("page_size", params.page_size.toString());
+
+  return get<PaginatedResponse<Comment>>(`/comment/list?${query.toString()}`);
+}
+
+/**
  * Get comments for an article
  */
 export async function getCommentList(params: {
