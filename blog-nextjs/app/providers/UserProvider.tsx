@@ -4,7 +4,6 @@
 
 "use client";
 
-import { checkRefreshTokenCookie, setupCookieMonitor } from "@/lib/debug/cookieDebug";
 import { useUserStore } from "@/lib/store/userStore";
 import React, { useEffect } from "react";
 
@@ -21,9 +20,6 @@ export default function UserProvider({
     // This is a fallback to ensure backward compatibility and handle edge cases
     initializeUser();
 
-    // Temporary debug: Monitor cookies
-    setupCookieMonitor();
-    checkRefreshTokenCookie();
   }, []); // Empty deps - only run once on mount
 
   return <>{children}</>;
