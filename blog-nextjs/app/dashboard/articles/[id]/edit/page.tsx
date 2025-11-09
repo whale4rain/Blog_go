@@ -9,8 +9,8 @@ import { getArticleById, updateArticle } from "@/lib/api/article";
 import { uploadImage } from "@/lib/api/comment";
 import { useUserStore } from "@/lib/store/userStore";
 import type {
-    Article,
-    CreateArticleRequest
+  Article,
+  CreateArticleRequest
 } from "@/types";
 import { ArrowLeft, Plus, Save, Upload, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -225,7 +225,7 @@ export default function EditArticlePage() {
             Article Not Found
           </h2>
           <p className="text-muted-foreground mb-4">
-            The article you're trying to edit doesn't exist.
+            The article you&apos;re trying to edit doesn&apos;t exist.
           </p>
           <button
             onClick={() => router.push("/dashboard/articles")}

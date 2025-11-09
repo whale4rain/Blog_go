@@ -19,7 +19,7 @@ import React, { useEffect, useRef, useState } from "react";
 export default function EditArticlePage() {
   const router = useRouter();
   const params = useParams();
-  const { user, isLoggedIn, hasHydrated } = useUserStore();
+  const { user: _user, isLoggedIn, hasHydrated } = useUserStore();
   const articleId = params.id as string;
 
   const [loading, setLoading] = useState(false);
@@ -225,7 +225,7 @@ export default function EditArticlePage() {
             Article Not Found
           </h2>
           <p className="text-muted-foreground mb-4">
-            The article you're trying to edit doesn't exist.
+            The article you&apos;re trying to edit doesn&apos;t exist.
           </p>
           <button
             onClick={() => router.push("/dashboard/articles")}

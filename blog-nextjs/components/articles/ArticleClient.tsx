@@ -24,7 +24,7 @@ export default function ArticleClient({
   onCommentAdded,
 }: ArticleClientProps) {
   const [isLiked, setIsLiked] = useState(false);
-  const [commentList, setCommentList] = useState<Comment[]>(comments);
+  const commentList = comments;
   const [newCommentContent, setNewCommentContent] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 

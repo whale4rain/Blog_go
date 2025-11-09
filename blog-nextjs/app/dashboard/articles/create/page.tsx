@@ -28,7 +28,7 @@ import React, { useRef, useState } from "react";
 
 export default function CreateArticlePage() {
   const router = useRouter();
-  const { user, isLoggedIn, hasHydrated } = useUserStore();
+  const { user: _user, isLoggedIn, hasHydrated } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);

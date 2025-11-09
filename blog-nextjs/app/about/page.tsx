@@ -35,7 +35,7 @@ export default function AboutPage() {
               to inspire, educate, and connect people across the globe.
             </p>
             <p className="text-lg text-foreground leading-relaxed">
-              Built with modern web technologies and designed with Google's Material Design
+              Built with modern web technologies and designed with Google&apos;s Material Design
               principles, we strive to provide the best reading and writing experience possible.
             </p>
           </div>
@@ -92,7 +92,7 @@ export default function AboutPage() {
           <div className="card p-8">
             <h2 className="text-3xl font-bold text-foreground mb-6 text-center">Get in Touch</h2>
             <p className="text-center text-muted-foreground mb-8">
-              Have questions, suggestions, or just want to say hello? We'd love to hear from you!
+              Have questions, suggestions, or just want to say hello? We&apos;d love to hear from you!
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
