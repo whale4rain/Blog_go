@@ -4,23 +4,25 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import Logo from "@/components/ui/Logo";
+import siteConfig from "@/lib/constants/siteConfig";
+import { useUIStore } from "@/lib/store/uiStore";
+import { useUserStore } from "@/lib/store/userStore";
+import { cn } from "@/lib/utils";
+import {
+    Archive,
+    Home,
+    Info,
+    LogOut,
+    Menu,
+    Search,
+    Settings,
+    User,
+    X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { useUserStore } from "@/lib/store/userStore";
-import { useUIStore } from "@/lib/store/uiStore";
-import {
-  Menu,
-  X,
-  Search,
-  User,
-  LogOut,
-  Settings,
-  Home,
-  Archive,
-  Info,
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 // ----------------------------------------------------------------------------
 // Types
@@ -92,12 +94,12 @@ export default function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 text-xl font-semibold text-foreground hover:text-google-blue transition-colors"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-google-blue to-white rounded-lg flex items-center justify-center text-white font-bold">
-              IB
-            </div>
-            <span className="hidden sm:inline">Inspiration Blog</span>
+            <Logo size="sm" />
+            <span className="hidden sm:inline text-xl font-semibold text-foreground">
+              {siteConfig.name}
+            </span>
           </Link>
 
           {/* Desktop Navigation */}

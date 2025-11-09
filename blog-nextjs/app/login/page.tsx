@@ -4,13 +4,15 @@
 
 "use client";
 
-import React, { useState } from "react";
+import Logo from "@/components/ui/Logo";
+import { getCaptcha, sendEmailVerificationCode } from "@/lib/api/base";
+import { login, register } from "@/lib/api/user";
+import siteConfig from "@/lib/constants/siteConfig";
+import { useUserStore } from "@/lib/store/userStore";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { login, register } from "@/lib/api/user";
-import { getCaptcha, sendEmailVerificationCode } from "@/lib/api/base";
-import { useUserStore } from "@/lib/store/userStore";
-import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import React, { useState } from "react";
 
 // ----------------------------------------------------------------------------
 // Page Component
@@ -186,8 +188,8 @@ export default function LoginPage() {
         <div className="card p-8 shadow-xl">
           {/* Logo and Title */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-google-blue to-purple-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
-              IB
+            <div className="mx-auto mb-4">
+              <Logo size="xl" />
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
               {mode === "login" ? "Welcome Back" : "Create Account"}
@@ -195,7 +197,7 @@ export default function LoginPage() {
             <p className="text-muted-foreground">
               {mode === "login"
                 ? "Sign in to access your dashboard"
-                : "Join Inspiration Blog today"}
+                : `Join ${siteConfig.name} today`}
             </p>
           </div>
 

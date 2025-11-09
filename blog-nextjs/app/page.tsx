@@ -67,7 +67,7 @@ export default function HomePage() {
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
-              Welcome to <span className="text-gradient">Inspiration Blog</span>
+              Welcome to <span className="text-gradient">whale4blog</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
               Discover insightful articles, tutorials, and stories crafted with

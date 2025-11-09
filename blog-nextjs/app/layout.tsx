@@ -2,11 +2,11 @@
 // Root Layout - Next.js App Router
 // ============================================================================
 
+import LoginModal from "@/components/auth/LoginModal";
+import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
-import LoginModal from "@/components/auth/LoginModal";
 import UserProvider from "./providers/UserProvider";
 
 // ----------------------------------------------------------------------------
@@ -25,15 +25,15 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Inspiration Blog",
-    template: "%s | Inspiration Blog",
+    default: "whale4blog",
+    template: "%s | whale4blog",
   },
   description:
     "A modern blog platform built with Next.js and Google-inspired design",
   keywords: ["blog", "nextjs", "react", "typescript", "google design"],
-  authors: [{ name: "Inspiration Blog" }],
-  creator: "Inspiration Blog",
-  publisher: "Inspiration Blog",
+  authors: [{ name: "whale4blog" }],
+  creator: "whale4blog",
+  publisher: "whale4blog",
   formatDetection: {
     email: false,
     address: false,
@@ -46,14 +46,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "Inspiration Blog",
-    title: "Inspiration Blog",
+    siteName: "whale4blog",
+    title: "whale4blog",
     description:
       "A modern blog platform built with Next.js and Google-inspired design",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Inspiration Blog",
+    title: "whale4blog",
     description:
       "A modern blog platform built with Next.js and Google-inspired design",
   },

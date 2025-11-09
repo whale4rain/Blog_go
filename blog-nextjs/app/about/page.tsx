@@ -2,9 +2,8 @@
 // About Page - Blog Information and Contact
 // ============================================================================
 
-import React from 'react';
 import Header from '@/components/layout/Header';
-import { Mail, Github, Twitter, Linkedin, Heart, Code, Zap } from 'lucide-react';
+import { Code, Github, Heart, Linkedin, Mail, Twitter, Zap } from 'lucide-react';
 
 // ----------------------------------------------------------------------------
 // Page Component
@@ -20,7 +19,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto mb-16">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold text-foreground mb-4">
-              About <span className="text-gradient">Inspiration Blog</span>
+              About <span className="text-gradient">whale4blog</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               A modern platform for sharing knowledge, stories, and inspiration with the world
@@ -31,7 +30,7 @@ export default function AboutPage() {
           <div className="card p-8 mb-8">
             <h2 className="text-3xl font-bold text-foreground mb-4">Our Mission</h2>
             <p className="text-lg text-foreground leading-relaxed mb-4">
-              Inspiration Blog is dedicated to creating a space where ideas flourish and
+              whale4blog is dedicated to creating a space where ideas flourish and
               knowledge is shared freely. We believe in the power of well-crafted content
               to inspire, educate, and connect people across the globe.
             </p>

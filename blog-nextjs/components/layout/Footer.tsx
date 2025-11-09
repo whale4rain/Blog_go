@@ -2,9 +2,10 @@
 // Footer Component - Google-inspired Design
 // ============================================================================
 
-import React from "react";
+import Logo from "@/components/ui/Logo";
+import siteConfig from "@/lib/constants/siteConfig";
+import { Github, Heart, Linkedin, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
-import { Github, Twitter, Linkedin, Mail, Heart } from "lucide-react";
 
 // ----------------------------------------------------------------------------
 // Component
@@ -20,53 +21,57 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-google-blue to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                IB
-              </div>
+              <Logo size="md" />
               <span className="text-xl font-semibold text-foreground">
-                Inspiration Blog
+                {siteConfig.name}
               </span>
             </div>
             <p className="text-muted-foreground mb-4 max-w-md">
-              A modern blog platform built with Next.js and Google-inspired
-              design. Share your thoughts, stories, and inspiration with the
-              world.
+              {siteConfig.description}
             </p>
             <div className="flex items-center gap-4">
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-foreground hover:text-white transition-colors"
-                aria-label="GitHub"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-google-blue hover:text-white transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-google-blue hover:text-white transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a
-                href="mailto:contact@inspirationblog.com"
-                className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-google-red hover:text-white transition-colors"
-                aria-label="Email"
-              >
-                <Mail className="w-5 h-5" />
-              </a>
+              {siteConfig.social.github && (
+                <a
+                  href={siteConfig.social.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-foreground hover:text-white transition-colors"
+                  aria-label="GitHub"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
+              )}
+              {siteConfig.social.twitter && (
+                <a
+                  href={siteConfig.social.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-google-blue hover:text-white transition-colors"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="w-5 h-5" />
+                </a>
+              )}
+              {siteConfig.social.linkedin && (
+                <a
+                  href={siteConfig.social.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-google-blue hover:text-white transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+              )}
+              {siteConfig.social.email && (
+                <a
+                  href={`mailto:${siteConfig.social.email}`}
+                  className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-google-red hover:text-white transition-colors"
+                  aria-label="Email"
+                >
+                  <Mail className="w-5 h-5" />
+                </a>
+              )}
             </div>
           </div>
 
@@ -155,7 +160,7 @@ export default function Footer() {
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              © {currentYear} Inspiration Blog. All rights reserved.
+              © {currentYear} {siteConfig.name}. All rights reserved.
             </p>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <Link
