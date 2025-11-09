@@ -4,7 +4,10 @@
 
 "use client";
 
+import { searchArticles } from "@/lib/api/article";
+import { getCommentList } from "@/lib/api/comment";
 import { useUserStore } from "@/lib/store/userStore";
+import type { ArticleSource, Comment, Hit } from "@/types";
 import {
     Eye,
     FileText,
@@ -17,6 +20,30 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+
+// ----------------------------------------------------------------------------
+// Helper Functions
+// ----------------------------------------------------------------------------
+
+function formatTimeAgo(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days} day${days > 1 ? "s" : ""} ago`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 4) return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} month${months > 1 ? "s" : ""} ago`;
+  const years = Math.floor(days / 365);
+  return `${years} year${years > 1 ? "s" : ""} ago`;
+}
 
 // ----------------------------------------------------------------------------
 // Page Component
@@ -32,6 +59,8 @@ export default function DashboardPage() {
     totalComments: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [recentArticles, setRecentArticles] = useState<Hit<ArticleSource>[]>([]);
+  const [recentComments, setRecentComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     // Wait for Zustand to rehydrate state from localStorage
@@ -48,16 +77,56 @@ export default function DashboardPage() {
 
   const fetchStats = async () => {
     try {
-      // Mock data for now - integrate with API later
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      setStats({
-        totalArticles: 42,
-        totalViews: 15234,
-        totalLikes: 892,
-        totalComments: 156,
+      setLoading(true);
+
+      // 获取文章列表和统计数据
+      const articlesData = await searchArticles({
+        page: 1,
+        page_size: 10,
+        sort: "created_at",
+        order: "desc",
       });
+
+      // 计算总统计数据
+      let totalViews = 0;
+      let totalLikes = 0;
+      let totalComments = 0;
+
+      articlesData.list.forEach((article) => {
+        totalViews += article._source.views || 0;
+        totalLikes += article._source.likes || 0;
+        totalComments += article._source.comments || 0;
+      });
+
+      setStats({
+        totalArticles: articlesData.total,
+        totalViews,
+        totalLikes,
+        totalComments,
+      });
+
+      // 保存最近的文章（前3篇）
+      setRecentArticles(articlesData.list.slice(0, 3));
+
+      // 获取最近的评论
+      // 由于没有全局评论接口，我们从最新的文章中获取评论
+      if (articlesData.list.length > 0) {
+        try {
+          const firstArticleId = articlesData.list[0]._id;
+          const commentsData = await getCommentList({
+            article_id: firstArticleId,
+            page: 1,
+            page_size: 3,
+          });
+          setRecentComments(commentsData.list.slice(0, 3));
+        } catch (error) {
+          console.error("Failed to fetch comments:", error);
+          setRecentComments([]);
+        }
+      }
     } catch (error) {
       console.error("Failed to fetch stats:", error);
+      // 如果出错，保持默认值
     } finally {
       setLoading(false);
     }
@@ -178,27 +247,21 @@ export default function DashboardPage() {
                 Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="skeleton h-20" />
                 ))
+              ) : recentArticles.length > 0 ? (
+                recentArticles.map((article) => (
+                  <ArticleItem
+                    key={article._id}
+                    id={article._id}
+                    title={article._source.title}
+                    date={formatTimeAgo(article._source.created_at)}
+                    views={article._source.views}
+                    likes={article._source.likes}
+                  />
+                ))
               ) : (
-                <>
-                  <ArticleItem
-                    title="Getting Started with Next.js"
-                    date="2 hours ago"
-                    views={234}
-                    likes={12}
-                  />
-                  <ArticleItem
-                    title="React Best Practices"
-                    date="1 day ago"
-                    views={567}
-                    likes={45}
-                  />
-                  <ArticleItem
-                    title="TypeScript Tips and Tricks"
-                    date="3 days ago"
-                    views={892}
-                    likes={67}
-                  />
-                </>
+                <div className="text-center text-muted-foreground py-8">
+                  No articles yet
+                </div>
               )}
             </div>
           </div>
@@ -221,24 +284,19 @@ export default function DashboardPage() {
                 Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="skeleton h-20" />
                 ))
+              ) : recentComments.length > 0 ? (
+                recentComments.map((comment) => (
+                  <CommentItem
+                    key={comment.id}
+                    author={comment.user.username}
+                    content={comment.content}
+                    date={formatTimeAgo(comment.created_at)}
+                  />
+                ))
               ) : (
-                <>
-                  <CommentItem
-                    author="John Doe"
-                    content="Great article! Very helpful information."
-                    date="1 hour ago"
-                  />
-                  <CommentItem
-                    author="Jane Smith"
-                    content="Thanks for sharing these tips!"
-                    date="3 hours ago"
-                  />
-                  <CommentItem
-                    author="Mike Johnson"
-                    content="Looking forward to more content like this."
-                    date="5 hours ago"
-                  />
-                </>
+                <div className="text-center text-muted-foreground py-8">
+                  No comments yet
+                </div>
               )}
             </div>
           </div>
@@ -345,18 +403,23 @@ function ActionButton({
 }
 
 function ArticleItem({
+  id,
   title,
   date,
   views,
   likes,
 }: {
+  id: string;
   title: string;
   date: string;
   views: number;
   likes: number;
 }) {
   return (
-    <div className="flex items-start justify-between p-4 rounded-lg hover:bg-muted transition-colors">
+    <Link
+      href={`/article/${id}`}
+      className="flex items-start justify-between p-4 rounded-lg hover:bg-muted transition-colors"
+    >
       <div className="flex-1">
         <h4 className="font-medium text-foreground mb-1">{title}</h4>
         <p className="text-sm text-muted-foreground">{date}</p>
@@ -371,7 +434,7 @@ function ArticleItem({
           {likes}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
