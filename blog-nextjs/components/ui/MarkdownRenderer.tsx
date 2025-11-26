@@ -398,7 +398,7 @@ function CodeBlock({ children, className, language, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = async () => {
-    const text = String(children).replace(/\n$/, "");
+    const text = getNodeText(children).replace(/\n$/, "");
     await navigator.clipboard.writeText(text);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
