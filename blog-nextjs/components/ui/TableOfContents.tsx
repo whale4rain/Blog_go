@@ -39,14 +39,20 @@ export default function TableOfContents({
       while ((match = headingRegex.exec(content)) !== null) {
         const level = match[1].length;
         const text = match[2].trim();
-        const id = text
+        
+        // Strip markdown syntax for ID generation to match MarkdownRenderer
+        const cleanText = text
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Links: [text](url) -> text
+          .replace(/[*_`]/g, ""); // Bold, Italic, Code: *text* -> text
+
+        const id = cleanText
           .toLowerCase()
           .replace(/[^\w\s-]/g, "")
           .replace(/\s+/g, "-");
 
         const item: TocItem = {
           id,
-          text,
+          text: cleanText, // Also use clean text for display
           level,
         };
 
@@ -79,23 +85,37 @@ export default function TableOfContents({
   // Track active heading on scroll
   useEffect(() => {
     const handleScroll = () => {
-      const headingElements = document.querySelectorAll(
+      const container = document.getElementById("article-content");
+      if (!container) return;
+
+      const headingElements = container.querySelectorAll(
         "h1, h2, h3, h4, h5, h6",
       );
 
       let currentId = "";
-      headingElements.forEach((element) => {
-        const rect = element.getBoundingClientRect();
-        if (rect.top <= 100) {
-          currentId = element.id;
-        }
-      });
+      
+      // If we're at the very top, highlight the first item
+      if (window.scrollY < 100 && headingElements.length > 0) {
+        currentId = headingElements[0].id;
+      } else {
+        // Find the last heading that has passed the top offset
+        headingElements.forEach((element) => {
+          const rect = element.getBoundingClientRect();
+          // 150px offset to account for header and some breathing room
+          if (rect.top <= 150) {
+            currentId = element.id;
+          }
+        });
+      }
 
-      setActiveId(currentId);
+      if (currentId) {
+        setActiveId(currentId);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    // Call once to set initial state
+    setTimeout(handleScroll, 100);
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -128,25 +148,18 @@ export default function TableOfContents({
           onClick={() => scrollToHeading(item.id)}
           className={`
             toc-link
-            w-full text-left px-3 py-2 rounded-md transition-all duration-200
+            w-full text-left py-2 pr-2 rounded-r-md transition-all duration-200
             flex items-center gap-2 group hover:bg-muted/50
+            text-sm border-l-2
             ${
               activeId === item.id
-                ? "bg-google-blue/10 text-google-blue font-medium border-l-2 border-google-blue"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-google-blue/5 text-google-blue font-medium border-google-blue"
+                : "text-muted-foreground hover:text-foreground border-transparent"
             }
-            ${level > 0 ? "ml-" + level * 4 : ""}
           `}
-          style={{ marginLeft: `${level * 16}px` }}
+          style={{ paddingLeft: `${level * 12 + 12}px` }}
         >
-          <ChevronRight
-            className={`
-              w-3 h-3 transition-transform duration-200
-              ${activeId === item.id ? "rotate-90" : ""}
-              group-hover:rotate-90
-            `}
-          />
-          <span className="text-sm truncate">{item.text}</span>
+          <span className="truncate">{item.text}</span>
         </button>
         {item.children && item.children.length > 0 && (
           <div className="mt-1">

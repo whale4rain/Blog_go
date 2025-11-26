@@ -4,15 +4,24 @@
 
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeRaw from "rehype-raw";
-import rehypeHighlight from "rehype-highlight";
-import rehypeKatex from "rehype-katex";
 import "highlight.js/styles/github-dark.css";
 import "katex/dist/katex.min.css";
+import { Check, Copy } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import rehypeKatex from "rehype-katex";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+
+// Helper to extract text from React children
+const getNodeText = (node: React.ReactNode): string => {
+  if (["string", "number"].includes(typeof node)) return String(node);
+  if (node instanceof Array) return node.map(getNodeText).join("");
+  if (React.isValidElement(node)) return getNodeText(node.props.children);
+  return "";
+};
 
 interface MarkdownRendererProps {
   content: string;
@@ -161,7 +170,7 @@ export default function MarkdownRenderer({
         components={{
           // Custom components for better styling
           h1: ({ children, ...props }) => {
-            const text = React.Children.toArray(children).join("");
+            const text = getNodeText(children);
             const id = text
               .toLowerCase()
               .replace(/[^\w\s-]/g, "")
@@ -177,7 +186,7 @@ export default function MarkdownRenderer({
             );
           },
           h2: ({ children, ...props }) => {
-            const text = React.Children.toArray(children).join("");
+            const text = getNodeText(children);
             const id = text
               .toLowerCase()
               .replace(/[^\w\s-]/g, "")
@@ -193,7 +202,7 @@ export default function MarkdownRenderer({
             );
           },
           h3: ({ children, ...props }) => {
-            const text = React.Children.toArray(children).join("");
+            const text = getNodeText(children);
             const id = text
               .toLowerCase()
               .replace(/[^\w\s-]/g, "")
@@ -209,7 +218,7 @@ export default function MarkdownRenderer({
             );
           },
           h4: ({ children, ...props }) => {
-            const text = React.Children.toArray(children).join("");
+            const text = getNodeText(children);
             const id = text
               .toLowerCase()
               .replace(/[^\w\s-]/g, "")
@@ -289,27 +298,21 @@ export default function MarkdownRenderer({
               );
             }
 
-            return isInline ? (
-              <code
-                className="bg-muted px-2 py-1 rounded text-sm font-mono text-google-red"
-                {...props}
-              >
-                {children}
-              </code>
-            ) : (
-              <div className="relative">
-                {language && (
-                  <div className="absolute top-0 right-0 px-2 py-1 text-xs text-muted-foreground bg-muted rounded-bl">
-                    {language}
-                  </div>
-                )}
-                <pre
-                  className="bg-muted p-4 rounded-lg overflow-x-auto text-sm font-mono text-foreground"
+            if (isInline) {
+              return (
+                <code
+                  className="bg-muted px-2 py-1 rounded text-sm font-mono text-google-red"
                   {...props}
                 >
-                  <code className={className}>{children}</code>
-                </pre>
-              </div>
+                  {children}
+                </code>
+              );
+            }
+
+            return (
+              <CodeBlock language={language} className={className} {...props}>
+                {children}
+              </CodeBlock>
             );
           },
           pre: ({ children, ...props }) => {
@@ -387,6 +390,45 @@ export default function MarkdownRenderer({
       >
         {content}
       </ReactMarkdown>
+    </div>
+  );
+}
+
+function CodeBlock({ children, className, language, ...props }: any) {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = async () => {
+    const text = String(children).replace(/\n$/, "");
+    await navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative group my-4">
+      {language && (
+        <div className="absolute top-0 right-0 px-3 py-1 text-xs font-medium text-muted-foreground bg-muted-foreground/10 rounded-bl-lg rounded-tr-lg z-10 select-none border-b border-l border-border/50">
+          {language}
+        </div>
+      )}
+      <button
+        onClick={handleCopy}
+        className="absolute top-2 right-2 p-2 rounded-md bg-background/80 text-muted-foreground hover:text-foreground hover:bg-background border border-border/50 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-20 shadow-sm"
+        aria-label="Copy code"
+        title="Copy code"
+      >
+        {isCopied ? (
+          <Check className="w-4 h-4 text-green-500" />
+        ) : (
+          <Copy className="w-4 h-4" />
+        )}
+      </button>
+      <pre
+        className="bg-muted/50 border border-border p-4 rounded-lg overflow-x-auto text-sm font-mono text-foreground"
+        {...props}
+      >
+        <code className={className}>{children}</code>
+      </pre>
     </div>
   );
 }

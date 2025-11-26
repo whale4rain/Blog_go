@@ -4,10 +4,10 @@
 
 import type { ApiResponse } from "@/types";
 import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
+    AxiosError,
+    AxiosInstance,
+    AxiosRequestConfig,
+    AxiosResponse,
 } from "axios";
 
 // ----------------------------------------------------------------------------
@@ -282,8 +282,9 @@ export async function upload<T = unknown>(
     ...config,
     headers: {
       ...config?.headers,
-      // 让浏览器自动设置 Content-Type (multipart/form-data with boundary)
-      'Content-Type': 'multipart/form-data',
+      // 显式将 Content-Type 设置为 undefined，移除实例默认的 application/json
+      // 这样浏览器会自动检测 FormData 并设置正确的 multipart/form-data; boundary=...
+      "Content-Type": undefined,
     },
     onUploadProgress: (progressEvent) => {
       if (onProgress && progressEvent.total) {

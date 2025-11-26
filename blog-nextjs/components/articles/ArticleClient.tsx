@@ -196,7 +196,7 @@ export default function ArticleClient({
         </header>
 
         {/* Article Content */}
-        <div className="mb-12">
+        <div className="mb-12" id="article-content">
           <MarkdownRenderer content={article.content} />
         </div>
 
