@@ -4,3 +4,8 @@ node_modules
 nul
 server/log/*.log
 config_backup.yaml
+*.md
+*.sh
+*.conf
+*.ps1
+*.zip
