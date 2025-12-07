@@ -4,10 +4,10 @@
 
 import type { ApiResponse } from "@/types";
 import axios, {
-    AxiosError,
-    AxiosInstance,
-    AxiosRequestConfig,
-    AxiosResponse,
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
 } from "axios";
 
 // ----------------------------------------------------------------------------
@@ -186,21 +186,6 @@ export async function post<T = unknown>(
 ): Promise<T> {
   try {
     const response = await client.post<ApiResponse<T>>(url, data, config);
-
-    // Temporary debug: when calling login endpoint, log request/response headers (client-side only)
-    if (!isServer && url.includes("/user/login")) {
-      try {
-        // eslint-disable-next-line no-console
-        console.debug("[API-DEBUG] login request -> response headers:", {
-          requestUrl: `${API_BASE_URL}${url}`,
-          requestConfig: config,
-          responseHeaders: response.headers,
-          setCookie: response.headers["set-cookie"] || response.headers["Set-Cookie"],
-        });
-      } catch (e) {
-        // ignore
-      }
-    }
 
     return response.data.data;
   } catch (error) {

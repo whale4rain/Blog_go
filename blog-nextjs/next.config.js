@@ -27,7 +27,7 @@ const nextConfig = {
 
   // Experimental features
   experimental: {
-    optimizeCss: true,
+    // optimizeCss: true, // Requires 'critters' dependency
   },
 
   // Headers for security and CORS
